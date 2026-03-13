@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa · Pulmón del Oriente · Cali</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/mapa.css">
+</head>
+<body>
+
+<div id="header">
+  <div class="header-left">
+    <div class="header-icon">🌿</div>
+    <div>
+      <div class="header-title">Pulmón de Oriente</div>
+      <div class="header-sub">Área de influencia · Cali 2024–2027</div>
+    </div>
+  </div>
+  <div class="kpis">
+    <div class="kpi"><div class="kpi-num" id="kpi-frentes">...</div><div class="kpi-lab" id="kpi-frentes-lbl">Frentes de Obra</div></div>
+    <div class="kpi-div"></div>
+    <div class="kpi"><div class="kpi-num" id="kpi-inversion">...</div><div class="kpi-lab">Inversión COP</div></div>
+  </div>
+</div>
+
+<div id="filter-bar">
+  <div class="filter-group" id="filter-sec"></div>
+
+  <div class="filter-sep"></div>
+
+  <span class="filter-label">Estado:</span>
+  <div class="filter-group" id="filter-estado">
+    <button class="filter-btn active" data-estado="all">Todos</button>
+    <button class="filter-btn" data-estado="En ejecución">En ejecución</button>
+    <button class="filter-btn" data-estado="En alistamiento">Alistamiento</button>
+    <button class="filter-btn" data-estado="Terminado">Terminado</button>
+  </div>
+
+  <div class="filter-group" id="filter-modo">
+    <span class="filter-label">Modo de Vista:</span>
+    <button class="filter-btn active" data-modo="ups">Frentes de Obra (UPS)</button>
+    <button class="filter-btn" data-modo="contratos">Todos los Contratos</button>
+  </div>
+  <button id="btn-reset">↺ Limpiar</button>
+</div>
+
+<div id="map"></div>
+
+<div id="layer-ctrl">
+  <div class="layer-btn-group">
+    <button class="layer-btn active" onclick="setLayer('streets')" id="btn-streets">🗺 Calles</button>
+    <button class="layer-btn" onclick="setLayer('satellite')" id="btn-satellite">🛰 Satélite</button>
+    <button class="layer-btn" onclick="setLayer('hybrid')" id="btn-hybrid">⊕ Híbrido</button>
+  </div>
+</div>
+
+<div id="legend">
+  <div class="legend-title">Referencias</div>
+  <div class="legend-item"><div class="legend-poly" style="background:rgba(233,30,140,0.15);border:2px solid #E91E8C;"></div> Perímetro del área</div>
+  <div class="legend-item"><div class="legend-line" style="background:#00BCD4;"></div> Corredor hídrico</div>
+  <div class="legend-sep"></div>
+  <div id="legend-dynamic"></div>
+</div>
+
+<nav class="page-switcher" aria-label="Navegación entre vistas">
+  <a class="switcher-home" href="../index.html" title="Inicio">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </a>
+  <div class="switcher-divider"></div>
+  <a class="switcher-btn" href="pulmon_oriente_informe-v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
+    Informe
+  </a>
+  <a class="switcher-btn active" href="pulmon_oriente_mapa_v2.html" aria-current="page">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+    Mapa
+  </a>
+  <a class="switcher-btn" href="intervenciones_v1.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19h16v2H4zM6 10h3v7H6zm5-4h3v11h-3zm5 2h3v9h-3z"/></svg>
+    Intervenciones
+  </a>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+<script src="../assets/js/services/dataService.js"></script>
+<script src="../assets/js/mapa.js"></script>
+
+</body>
+</html>

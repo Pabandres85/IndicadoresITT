@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intervenciones Distritales · Cali 2024–2027</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/intervenciones.css">
+</head>
+<body>
+
+<!-- ─── HERO ─────────────────────────────────────────────────────────────── -->
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Santiago de Cali · Inversión Pública</div>
+      <div class="hero-brand">
+        <img class="hero-logo" src="../imag/logo_alcaldia.png" alt="Escudo Alcaldía de Santiago de Cali">
+        <div class="hero-brand-text">
+          <h1>Intervenciones<br><span>Distritales</span></h1>
+          <p class="hero-sub">Dashboard de intervenciones públicas por secretaría, tipo y territorio</p>
+          <p class="hero-date" id="hero-date">// FUENTE: SECRETARÍAS DISTRITALES · CORTE: MARZO 2026 · 2357 REGISTROS</p>
+        </div>
+      </div>
+    </div>
+    <div class="hero-kpi-grid">
+      <div class="hero-kpi accent">
+        <div class="hero-kpi-val" id="kpi-total">...</div>
+        <div class="hero-kpi-lbl">Intervenciones</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-val" id="kpi-inversion">...</div>
+        <div class="hero-kpi-lbl">Inversión COP</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ─── TOOLBAR / FILTROS ─────────────────────────────────────────────────── -->
+<div class="toolbar-strip">
+  <div class="toolbar-left">
+
+    <div class="toggle-group">
+      <span class="toggle-lbl">Secretaría:</span>
+      <select id="select-sec" class="toggle-btn">
+        <option value="all">Todas</option>
+      </select>
+    </div>
+
+    <div class="toggle-group">
+      <span class="toggle-lbl">Estado:</span>
+      <button class="toggle-btn active" data-estado="all">Todos</button>
+      <button class="toggle-btn" data-estado="En ejecución">En ejecución</button>
+      <button class="toggle-btn" data-estado="Terminado">Terminado</button>
+      <button class="toggle-btn" data-estado="En alistamiento">Alistamiento</button>
+      <button class="toggle-btn" data-estado="Suspendido">Suspendido</button>
+    </div>
+
+    <div class="toggle-group">
+      <span class="toggle-lbl">Tipo:</span>
+      <select id="select-tipo" class="toggle-btn">
+        <option value="all">Todos los tipos</option>
+      </select>
+    </div>
+
+  </div>
+  <span class="geofiltro-info">Cali completa · 22 comunas + corregimientos</span>
+</div>
+
+<!-- ─── FILTRO DRILL-DOWN ─────────────────────────────────────────────────── -->
+<div id="filtro-drill-bar" class="filtro-drill-bar" style="display:none">
+  <span>⬡ Drill-down activo:</span>
+  <span id="filtro-drill-texto"></span>
+  <button id="filtro-drill-clear" class="filtro-drill-clear" title="Quitar filtro drill-down">×</button>
+</div>
+
+<!-- ─── BANNER ──────────────────────────────────────────────────────────── -->
+<div class="alert-strip" id="alert-banner">
+  Cargando datos de intervenciones...
+</div>
+
+<!-- ─── 01 ESTADO GENERAL ─────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">01 —</span>
+      <h2>Estado General</h2>
+    </div>
+    <div class="divider"></div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-total">...</div>
+        <div class="stat-lbl">Total Intervenciones</div>
+      </div>
+      <div class="stat-card alistamiento">
+        <div class="stat-num" id="stat-alistamiento">...</div>
+        <div class="stat-lbl">En Alistamiento</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-ejecucion">...</div>
+        <div class="stat-lbl">En Ejecución</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="stat-terminado">...</div>
+        <div class="stat-lbl">Terminadas</div>
+      </div>
+      <div class="stat-card alerta">
+        <div class="stat-num" id="stat-otros">...</div>
+        <div class="stat-lbl">Suspendidas / Otras</div>
+      </div>
+    </div>
+
+    <!-- Proyectos críticos suspendidos -->
+    <div class="alertas-header">
+      <span class="alertas-titulo">Intervenciones Suspendidas · Mayor Presupuesto en Riesgo</span>
+    </div>
+    <div id="alertas-criticas" class="alertas-grid"></div>
+
+    <div class="charts-grid wide">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">Inversión por Secretaría (miles de millones COP)</div>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartSecretaria"></canvas></div>
+          <div class="chart-insight" id="insight-sec"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">Distribución por Estado</div>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap-donut"><canvas id="chartEstado"></canvas></div>
+          <div class="chart-insight" id="insight-estado"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 02 TERRITORIAL ────────────────────────────────────────────────────── -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">02 —</span>
+      <h2>Distribución Territorial</h2>
+    </div>
+    <div class="divider"></div>
+
+    <div class="chart-row" style="margin-top:0">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">Tasa de Alerta por Comuna · % en Alistamiento o Suspendido</div>
+          <button class="chart-expand-btn" data-chart="comunas" data-title="Tasa de Alerta por Comuna · % en Alistamiento o Suspendido" title="Expandir gráfica">⤢</button>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartComunas"></canvas></div>
+          <div class="chart-insight" id="insight-comunas"></div>
+        </div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">Salud de la Cartera por Secretaría · % del Presupuesto</div>
+          <button class="chart-expand-btn" data-chart="secEst" data-title="Salud de la Cartera por Secretaría · % del Presupuesto" title="Expandir gráfica">⤢</button>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-xtall"><canvas id="chartSecEstado"></canvas></div>
+          <div class="chart-insight" id="insight-secest"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 03 CLASIFICACIÓN Y TEMPORALIDAD ──────────────────────────────────── -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">03 —</span>
+      <h2>Clasificación y Temporalidad</h2>
+    </div>
+    <div class="divider"></div>
+
+    <div class="charts-grid wide">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">Top 10 Tipos de Intervención</div>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartTipo"></canvas></div>
+          <div class="chart-insight" id="insight-tipo"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">Intervenciones por Año de Inicio</div>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartAnio"></canvas></div>
+          <div class="chart-insight" id="insight-anio"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">Inversión por Fuente de Financiación</div>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap"><canvas id="chartFuente"></canvas></div>
+          <div class="chart-insight" id="insight-fuente"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">Tendencia de Intervenciones por Secretaría · Top 6</div>
+          <button class="chart-expand-btn" data-chart="tendencia" data-title="Tendencia de Intervenciones por Secretaría · Top 6" title="Expandir gráfica">⤢</button>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartTendencia"></canvas></div>
+          <div class="chart-insight" id="insight-tendencia"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">Curva S · Planeado vs Real Ejecutado (% acumulado por trimestre)</div>
+          <button class="chart-expand-btn" data-chart="curvaS" data-title="Curva S · Planeado vs Real Ejecutado" title="Expandir gráfica">⤢</button>
+        </div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartCurvaS"></canvas></div>
+          <div class="chart-insight" id="insight-curvaS"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── 04 TABLA ──────────────────────────────────────────────────────────── -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-num">04 —</span>
+      <h2>Todas las Intervenciones · <span id="tabla-count">...</span> registros</h2>
+    </div>
+    <div class="divider"></div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Secretaría</th>
+            <th class="col-opt">Clase UP</th>
+            <th>Tipo</th>
+            <th>Comuna</th>
+            <th class="col-opt">Barrio</th>
+            <th class="col-opt">Inicio</th>
+            <th class="col-opt">Fin</th>
+            <th>Presupuesto</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="intervencionesTable"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MODAL EXPANSIÓN CHART ──────────────────────────────────────────── -->
+<div id="chart-expand-overlay" class="chart-expand-overlay">
+  <div class="chart-expand-card">
+    <div class="chart-expand-hdr">
+      <span id="expand-chart-title" class="chart-expand-ttl"></span>
+      <button id="expand-chart-close" class="chart-expand-close" aria-label="Cerrar">&times;</button>
+    </div>
+    <div class="chart-expand-body">
+      <img id="expand-chart-img" class="chart-expand-img" alt="Gráfica expandida">
+    </div>
+  </div>
+</div>
+
+<!-- ─── MODAL DETALLE ────────────────────────────────────────────────────── -->
+<div id="modal-overlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close" aria-label="Cerrar">&times;</button>
+    <div class="modal-header">
+      <div class="modal-badge" id="modal-estado-badge"></div>
+      <h3 id="modal-title" class="modal-title"></h3>
+      <p class="modal-subtitle" id="modal-secretaria"></p>
+    </div>
+    <div class="modal-body">
+      <div class="modal-grid">
+        <div class="modal-field">
+          <span class="modal-label">ID Intervención</span>
+          <span class="modal-value mono" id="md-id"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">UP / Proyecto</span>
+          <span class="modal-value mono" id="md-upid"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Clase UP</span>
+          <span class="modal-value" id="md-clase"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Tipo de Intervención</span>
+          <span class="modal-value" id="md-tipo"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Fuente de Financiación</span>
+          <span class="modal-value" id="md-fuente"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Presupuesto Base</span>
+          <span class="modal-value modal-value--highlight" id="md-presupuesto"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Comuna / Corregimiento</span>
+          <span class="modal-value" id="md-comuna"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Barrio / Vereda</span>
+          <span class="modal-value" id="md-barrio"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Fecha Inicio</span>
+          <span class="modal-value" id="md-inicio"></span>
+        </div>
+        <div class="modal-field">
+          <span class="modal-label">Fecha Fin</span>
+          <span class="modal-value" id="md-fin"></span>
+        </div>
+        <div class="modal-field" id="md-inauguracion-wrap">
+          <span class="modal-label">Fecha Inauguración</span>
+          <span class="modal-value" id="md-inauguracion"></span>
+        </div>
+        <div class="modal-field" id="md-updated-wrap">
+          <span class="modal-label">Última Actualización</span>
+          <span class="modal-value" id="md-updated"></span>
+        </div>
+      </div>
+      <!-- ─ Línea de tiempo del plazo ─ -->
+      <div class="modal-timeline-wrap" id="md-timeline-wrap">
+        <span class="modal-label">Línea de Tiempo del Plazo</span>
+        <div class="modal-timeline-bar">
+          <div class="modal-tl-elapsed" id="md-tl-elapsed"></div>
+          <div class="modal-tl-marker" id="md-tl-marker"></div>
+        </div>
+        <div class="modal-tl-labels">
+          <span id="md-tl-start"></span>
+          <span class="modal-tl-hoy" id="md-tl-hoy">Hoy</span>
+          <span id="md-tl-end"></span>
+        </div>
+        <div class="modal-tl-info" id="md-tl-info"></div>
+      </div>
+
+      <div class="modal-desc-wrap" id="md-desc-wrap">
+        <span class="modal-label">Descripción</span>
+        <p class="modal-desc" id="md-desc"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── NAVEGACIÓN FLOTANTE ───────────────────────────────────────────────── -->
+<nav class="page-switcher" aria-label="Navegación entre vistas">
+  <a class="switcher-home" href="../index.html" title="Inicio">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </a>
+  <div class="switcher-divider"></div>
+  <a class="switcher-btn" href="pulmon_oriente_informe-v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
+    Informe
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_mapa_v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+    Mapa
+  </a>
+  <a class="switcher-btn active" href="intervenciones_v1.html" aria-current="page">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19h16v2H4zM6 10h3v7H6zm5-4h3v11h-3zm5 2h3v9h-3z"/></svg>
+    Intervenciones
+  </a>
+</nav>
+
+<!-- ─── SCRIPTS ───────────────────────────────────────────────────────────── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="../assets/js/intervenciones.js"></script>
+
+<!-- ─── FOOTER ───────────────────────────────────────────────────────────── -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <div class="footer-title">Intervenciones Distritales · Cali</div>
+      <p class="footer-text">
+        Dashboard analítico de intervenciones públicas del Plan de Desarrollo 2024–2027.
+        Incluye obras, mantenimientos, subsidios y dotaciones de todas las secretarías.
+      </p>
+      <div class="footer-meta">
+        Fuente: Secretarías Distritales · Municipio de Santiago de Cali
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-title">Enlaces</div>
+      <ul class="footer-links">
+        <li><a href="https://www.cali.gov.co" target="_blank" rel="noopener">cali.gov.co</a></li>
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="pulmon_oriente_informe-v2.html">Pulmón de Oriente · Informe</a></li>
+        <li><a href="pulmon_oriente_mapa_v2.html">Mapa de Proyectos</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-title">Notas</div>
+      <p class="footer-text">
+        <span id="footer-registros">2357 registros de intervenciones. 777 sin dato de ubicación.</span>
+        Cifras filtradas dinámicamente según selección.
+      </p>
+      <div class="footer-badge" id="footer-corte-badge">2024–2027 · Corte: Marzo 2026</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© Municipio de Santiago de Cali</span>
+    <span class="footer-sep">•</span>
+    <span>Equipo Gobierno de Datos</span>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cali en Obra · Inversión Pública 2024–2027</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/index.css">
+</head>
+<body>
+  <div class="wrapper">
+
+    <section class="hero">
+      <img
+        class="alcaldia-logo"
+        src="imag/logo_alcaldia.png"
+        alt="Escudo Alcaldía de Santiago de Cali"
+      />
+      <div class="badge">
+        <div class="badge-dot"></div>
+        Plan de Desarrollo Distrital 2024–2027
+      </div>
+      <h1>¡Cali<br><span>En Obra!</span></h1>
+      <p class="subtitle">
+        Seguimiento a la inversión pública del distrito de Santiago de Cali.
+        Datos de la Unidad de Proyectos · Secretarías Distritales.
+      </p>
+      <div class="kpi-row">
+        <div class="kpi">
+          <div class="kpi-num" id="kpi-frentes">...</div>
+          <div class="kpi-lab">Frentes de Obra</div>
+        </div>
+        <div class="kpi-sep"></div>
+        <div class="kpi">
+          <div class="kpi-num" id="kpi-inversion">...</div>
+          <div class="kpi-lab">Inversión COP</div>
+        </div>
+        <div class="kpi-sep"></div>
+        <div class="kpi">
+          <div class="kpi-num">5.4</div>
+          <div class="kpi-lab">Área (km²)</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="cards">
+
+      <a class="card" href="paginas/pulmon_oriente_informe-v2.html">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="card-tag">Dashboard analítico</div>
+          <h2>Informe de Inversión Pulmón de oriente</h2>
+        </div>
+        <p>Estadísticas generales, distribución por secretaría y estado, evolución anual, ranking de barrios y análisis del contexto territorial.</p>
+        <div class="card-cta">
+          Ver informe
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+        </div>
+      </a>
+
+      <a class="card" href="paginas/pulmon_oriente_mapa_v2.html">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="card-tag">Mapa interactivo</div>
+          <h2>Mapa de Proyectos</h2>
+        </div>
+        <p id="map-desc">Frentes de obra geolocalizados dentro del área de influencia. Delineación del polígono, corredor hídrico y zonas. Filtra por estado y secretaría.</p>
+        <div class="card-cta">
+          Explorar mapa
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+        </div>
+      </a>
+
+      <a class="card" href="paginas/pulmon_oriente_impacto_v2.html">
+  <div class="card-icon">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M4 19h16v2H4zM6 10h3v7H6zm5-4h3v11h-3zm5 2h3v9h-3z"/>
+    </svg>
+  </div>
+  <div>
+    <div class="card-tag">Gráficos interactivos</div>
+    <h2>Análisis de Impacto</h2>
+  </div>
+  <p>
+    Línea base, control comparable y atribución causal (DiD) para evaluar resultados e impacto territorial.
+  </p>
+  <div class="card-cta">
+    Ver análisis
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+    </svg>
+  </div>
+</a>
+
+      <a class="card" href="paginas/intervenciones_v1.html">
+        <div class="card-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="card-tag">Dashboard ciudad completa</div>
+          <h2>Intervenciones Distritales</h2>
+        </div>
+        <p>2357 intervenciones en toda Cali: obras viales, equipamientos, subsidios y dotaciones. Filtra por secretaría, estado y tipo.</p>
+        <div class="card-cta">
+          Ver intervenciones
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <footer>
+    Fuente: Unidad de Proyectos (UP) · Secretarías Distritales · Municipio de Santiago de Cali<br>
+    Plan de Desarrollo Distrital 2024–2027 ·
+    <a href="https://www.cali.gov.co" target="_blank" rel="noopener">cali.gov.co</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+  <script src="assets/js/services/dataService.js"></script>
+  <script src="assets/js/index.js"></script>
+</body>
+</html>
