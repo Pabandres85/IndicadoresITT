@@ -8,12 +8,12 @@
     "cobertura_datos": 100,
     "fuentes_activas": 17,
     "fuentes_total": 17,
-    "nota": "ITT preliminar. Fuentes GIS verificadas: 7 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
+    "nota": "ITT preliminar. Fuentes GIS verificadas: 10 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 61.0,
+    "score": 66.2,
     "score_anterior": 60.7,
-    "variacion": 0.3,
+    "variacion": 5.5,
     "clasificacion": "Nivel 3 · Avance",
     "rango": [
       60,
@@ -160,36 +160,37 @@
       "nombre": "Entorno Urbano",
       "icono": "city",
       "peso": 0.2,
-      "score": 43.6,
+      "score": 70.0,
       "score_anterior": 43.6,
-      "variacion": 0.0,
+      "variacion": 26.4,
       "color": "#1565C0",
-      "calidad_dato": "preliminar",
+      "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
           "nombre": "NDVI / cobertura vegetal",
-          "valor": 0.38,
+          "valor": 0.2,
           "unidad": "índice",
-          "tendencia": "estable",
-          "fuente": "Copernicus / Sentinel-2",
-          "oficial": false
+          "tendencia": "baja",
+          "fuente": "Copernicus / Sentinel-2 · TIF procesado",
+          "oficial": true
         },
         {
           "nombre": "Área verde neta",
-          "valor": 148000,
+          "valor": 1699769,
           "unidad": "m²",
-          "tendencia": "estable",
-          "fuente": "Copernicus / Sentinel-2",
-          "oficial": false
+          "tendencia": "alza",
+          "fuente": "Copernicus / Sentinel-2 · NDVI ≥ 0.20",
+          "oficial": true
         },
         {
           "nombre": "Déficit habitacional cualitativo",
-          "valor": 29.0,
-          "unidad": "%",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Vivienda",
-          "oficial": false
+          "valor": 0.0,
+          "unidad": "% pendiente",
+          "tendencia": "baja",
+          "fuente": "Secretaría de Vivienda / AHDI 2024-2026",
+          "oficial": true,
+          "nota_real": "Corte 2025-S2: 0.0% pendiente (avance 100.0% = 15.83 ha activas / 15.83 ha; AÑO_INTERV <= 2025)."
         }
       ]
     },
@@ -289,33 +290,6 @@
   ],
   "serie_temporal": [
     {
-      "periodo": "2023",
-      "itt": 57.1,
-      "seguridad": 61.1,
-      "movilidad": 55.7,
-      "entorno_urbano": 43.6,
-      "educacion_desarrollo": 58.8,
-      "cohesion_social": 70.5
-    },
-    {
-      "periodo": "2024",
-      "itt": 58.4,
-      "seguridad": 65.9,
-      "movilidad": 55.7,
-      "entorno_urbano": 43.6,
-      "educacion_desarrollo": 59.0,
-      "cohesion_social": 69.0
-    },
-    {
-      "periodo": "2025",
-      "itt": 60.9,
-      "seguridad": 75.2,
-      "movilidad": 55.7,
-      "entorno_urbano": 43.6,
-      "educacion_desarrollo": 61.0,
-      "cohesion_social": 64.3
-    },
-    {
       "periodo": "2025-S1",
       "itt": 60.7,
       "seguridad": 74.2,
@@ -326,30 +300,12 @@
     },
     {
       "periodo": "2025-S2",
-      "itt": 61.0,
+      "itt": 66.2,
       "seguridad": 76.2,
       "movilidad": 55.7,
-      "entorno_urbano": 43.6,
+      "entorno_urbano": 70.0,
       "educacion_desarrollo": 61.0,
       "cohesion_social": 62.7
-    },
-    {
-      "periodo": "2025-T3",
-      "itt": 58.2,
-      "seguridad": 77.4,
-      "movilidad": 55.7,
-      "entorno_urbano": 43.6,
-      "educacion_desarrollo": 55.8,
-      "cohesion_social": 42.6
-    },
-    {
-      "periodo": "2025-T4",
-      "itt": 61.1,
-      "seguridad": 72.8,
-      "movilidad": 55.7,
-      "entorno_urbano": 43.6,
-      "educacion_desarrollo": 61.0,
-      "cohesion_social": 72.7
     }
   ],
   "barrios": [

@@ -118,25 +118,25 @@ DIMENSIONES = {
         "color": "#1565C0",
         "indicadores": [
             {
-                "id": "ndvi_cobertura_vegetal", "oficial": False, "inverso": False,
+                "id": "ndvi_cobertura_vegetal", "oficial": True, "inverso": False,
                 "nombre": "NDVI / cobertura vegetal",
                 "unidad": "índice",
-                "fuente": "Copernicus / Sentinel-2",
+                "fuente": "Copernicus / Sentinel-2 · TIF procesado",
                 "ref_min": 0.15, "ref_max": 0.65,
             },
             {
-                "id": "area_verde_neta", "oficial": False, "inverso": False,
+                "id": "area_verde_neta", "oficial": True, "inverso": False,
                 "nombre": "Área verde neta",
                 "unidad": "m²",
-                "fuente": "Copernicus / Sentinel-2",
+                "fuente": "Copernicus / Sentinel-2 · NDVI ≥ 0.20",
                 "ref_min": 50000, "ref_max": 300000,
             },
             {
-                "id": "deficit_habitacional_cualitativo", "oficial": False, "inverso": True,
+                "id": "deficit_habitacional_cualitativo", "oficial": True, "inverso": True,
                 "nombre": "Déficit habitacional cualitativo",
-                "unidad": "%",
-                "fuente": "Secretaría de Vivienda",
-                "ref_min": 10.0, "ref_max": 45.0,
+                "unidad": "% pendiente",
+                "fuente": "Secretaría de Vivienda / AHDI 2024-2026",
+                "ref_min": 10.0, "ref_max": 100.0,
             },
         ],
     },
@@ -316,6 +316,183 @@ def leer_json(ruta, default=None):
         return json.loads(path.read_text(encoding="utf-8-sig"))
     except Exception:
         return default
+
+
+def leer_ndvi_tif():
+    """
+    Lee data/NVDI/ndvi_resultado.tif.
+    Devuelve dict con:
+      - ndvi_medio   : float — media NDVI válida
+      - area_verde_m2: int   — m² con NDVI > 0.20 (vegetación activa)
+    Requiere tifffile + imagecodecs-lite (pip install tifffile imagecodecs-lite).
+    Retorna None si el archivo no existe o hay error.
+    """
+    tif_path = DATA / "NVDI" / "ndvi_resultado.tif"
+    if not tif_path.exists():
+        return None
+    try:
+        import tifffile
+        import numpy as np
+
+        arr = tifffile.imread(str(tif_path)).astype(float)
+
+        # Georeferencia: escala de píxel en grados (leída del TIF en sesión anterior)
+        # ModelPixelScaleTag: ~8.98e-5 grados/píxel en x e y
+        # A lat ~3.43°: 1° lat ≈ 111 320 m, 1° lon ≈ cos(3.43°)×111 320 ≈ 111 121 m
+        pixel_scale_deg = 8.98e-5
+        lat_centro_rad  = math.radians(3.43)
+        metro_por_grado_lat = 111_320.0
+        metro_por_grado_lon = math.cos(lat_centro_rad) * 111_320.0
+        pixel_area_m2 = pixel_scale_deg * metro_por_grado_lon * pixel_scale_deg * metro_por_grado_lat
+
+        # Píxeles válidos (rango NDVI [-1, 1] sin NoData)
+        validos_mask = (arr >= -1.0) & (arr <= 1.0)
+        validos       = arr[validos_mask]
+        if validos.size == 0:
+            return None
+
+        # Área verde: píxeles con NDVI ≥ 0.20 (vegetación activa / cobertura real)
+        verde_mask   = (arr >= 0.20) & (arr <= 1.0)
+        n_verde      = int(np.count_nonzero(verde_mask))
+        area_verde   = round(n_verde * pixel_area_m2)
+
+        return {
+            "ndvi_medio":    round(float(validos.mean()), 4),
+            "area_verde_m2": area_verde,
+        }
+    except ImportError:
+        print("  [WARN] tifffile no instalado — usando valores manuales. pip install tifffile imagecodecs-lite")
+        return None
+    except Exception as e:
+        print(f"  [WARN] Error leyendo NDVI TIF: {e}")
+        return None
+
+
+def leer_deficit_ahdi_excel(year):
+    """
+    Lee data/excel/vivienda/INTERVENCION_AHDI_AÑOS_24_25_26.xlsx.
+    Calcula el % de avance en resolución del déficit habitacional cualitativo:
+
+      avance = ha AHDI con proceso activo (Con Radicación + Proceso de Legalización)
+               ──────────────────────────────────────────────────────────────────────
+                          total ha AHDI priorizadas en el año ≤ year
+
+    Retorna dict con avance y trazabilidad o None si no se puede leer:
+      {
+        "avance_pct": float,   # % de avance
+        "activo_ha": float,    # ha en proceso activo
+        "total_ha": float,     # ha totales consideradas
+        "corte": str           # regla de corte aplicada
+      }
+    """
+    xlsx_path = DATA / "excel" / "vivienda" / "INTERVENCION_AHDI_AÑOS_24_25_26.xlsx"
+    if not xlsx_path.exists():
+        return None
+    try:
+        import zipfile
+        import xml.etree.ElementTree as ET
+
+        ns_ss  = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+        ns_pkg = "http://schemas.openxmlformats.org/package/2006/relationships"
+
+        with zipfile.ZipFile(xlsx_path) as z:
+            # Shared strings
+            try:
+                shared = [t.text or "" for t in ET.parse(z.open("xl/sharedStrings.xml")).findall(f".//{{{ns_ss}}}t")]
+            except Exception:
+                shared = []
+
+            # Primera hoja
+            try:
+                rels_tree = ET.parse(z.open("xl/_rels/workbook.xml.rels"))
+                targets = [
+                    "xl/" + r.get("Target", "").lstrip("/")
+                    for r in rels_tree.findall(f"{{{ns_pkg}}}Relationship")
+                    if "worksheet" in r.get("Type", "").lower()
+                ]
+            except Exception:
+                targets = ["xl/worksheets/sheet1.xml"]
+
+            if not targets:
+                return None
+            sf = targets[0].replace("xl/xl/", "xl/")
+            if sf not in z.namelist():
+                return None
+
+            def cell_val(c):
+                t = c.get("t", "")
+                v = c.find(f"{{{ns_ss}}}v")
+                if v is None:
+                    return ""
+                return shared[int(v.text)] if t == "s" else (v.text or "")
+
+            rows = []
+            for row in ET.parse(z.open(sf)).findall(f".//{{{ns_ss}}}row"):
+                rows.append([cell_val(c) for c in row.findall(f"{{{ns_ss}}}c")])
+
+        if not rows:
+            return None
+
+        # Detectar columnas por cabecera (fila 0)
+        header = [str(h).strip().upper() for h in rows[0]]
+        def col(nombre):
+            for kw in nombre:
+                for i, h in enumerate(header):
+                    if kw in h:
+                        return i
+            return None
+
+        idx_area   = col(["AREA_HA", "AREA HA", "HA"])
+        idx_año    = col(["AÑO_INTERV", "AÑO INTERV", "AÑO"])
+        idx_estado = col(["PROCESO", "ESTADO"])
+
+        if idx_area is None or idx_año is None or idx_estado is None:
+            print("  [WARN] AHDI Excel: no se encontraron columnas esperadas")
+            return None
+
+        # Estados que indican proceso activo (déficit en vías de resolución)
+        ACTIVOS = {"CON RADICACION", "CON RADICACIÓN", "PROCESO DE LEGALIZACION",
+                   "PROCESO DE LEGALIZACIÓN", "LEGALIZ"}
+
+        total_ha  = 0.0
+        activo_ha = 0.0
+
+        for fila in rows[1:]:
+            def get(i):
+                return fila[i].strip() if i < len(fila) else ""
+
+            try:
+                año_fila = int(float(get(idx_año))) if get(idx_año) else 9999
+            except Exception:
+                continue
+            if año_fila > year:
+                continue  # Solo asentamientos cuyo año de intervención ≤ período actual
+
+            try:
+                ha = float(get(idx_area)) if get(idx_area) else 0.0
+            except Exception:
+                ha = 0.0
+
+            estado = get(idx_estado).upper()
+            total_ha += ha
+            if any(kw in estado for kw in ACTIVOS):
+                activo_ha += ha
+
+        if total_ha == 0:
+            return None
+
+        pct = round(activo_ha / total_ha * 100, 1)
+        print(f"  [AHDI] {year}: {activo_ha:.2f} ha activas / {total_ha:.2f} ha totales -> avance {pct}%")
+        return {
+            "avance_pct": pct,
+            "activo_ha": round(activo_ha, 2),
+            "total_ha":  round(total_ha, 2),
+            "corte": f"AÑO_INTERV <= {year}",
+        }
+
+    except Exception as e:
+        print(f"  [WARN] Error leyendo AHDI Excel: {e}")
+        return None
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -845,6 +1022,18 @@ def _lapso_de_periodo(periodo_str):
     return 'anual'
 
 
+def _periodo_sort_key(periodo_str):
+    """
+    Clave de orden cronológico real para periodos mixtos (A/S/T).
+    """
+    try:
+        year, mes_inicio, mes_fin, _, _ = parsear_periodo(str(periodo_str).strip())
+        dur = mes_fin - mes_inicio + 1
+        return (year, mes_inicio, mes_fin, dur)
+    except Exception:
+        return (9999, 99, 99, 99)
+
+
 def leer_historico(periodo_actual=None, lapso=None):
     """Lee itt_historico.json y devuelve el último período del mismo lapso distinto al actual."""
     hist = leer_json(HIST, default={"periodos": []})
@@ -857,15 +1046,15 @@ def leer_historico(periodo_actual=None, lapso=None):
             return True
         return _lapso_de_periodo(p.get("periodo", "")) == lapso
 
-    if periodo_actual:
-        for p in reversed(periodos):
-            if p.get("periodo") != periodo_actual and mismo_lapso(p):
-                return p
+    candidatos = [p for p in periodos if mismo_lapso(p)]
+    candidatos.sort(key=lambda p: _periodo_sort_key(p.get("periodo", "")))
+    if not candidatos:
         return None
-    for p in reversed(periodos):
-        if mismo_lapso(p):
-            return p
-    return None
+
+    if periodo_actual:
+        candidatos = [p for p in candidatos if p.get("periodo") != periodo_actual]
+        return candidatos[-1] if candidatos else None
+    return candidatos[-1]
 
 
 def guardar_historico(nuevo):
@@ -876,7 +1065,7 @@ def guardar_historico(nuevo):
     periodos = [p for p in periodos if p.get("periodo") != nuevo["periodo"]]
     periodos.append(nuevo)
     # Mantener orden cronológico
-    periodos.sort(key=lambda p: p.get("periodo", ""))
+    periodos.sort(key=lambda p: _periodo_sort_key(p.get("periodo", "")))
     hist["periodos"] = periodos
     HIST.write_text(json.dumps(hist, ensure_ascii=False, indent=2), encoding="utf-8")
 
@@ -909,20 +1098,46 @@ def leer_manuales(periodo_str):
 # ══════════════════════════════════════════════════════════════════════════════
 
 def calcular_itt(periodo_str, version="preliminar"):
-    year, mes_inicio, mes_fin, lapso, periodo_ant_def = parsear_periodo(periodo_str)
+    year, mes_inicio, mes_fin, lapso, _ = parsear_periodo(periodo_str)
     # Factor para escalar refs de indicadores de conteo (1=trimestral, 2=semestral, 4=anual)
     n_trim = (mes_fin - mes_inicio + 1) // 3
     historico  = leer_historico(periodo_str, lapso=lapso)
     manuales   = leer_manuales(periodo_str)
+    tiene_prev = historico is not None
 
     prev_vals   = historico.get("valores_crudos", {})     if historico else {}
     prev_dim_s  = historico.get("dimensiones_scores", {}) if historico else {}
     prev_period = historico.get("periodo", "N/A")          if historico else "N/A"
-    # Si no hay histórico, usar el anterior calculado por parsear_periodo
-    if prev_period == "N/A":
-        prev_period = periodo_ant_def
 
     print(f"\n  Período: {periodo_str}  |  Lapso: {lapso}  |  Comparación vs: {prev_period}")
+
+    # ── Entorno Urbano: fuentes automáticas desde TIF y Excel ─────────────
+    eu = manuales.setdefault("entorno_urbano", {})
+
+    ndvi_result = leer_ndvi_tif()
+    if ndvi_result is not None:
+        eu["ndvi_cobertura_vegetal"] = ndvi_result["ndvi_medio"]
+        eu["area_verde_neta"]        = ndvi_result["area_verde_m2"]
+        print(f"  [NDVI] TIF leído: NDVI medio={ndvi_result['ndvi_medio']}  "
+              f"Área verde={ndvi_result['area_verde_m2']:,} m²")
+    else:
+        print("  [NDVI] Usando valores manuales de indicadores_manuales.json")
+
+    deficit_ahdi = leer_deficit_ahdi_excel(year)
+    nota_deficit = None
+    if deficit_ahdi is not None:
+        # El indicador mide % avance en resolución: mayor avance = menor déficit pendiente
+        # Lo invertimos: deficit_restante = 100 - avance (mayor → peor situación)
+        avance = deficit_ahdi["avance_pct"]
+        deficit_restante = round(100 - avance, 1)
+        eu["deficit_habitacional_cualitativo"] = deficit_restante
+        nota_deficit = (
+            f"Corte {periodo_str}: {deficit_restante}% pendiente "
+            f"(avance {avance}% = {deficit_ahdi['activo_ha']:.2f} ha activas / "
+            f"{deficit_ahdi['total_ha']:.2f} ha; {deficit_ahdi['corte']})."
+        )
+    else:
+        print("  [AHDI] Usando déficit manual de indicadores_manuales.json")
 
     resultado_dims = []
     itt_global     = 0.0
@@ -936,8 +1151,12 @@ def calcular_itt(periodo_str, version="preliminar"):
     notas_coh = {
         "vif": nota_vif(year),
     }
+    notas_ent = {
+        "deficit_habitacional_cualitativo": nota_deficit,
+    }
     NOTAS_EXTRA = {
         "seguridad": notas_seg,
+        "entorno_urbano": notas_ent,
         "cohesion_social": notas_coh,
     }
 
@@ -992,7 +1211,7 @@ def calcular_itt(periodo_str, version="preliminar"):
 
         score_dim = round(sum(scores_ind) / len(scores_ind), 1) if scores_ind else 0.0
         cobertura = round(len(scores_ind) / len(dim_cfg["indicadores"]) * 100)
-        score_prev = round(prev_dim_s.get(dim_id, 0.0), 1)
+        score_prev = round(prev_dim_s.get(dim_id, score_dim), 1) if tiene_prev else score_dim
         variacion  = round(score_dim - score_prev, 1)
 
         dim_out = {
@@ -1019,7 +1238,7 @@ def calcular_itt(periodo_str, version="preliminar"):
         print(f"  {dim_cfg['nombre']:20s} score={score_dim:5.1f}  cobertura={cobertura}%")
 
     itt_global  = round(itt_global, 1)
-    prev_global = round(historico.get("itt_score", 0.0), 1) if historico else 0.0
+    prev_global = round(historico.get("itt_score", itt_global), 1) if historico else itt_global
     variacion_g = round(itt_global - prev_global, 1)
 
     total_inds  = sum(len(d["indicadores"]) for d in DIMENSIONES.values())
@@ -1032,6 +1251,8 @@ def calcular_itt(periodo_str, version="preliminar"):
     hist_data   = leer_json(HIST, default={"periodos": []})
     serie_temp  = []
     for p in hist_data.get("periodos", []):
+        if _lapso_de_periodo(p.get("periodo", "")) != lapso:
+            continue
         row = {"periodo": p["periodo"], "itt": p.get("itt_score", 0)}
         for d in DIMENSIONES:
             row[d] = p.get("dimensiones_scores", {}).get(d, 0)
@@ -1042,6 +1263,7 @@ def calcular_itt(periodo_str, version="preliminar"):
         for d_out in resultado_dims:
             row_actual[d_out["id"]] = d_out["score"]
         serie_temp.append(row_actual)
+    serie_temp.sort(key=lambda r: _periodo_sort_key(r.get("periodo", "")))
 
     # Barrios desde manuales
     barrios = manuales.get("_barrios", [])

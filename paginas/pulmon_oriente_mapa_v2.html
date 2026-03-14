@@ -47,6 +47,9 @@
       <button class="filter-btn" id="btn-heatmap" onclick="toggleHeatmap()" title="3.990 hurtos 2023–2025">
         🔥 Calor Hurtos
       </button>
+      <button class="filter-btn" id="btn-ndvi" onclick="toggleNDVI()" title="Cobertura vegetal NDVI · Sentinel-2" style="display:none;">
+        🌿 NDVI
+      </button>
     </div>
   </div>
 </div>
@@ -107,6 +110,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/proj4@2.11.0/dist/proj4.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/georaster@1.6.0/dist/georaster.browser.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/georaster-layer-for-leaflet@3.10.0/dist/georaster-layer-for-leaflet.min.js"></script>
 <script src="../assets/js/services/dataService.js"></script>
 <script src="../assets/js/mapa.js"></script>
 

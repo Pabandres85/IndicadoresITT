@@ -372,6 +372,14 @@
   /* ═══ RENDER PRINCIPAL ══════════════════════════════════════════════════ */
   function renderDashboard(D) {
 
+  const isRealIndicator = ind => {
+    const fuente = String(ind?.fuente || '').toLowerCase();
+    if (ind?.valor === null || typeof ind?.valor === 'undefined') return false;
+    if (ind?.nota_real) return true;
+    if (!ind?.oficial) return false;
+    return !fuente.includes('estimad');
+  };
+
   function findInd(dimId, keyword) {
     const dim = D.dimensiones.find(d => d.id === dimId);
     return dim?.indicadores.find(i => i.nombre.toLowerCase().includes(keyword.toLowerCase()));
@@ -640,7 +648,7 @@
     panel.dataset.idx = idx;
     const ofDim  = dim.indicadores.filter(i=>i.oficial).length;
     const estDim = dim.indicadores.length - ofDim;
-    const realDim= dim.indicadores.filter(i=>i.nota_real).length;
+    const realDim= dim.indicadores.filter(isRealIndicator).length;
 
     // Hurtos series chart slot (only for seguridad)
     const hurtosChartSlot = dim.id === 'seguridad' && dim.hurtos_series
@@ -664,7 +672,7 @@
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
           <span class="ind-badge-of">Oficiales: ${ofDim}/${dim.indicadores.length}</span>
           <span class="ind-badge-est">Estimados: ${estDim}</span>
-          <span class="ind-badge-real">Con dato real: ${realDim}</span>
+          <span class="ind-badge-real">Con fuente real: ${realDim}</span>
         </div>
       </div>
       ${hurtosChartSlot}

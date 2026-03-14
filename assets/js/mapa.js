@@ -11,7 +11,7 @@ const labelsLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_la
 baseLayers.streets.addTo(map);
 
 window.setLayer = function(type) {
-  const keep = new Set([clusters, heatLayer, comunasLayer, vivLayer].filter(Boolean));
+  const keep = new Set([clusters, heatLayer, comunasLayer, vivLayer, ndviLayer].filter(Boolean));
   map.eachLayer(l => { if (!keep.has(l) && !l.feature) map.removeLayer(l); });
   if (type === 'streets')   baseLayers.streets.addTo(map);
   if (type === 'satellite') baseLayers.satellite.addTo(map);
@@ -70,6 +70,10 @@ let arbolesLoading  = false;
 let vivLegalizacionData = null;
 let vivMejoramientoData = null;
 let vivLayer            = null;
+
+// NDVI overlay (georaster-layer-for-leaflet)
+let ndviLayer   = null;
+let ndviVisible = false;
 
 // Filtros: Vivienda
 let vivSubMode = 'legalizacion';
@@ -704,7 +708,15 @@ function renderAmbiente() {
       <span class="filter-row-label">Comuna</span>
       <button class="filter-btn ${ambComuna==='all'?'active':''}" data-amb-com="all">Todas</button>` +
     comunas.map(c => `<button class="filter-btn ${ambComuna===c?'active':''}" data-amb-com="${c}">C${c}</button>`).join('') +
-    `</div>`;
+    `</div>` +
+    `<div class="filter-row" style="border-top:1px solid rgba(0,0,0,0.08);padding-top:8px;margin-top:2px;">
+      <span class="filter-row-label">Capa NDVI</span>
+      <button id="btn-ndvi-inline" class="filter-btn${ndviVisible?' active':''}"
+        style="background:${ndviVisible?'#2e7d32':'transparent'};color:${ndviVisible?'#fff':'#2e7d32'};border:2px solid #2e7d32;font-weight:600;padding:5px 14px;">
+        🌿 ${ndviVisible ? 'NDVI activo' : 'Ver NDVI'}
+      </button>
+      <span style="font-size:11px;color:#888;margin-left:6px;">Sentinel-2 · media 0.20</span>
+    </div>`;
 
   dyn.querySelectorAll('[data-amb]').forEach(b => b.addEventListener('click', e => {
     dyn.querySelectorAll('[data-amb]').forEach(x => x.classList.remove('active'));
@@ -714,10 +726,25 @@ function renderAmbiente() {
     dyn.querySelectorAll('[data-amb-com]').forEach(x => x.classList.remove('active'));
     e.target.classList.add('active'); ambComuna = e.target.dataset.ambCom; applyFilters();
   }));
+  const ndviBtnInline = document.getElementById('btn-ndvi-inline');
+  if (ndviBtnInline) ndviBtnInline.addEventListener('click', () => toggleNDVI());
 
   setKPI(arbolesData.length.toLocaleString('es-CO'), 'Árboles Totales', '—', 'Filtrados');
   document.getElementById('legend-dynamic').innerHTML =
-    legendItems(Object.entries(AMB_COLORS).map(([e,c]) => [e, c]));
+    legendItems(Object.entries(AMB_COLORS).map(([e,c]) => [e, c])) +
+    `<div class="legend-sep"></div>
+     <div class="legend-item" style="flex-wrap:wrap;gap:4px;">
+       <span style="font-size:11px;color:#555;font-weight:600;">NDVI Sentinel-2</span>
+       <span style="display:flex;gap:3px;align-items:center;margin-top:4px;">
+         <span style="width:14px;height:10px;background:#b42828;border-radius:2px;display:inline-block;"></span><span style="font-size:10px;">Bajo (&lt;0)</span>
+         <span style="width:14px;height:10px;background:#80c032;border-radius:2px;display:inline-block;margin-left:4px;"></span><span style="font-size:10px;">Medio</span>
+         <span style="width:14px;height:10px;background:#1e7820;border-radius:2px;display:inline-block;margin-left:4px;"></span><span style="font-size:10px;">Alto (&gt;0.35)</span>
+       </span>
+     </div>`;
+
+  // Mostrar/ocultar botón NDVI según el modo activo
+  const ndviBtn = document.getElementById('btn-ndvi');
+  if (ndviBtn) { ndviBtn.style.display = ''; ndviBtn.classList.toggle('active', ndviVisible); }
 
   arbolesData.forEach(f => {
     if (!f.geometry?.coordinates) return;
@@ -957,6 +984,13 @@ function renderMapData() {
     map.removeLayer(vivLayer);
     vivLayer = null;
   }
+  // NDVI: ocultar si no estamos en ambiente
+  const ndviBtn = document.getElementById('btn-ndvi');
+  if (ndviBtn) ndviBtn.style.display = currentDataMode === 'ambiente' ? '' : 'none';
+  if (ndviLayer && currentDataMode !== 'ambiente') {
+    map.removeLayer(ndviLayer);
+    ndviVisible = false;
+  }
   // MECAL solo en equipamientos
   if (mecalLayer) {
     currentDataMode === 'equipamientos' ? mecalLayer.addTo(map) : map.removeLayer(mecalLayer);
@@ -1069,6 +1103,64 @@ window.toggleHeatmap = function() {
   heatVisible = !heatVisible;
   heatVisible ? heatLayer.addTo(map) : map.removeLayer(heatLayer);
   syncHeatmapUI();
+};
+
+// ── NDVI OVERLAY TOGGLE ──────────────────────────────────────────────────────
+function _syncNdviBtn() {
+  // Sincroniza el estado visual del botón inline
+  const b = document.getElementById('btn-ndvi-inline');
+  if (!b) return;
+  b.textContent = `🌿 ${ndviVisible ? 'NDVI activo' : 'Ver NDVI'}`;
+  b.style.background = ndviVisible ? '#2e7d32' : 'transparent';
+  b.style.color       = ndviVisible ? '#fff' : '#2e7d32';
+  b.classList.toggle('active', ndviVisible);
+}
+
+window.toggleNDVI = async function() {
+  const btn = document.getElementById('btn-ndvi');
+  if (ndviLayer) {
+    // Ya cargado — alternar visibilidad
+    ndviVisible = !ndviVisible;
+    ndviVisible ? ndviLayer.addTo(map) : map.removeLayer(ndviLayer);
+    if (btn) btn.classList.toggle('active', ndviVisible);
+    _syncNdviBtn();
+    return;
+  }
+  // Primera vez: cargar el TIF
+  const btnInline = document.getElementById('btn-ndvi-inline');
+  if (btnInline) { btnInline.disabled = true; btnInline.textContent = '⏳ Cargando...'; }
+  if (!window.GeoRasterLayer || !window.parseGeoraster) {
+    console.warn('georaster no disponible');
+    if (btnInline) { btnInline.disabled = false; _syncNdviBtn(); }
+    return;
+  }
+  try {
+    const res  = await fetch('../data/NVDI/ndvi_resultado.tif');
+    const buf  = await res.arrayBuffer();
+    const geo  = await parseGeoraster(buf);
+    ndviLayer  = new GeoRasterLayer({
+      georaster: geo,
+      opacity: 0.70,
+      mask: globalPerimetro,
+      mask_srs: 4326,
+      pixelValuesToColorFn: values => {
+        const v = values[0];
+        if (v === null || v < -1 || v > 1) return null;
+        if (v < 0)    return `rgba(180,40,40,${0.55 + Math.abs(v) * 0.3})`;
+        if (v < 0.1)  return `rgba(210,160,40,0.65)`;
+        if (v < 0.2)  return `rgba(160,195,50,0.70)`;
+        if (v < 0.35) return `rgba(80,160,50,0.72)`;
+        return `rgba(30,120,30,0.75)`;
+      },
+      resolution: 256,
+    });
+    ndviLayer.addTo(map);
+    ndviVisible = true;
+    if (btnInline) { btnInline.disabled = false; _syncNdviBtn(); }
+  } catch(e) {
+    console.error('Error cargando NDVI TIF:', e);
+    if (btnInline) { btnInline.disabled = false; _syncNdviBtn(); }
+  }
 };
 
 // ── LISTENERS: MODO PRINCIPAL ────────────────────────────────────────────────

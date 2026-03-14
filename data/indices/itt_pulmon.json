@@ -8,12 +8,12 @@
     "cobertura_datos": 100,
     "fuentes_activas": 17,
     "fuentes_total": 17,
-    "nota": "ITT preliminar. Fuentes GIS verificadas: 7 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
+    "nota": "ITT preliminar. Fuentes GIS verificadas: 10 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 61.1,
-    "score_anterior": 58.2,
-    "variacion": 2.9,
+    "score": 66.4,
+    "score_anterior": 66.1,
+    "variacion": 0.3,
     "clasificacion": "Nivel 3 · Avance",
     "rango": [
       60,
@@ -28,8 +28,8 @@
       "icono": "shield",
       "peso": 0.3,
       "score": 72.8,
-      "score_anterior": 77.4,
-      "variacion": -4.6,
+      "score_anterior": 79.6,
+      "variacion": -6.8,
       "color": "#C1272D",
       "calidad_dato": "oficial",
       "cobertura": 100,
@@ -160,36 +160,37 @@
       "nombre": "Entorno Urbano",
       "icono": "city",
       "peso": 0.2,
-      "score": 43.6,
-      "score_anterior": 43.6,
+      "score": 70.0,
+      "score_anterior": 70.0,
       "variacion": 0.0,
       "color": "#1565C0",
-      "calidad_dato": "preliminar",
+      "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
           "nombre": "NDVI / cobertura vegetal",
-          "valor": 0.38,
+          "valor": 0.2,
           "unidad": "índice",
           "tendencia": "estable",
-          "fuente": "Copernicus / Sentinel-2",
-          "oficial": false
+          "fuente": "Copernicus / Sentinel-2 · TIF procesado",
+          "oficial": true
         },
         {
           "nombre": "Área verde neta",
-          "valor": 148000,
+          "valor": 1699769,
           "unidad": "m²",
           "tendencia": "estable",
-          "fuente": "Copernicus / Sentinel-2",
-          "oficial": false
+          "fuente": "Copernicus / Sentinel-2 · NDVI ≥ 0.20",
+          "oficial": true
         },
         {
           "nombre": "Déficit habitacional cualitativo",
-          "valor": 29.0,
-          "unidad": "%",
+          "valor": 0.0,
+          "unidad": "% pendiente",
           "tendencia": "estable",
-          "fuente": "Secretaría de Vivienda",
-          "oficial": false
+          "fuente": "Secretaría de Vivienda / AHDI 2024-2026",
+          "oficial": true,
+          "nota_real": "Corte 2025-T4: 0.0% pendiente (avance 100.0% = 15.83 ha activas / 15.83 ha; AÑO_INTERV <= 2025)."
         }
       ]
     },
@@ -199,8 +200,8 @@
       "icono": "school",
       "peso": 0.13,
       "score": 61.0,
-      "score_anterior": 55.8,
-      "variacion": 5.2,
+      "score_anterior": 61.0,
+      "variacion": 0.0,
       "color": "#6A1B9A",
       "calidad_dato": "preliminar",
       "cobertura": 100,
@@ -209,7 +210,7 @@
           "nombre": "Matrícula escolar · Territorio Pulmón",
           "valor": 50336,
           "unidad": "estudiantes",
-          "tendencia": "alza",
+          "tendencia": "estable",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
@@ -217,7 +218,7 @@
           "nombre": "Deserción escolar · Territorio Pulmón",
           "valor": 4.3,
           "unidad": "%",
-          "tendencia": "alza",
+          "tendencia": "estable",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
@@ -225,7 +226,7 @@
           "nombre": "Repitencia escolar · Territorio Pulmón",
           "valor": 8.4,
           "unidad": "%",
-          "tendencia": "alza",
+          "tendencia": "estable",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
@@ -233,7 +234,7 @@
           "nombre": "Estudiantes por docente · Territorio Pulmón",
           "valor": 27.1,
           "unidad": "ratio",
-          "tendencia": "baja",
+          "tendencia": "estable",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
@@ -253,8 +254,8 @@
       "icono": "people",
       "peso": 0.12,
       "score": 72.7,
-      "score_anterior": 42.6,
-      "variacion": 30.1,
+      "score_anterior": 52.7,
+      "variacion": 20.0,
       "color": "#8E24AA",
       "calidad_dato": "preliminar",
       "cobertura": 100,
@@ -289,38 +290,20 @@
   ],
   "serie_temporal": [
     {
-      "periodo": "2025",
-      "itt": 41.5,
-      "seguridad": 18.4,
-      "movilidad": 55.7,
-      "entorno_urbano": 43.6,
-      "educacion_desarrollo": 61.0,
-      "cohesion_social": 45.4
-    },
-    {
-      "periodo": "2025-S2",
-      "itt": 46.5,
-      "seguridad": 34.8,
-      "movilidad": 55.7,
-      "entorno_urbano": 43.6,
-      "educacion_desarrollo": 61.0,
-      "cohesion_social": 45.4
-    },
-    {
       "periodo": "2025-T3",
-      "itt": 58.2,
-      "seguridad": 77.4,
+      "itt": 66.1,
+      "seguridad": 79.6,
       "movilidad": 55.7,
-      "entorno_urbano": 43.6,
-      "educacion_desarrollo": 55.8,
-      "cohesion_social": 42.6
+      "entorno_urbano": 70.0,
+      "educacion_desarrollo": 61.0,
+      "cohesion_social": 52.7
     },
     {
       "periodo": "2025-T4",
-      "itt": 61.1,
+      "itt": 66.4,
       "seguridad": 72.8,
       "movilidad": 55.7,
-      "entorno_urbano": 43.6,
+      "entorno_urbano": 70.0,
       "educacion_desarrollo": 61.0,
       "cohesion_social": 72.7
     }
