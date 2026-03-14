@@ -134,7 +134,7 @@ DIMENSIONES = {
     "movilidad": {
         "nombre": "Movilidad",
         "icono":  "route",
-        "peso":   0.15,
+        "peso":   0.20,
         "color":  "#00796B",
         "indicadores": [
             {
@@ -182,7 +182,7 @@ DIMENSIONES = {
     "desarrollo_social": {
         "nombre": "Desarrollo Social",
         "icono":  "people",
-        "peso":   0.20,
+        "peso":   0.15,
         "color":  "#6A1B9A",
         "indicadores": [
             {

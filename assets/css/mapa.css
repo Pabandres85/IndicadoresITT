@@ -74,27 +74,56 @@ html, body { height:100%; font-family:'Inter', sans-serif; background:#EEF0EB; o
   overflow: hidden;
   opacity: 0;
   padding: 0 16px;
-  background: rgba(255,255,255,0.96);
-  border-bottom: 1px solid rgba(0,48,135,0.08);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: max-height 0.22s ease, opacity 0.22s ease, padding 0.22s ease;
+  background: rgba(255,255,255,0.97);
+  border-bottom: 2px solid rgba(0,48,135,0.10);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.10);
+  transition: max-height 0.25s cubic-bezier(.4,0,.2,1), opacity 0.22s ease, padding 0.22s ease;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
 #filters-panel.show {
-  max-height: 240px;
+  max-height: 340px;
   opacity: 1;
-  padding: 10px 16px;
+  padding: 12px 16px 10px;
+  overflow-y: auto;
 }
 
+/* ── LAYOUT DE FILTROS POR FILAS ── */
 #filter-dynamic {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.filter-row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
+  min-height: 28px;
 }
-#filter-dynamic .filter-sep { height: 20px; }
+.filter-row-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(0,48,135,0.50);
+  white-space: nowrap;
+  min-width: 68px;
+  flex-shrink: 0;
+}
+/* Fila principal (selector de delito/modo): botones más grandes */
+.filter-row-primary .filter-btn {
+  padding: 5px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.filter-row-divider {
+  height: 1px;
+  background: rgba(0,48,135,0.08);
+  margin: 2px 0;
+}
 
 .filter-panel-actions {
-  margin-top: 8px;
+  margin-top: 10px;
   padding-top: 8px;
   border-top: 1px solid rgba(0,48,135,0.10);
   display: flex;
@@ -294,9 +323,10 @@ html, body { height:100%; font-family:'Inter', sans-serif; background:#EEF0EB; o
   .header-sub { display:none; }
   #filter-bar { gap:6px; padding:6px 10px; }
   #filters-panel { top: 104px; padding-left: 10px; padding-right: 10px; }
-  #filters-panel.show { max-height: 52vh; padding: 8px 10px; }
+  #filters-panel.show { max-height: 55vh; padding: 10px; }
   .filter-label { font-size:10px; }
   .filter-btn { font-size:11px; padding:3px 8px; }
+  .filter-row-label { min-width: 52px; }
 }
 
 @media(max-width:540px) {

@@ -11,7 +11,8 @@ const labelsLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_la
 baseLayers.streets.addTo(map);
 
 window.setLayer = function(type) {
-  map.eachLayer(l => { if (l !== clusters && !l.feature && l !== heatLayer && l !== comunasLayer) map.removeLayer(l); });
+  const keep = new Set([clusters, heatLayer, comunasLayer, vivLayer].filter(Boolean));
+  map.eachLayer(l => { if (!keep.has(l) && !l.feature) map.removeLayer(l); });
   if (type === 'streets')   baseLayers.streets.addTo(map);
   if (type === 'satellite') baseLayers.satellite.addTo(map);
   if (type === 'hybrid')    { baseLayers.hybrid.addTo(map); labelsLayer.addTo(map); }
@@ -26,6 +27,7 @@ function clusterStyle() {
     seguridad:       ['rgba(193,39,45,0.92)',   '#E57373'],
     equipamientos:   ['rgba(21,101,192,0.92)',  '#64B5F6'],
     ambiente:        ['rgba(46,125,50,0.92)',   '#81C784'],
+    vivienda:        ['rgba(106,27,154,0.92)',  '#CE93D8'],
   };
   return styles[currentDataMode] || styles.infraestructura;
 }
@@ -64,6 +66,17 @@ let caiData         = null;
 let arbolesData     = null;
 let arbolesLoading  = false;
 
+// Datasets: Vivienda
+let vivLegalizacionData = null;
+let vivMejoramientoData = null;
+let vivLayer            = null;
+
+// Filtros: Vivienda
+let vivSubMode = 'legalizacion';
+let vivAño     = 'all';
+let vivProceso = 'all';
+let vivEstado  = 'all';
+
 // Filtros: Infraestructura
 let activeFilter = 'all';
 let activeEstado = 'all';
@@ -82,24 +95,40 @@ let eqTipo = 'all';   // 'sedes' | 'cai' | 'all'
 let ambEstado = 'all';
 let ambComuna = 'all';
 
-// ── REPROYECCIÓN COMUNAS (ESRI:103599 -> WGS84) ─────────────────────────────
-const ESRI_103599_DEF = '+proj=tmerc +lat_0=4 +lon_0=-73 +k=0.9992 +x_0=5000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs +type=crs';
+// ── REPROYECCIÓN GeoJSON → WGS84 ────────────────────────────────────────────
+// Soporta las dos proyecciones que usan los shapefiles locales:
+//   ESRI:103599  (Origen Único MAGNA-SIRGAS, usado por comunas)
+//   EPSG:6249 / EPSG:3116  (MAGNA-SIRGAS / Colombia West zone, usado por vivienda)
+const PROJ_DEFS = {
+  'ESRI:103599': '+proj=tmerc +lat_0=4 +lon_0=-73 +k=0.9992 +x_0=5000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs',
+  'EPSG:3116':   '+proj=tmerc +lat_0=4.596200416667 +lon_0=-77.07750796388889 +k=1 +x_0=1000000 +y_0=1000000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',
+};
+// Alias: EPSG:6249 usa la misma zona que 3116 (Colombia West, datum shift < 3 m)
+PROJ_DEFS['EPSG:6249'] = PROJ_DEFS['EPSG:3116'];
+
+function detectSrcCrs(crsName) {
+  if (/103599/.test(crsName))   return 'ESRI:103599';
+  if (/6249/.test(crsName))     return 'EPSG:6249';
+  if (/3116/.test(crsName))     return 'EPSG:3116';
+  return null;
+}
 
 function reprojectGeoJSONToWGS84(geojson) {
   const crsName = geojson?.crs?.properties?.name || '';
-  if (!/103599/.test(crsName)) return geojson;
+  const srcCrs  = detectSrcCrs(crsName);
+  if (!srcCrs) return geojson;                       // ya es WGS84 u otro CRS desconocido
   if (typeof proj4 !== 'function') {
-    console.warn('proj4 no disponible; comunas no reproyectadas.');
+    console.warn('proj4 no disponible; GeoJSON no reproyectado:', crsName);
     return geojson;
   }
 
-  proj4.defs('ESRI:103599', ESRI_103599_DEF);
+  proj4.defs(srcCrs, PROJ_DEFS[srcCrs]);
   const cloned = JSON.parse(JSON.stringify(geojson));
 
   function mapCoords(coords) {
     if (!Array.isArray(coords)) return coords;
     if (coords.length >= 2 && typeof coords[0] === 'number' && typeof coords[1] === 'number') {
-      const [lon, lat] = proj4('ESRI:103599', 'EPSG:4326', [coords[0], coords[1]]);
+      const [lon, lat] = proj4(srcCrs, 'EPSG:4326', [coords[0], coords[1]]);
       return [lon, lat];
     }
     return coords.map(mapCoords);
@@ -114,6 +143,39 @@ function reprojectGeoJSONToWGS84(geojson) {
 }
 
 // ── PALETAS DE COLORES ───────────────────────────────────────────────────────
+const VIV_LEG_COLORS = {
+  'Con Radicación':       '#FFC300',
+  'Proceso de Legalización': '#6A1B9A',
+};
+const VIV_MEJ_COLORS = {
+  ASIGNADO:   '#1565C0',
+  EJECUCION:  '#E65100',
+  EJECUTADO:  '#2E7D32',
+};
+
+function getVivLegColor(proceso) {
+  return VIV_LEG_COLORS[proceso] || '#607D8B';
+}
+function getVivMejColor(estado) {
+  if (!estado) return '#607D8B';
+  if (estado.includes('EJECUTADO') && !estado.includes('EJECUCI')) return VIV_MEJ_COLORS.EJECUTADO;
+  if (estado.includes('EJECUCI')) return VIV_MEJ_COLORS.EJECUCION;
+  return VIV_MEJ_COLORS.ASIGNADO;
+}
+function getEstadoLabel(estado) {
+  if (!estado) return '—';
+  if (estado.includes('EJECUCI') && estado.includes('EJECUTADO')) return 'Ejecutado';
+  if (estado.includes('EJECUCI')) return 'En Ejecución';
+  if (estado === 'ASIGNADO') return 'Asignado';
+  return estado;
+}
+function getConvocLabel(conv) {
+  if (!conv) return '—';
+  if (conv.includes('MINISTERIO')) return 'Conv. Ministerio';
+  if (conv === 'EMPRESTITO') return 'Empréstito';
+  return conv;
+}
+
 const HURTO_COLORS = {
   'ATRACO': '#C1272D', 'RAPONAZO': '#E65100', 'COSQUILLEO': '#F57F17',
   'DESCUIDO': '#1565C0', 'FLETEO': '#6A1B9A', 'OTRAS': '#607D8B'
@@ -262,19 +324,26 @@ function renderInfraestructura() {
 
   const dyn = document.getElementById('filter-dynamic');
   dyn.innerHTML =
-    `<span class="filter-label">Secretaría:</span>` +
-    `<button class="filter-btn ${activeFilter === 'all' ? 'active' : ''}" data-filter="all">Todas</button>` +
+    `<div class="filter-row filter-row-primary">
+      <span class="filter-row-label">Sub-modo</span>
+      <button class="filter-btn ${currentMode === 'ups' ? 'active' : ''}" data-modo="ups">Frentes UPS</button>
+      <button class="filter-btn ${currentMode === 'contratos' ? 'active' : ''}" data-modo="contratos">Contratos</button>
+    </div>` +
+    `<div class="filter-row-divider"></div>` +
+    `<div class="filter-row">
+      <span class="filter-row-label">Secretaría</span>
+      <button class="filter-btn ${activeFilter === 'all' ? 'active' : ''}" data-filter="all">Todas</button>` +
     secretariasActivas.map(sec => {
       const c = DataService.SEC_COLORS[sec] || DataService.SEC_COLORS['Otras'];
       return `<button class="filter-btn ${activeFilter === sec ? 'active' : ''}" data-filter="${sec}" style="border-color:${c};">${sec}</button>`;
     }).join('') +
-    `<div class="filter-sep"></div><span class="filter-label">Estado:</span>` +
+    `</div>` +
+    `<div class="filter-row">
+      <span class="filter-row-label">Estado</span>` +
     [['all','Todos'],['En ejecución','En ejecución'],['En alistamiento','Alistamiento'],['Terminado','Terminado']].map(([val,lbl]) =>
       `<button class="filter-btn ${activeEstado === val ? 'active' : ''}" data-estado="${val}">${lbl}</button>`
     ).join('') +
-    `<div class="filter-sep"></div><span class="filter-label">Sub-modo:</span>` +
-    `<button class="filter-btn ${currentMode === 'ups' ? 'active' : ''}" data-modo="ups">Frentes (UPS)</button>` +
-    `<button class="filter-btn ${currentMode === 'contratos' ? 'active' : ''}" data-modo="contratos">Contratos</button>`;
+    `</div>`;
 
   dyn.querySelectorAll('[data-filter]').forEach(b => b.addEventListener('click', e => {
     dyn.querySelectorAll('[data-filter]').forEach(x => x.classList.remove('active'));
@@ -328,7 +397,13 @@ function renderSeguridad() {
   }).join('');
 
   const dyn = document.getElementById('filter-dynamic');
-  dyn.innerHTML = `<span class="filter-label">Delito:</span>${subBtns}<div class="filter-sep"></div><div id="sec-sub-filters" style="display:contents;"></div>`;
+  dyn.innerHTML =
+    `<div class="filter-row filter-row-primary">
+      <span class="filter-row-label">Delito</span>
+      ${subBtns}
+    </div>
+    <div class="filter-row-divider"></div>
+    <div id="sec-sub-filters"></div>`;
 
   dyn.querySelectorAll('[data-subsec]').forEach(b => b.addEventListener('click', e => {
     dyn.querySelectorAll('[data-subsec]').forEach(x => x.classList.remove('active'));
@@ -356,19 +431,26 @@ function buildSecFilters(features, getAño, getTipo, getComuna, colorFn) {
   if (!sf) return;
 
   sf.innerHTML =
-    (años.length > 1 ? `<span class="filter-label">Año:</span>` +
-      `<button class="filter-btn ${secAño==='all'?'active':''}" data-sec-año="all">Todos</button>` +
-      años.map(a => `<button class="filter-btn ${secAño===a?'active':''}" data-sec-año="${a}">${a}</button>`).join('') +
-      `<div class="filter-sep"></div>` : '') +
-    (tipos.length > 1 ? `<span class="filter-label">Tipo:</span>` +
-      `<button class="filter-btn ${secTipo==='all'?'active':''}" data-sec-tipo="all">Todos</button>` +
-      tipos.map(t => {
-        const c = colorFn(t);
-        return `<button class="filter-btn ${secTipo===t?'active':''}" data-sec-tipo="${t}" style="border-color:${c};">${capitalize(t)}</button>`;
-      }).join('') + `<div class="filter-sep"></div>` : '') +
-    `<span class="filter-label">Comuna:</span>` +
-    `<button class="filter-btn ${secComuna==='all'?'active':''}" data-sec-comuna="all">Todas</button>` +
-    comunas.map(c => `<button class="filter-btn ${secComuna===c?'active':''}" data-sec-comuna="${c}">${c.replace(/COMUNA /i,'C')}</button>`).join('');
+    (años.length > 1 ?
+      `<div class="filter-row">
+        <span class="filter-row-label">Período</span>
+        <button class="filter-btn ${secAño==='all'?'active':''}" data-sec-año="all">Todos</button>` +
+        años.map(a => `<button class="filter-btn ${secAño===a?'active':''}" data-sec-año="${a}">${a}</button>`).join('') +
+      `</div>` : '') +
+    (tipos.length > 1 ?
+      `<div class="filter-row">
+        <span class="filter-row-label">Tipo</span>
+        <button class="filter-btn ${secTipo==='all'?'active':''}" data-sec-tipo="all">Todos</button>` +
+        tipos.map(t => {
+          const c = colorFn(t);
+          return `<button class="filter-btn ${secTipo===t?'active':''}" data-sec-tipo="${t}" style="border-color:${c};">${capitalize(t)}</button>`;
+        }).join('') +
+      `</div>` : '') +
+    `<div class="filter-row">
+      <span class="filter-row-label">Comuna</span>
+      <button class="filter-btn ${secComuna==='all'?'active':''}" data-sec-comuna="all">Todas</button>` +
+      comunas.map(c => `<button class="filter-btn ${secComuna===c?'active':''}" data-sec-comuna="${c}">${c.replace(/COMUNA /i,'C')}</button>`).join('') +
+    `</div>`;
 
   sf.querySelectorAll('[data-sec-año]').forEach(b => b.addEventListener('click', e => {
     sf.querySelectorAll('[data-sec-año]').forEach(x => x.classList.remove('active'));
@@ -422,7 +504,7 @@ function renderSecSubMode() {
     },
     vbg: {
       data: vbgData,
-      getAño:    f => '2025',
+      getAño:    _f => '2025',
       getTipo:   f => f.properties.DELITO || 'VBG',
       getComuna: f => f.properties.COMUNA || '',
       colorFn:   () => '#E91E63',
@@ -515,10 +597,12 @@ function renderEquipamientos() {
 
   const dyn = document.getElementById('filter-dynamic');
   dyn.innerHTML =
-    `<span class="filter-label">Tipo:</span>` +
+    `<div class="filter-row filter-row-primary">
+      <span class="filter-row-label">Tipo</span>` +
     [['all','Todos'],['sedes','Sedes Educativas'],['cai','CAI / Policía']].map(([v,l]) =>
       `<button class="filter-btn ${eqTipo===v?'active':''}" data-eq="${v}">${l}</button>`
-    ).join('');
+    ).join('') +
+    `</div>`;
 
   dyn.querySelectorAll('[data-eq]').forEach(b => b.addEventListener('click', e => {
     dyn.querySelectorAll('[data-eq]').forEach(x => x.classList.remove('active'));
@@ -609,14 +693,18 @@ function renderAmbiente() {
   if (ambComuna !== 'all' && !comunas.includes(ambComuna)) ambComuna = 'all';
 
   dyn.innerHTML =
-    `<span class="filter-label">Estado:</span>` +
+    `<div class="filter-row filter-row-primary">
+      <span class="filter-row-label">Estado</span>` +
     [['all','Todos'],['Nuevo','Nuevo'],['Vivo','Vivo'],['Muerto','Muerto'],['Eliminado','Eliminado']].map(([v,l]) => {
       const c = v === 'all' ? null : AMB_COLORS[v];
       return `<button class="filter-btn ${ambEstado===v?'active':''}" data-amb="${v}"${c?` style="border-color:${c};"`:''}">${l}</button>`;
     }).join('') +
-    `<div class="filter-sep"></div><span class="filter-label">Comuna:</span>` +
-    `<button class="filter-btn ${ambComuna==='all'?'active':''}" data-amb-com="all">Todas</button>` +
-    comunas.map(c => `<button class="filter-btn ${ambComuna===c?'active':''}" data-amb-com="${c}">C${c}</button>`).join('');
+    `</div>` +
+    `<div class="filter-row">
+      <span class="filter-row-label">Comuna</span>
+      <button class="filter-btn ${ambComuna==='all'?'active':''}" data-amb-com="all">Todas</button>` +
+    comunas.map(c => `<button class="filter-btn ${ambComuna===c?'active':''}" data-amb-com="${c}">C${c}</button>`).join('') +
+    `</div>`;
 
   dyn.querySelectorAll('[data-amb]').forEach(b => b.addEventListener('click', e => {
     dyn.querySelectorAll('[data-amb]').forEach(x => x.classList.remove('active'));
@@ -653,9 +741,223 @@ function renderAmbiente() {
   applyFilters();
 }
 
+// ── RENDER: VIVIENDA ─────────────────────────────────────────────────────────
+function renderVivienda() {
+  clusters.clearLayers();
+  allMarkers = [];
+
+  const subBtns = ['legalizacion','mejoramiento'].map(m => {
+    const labels = { legalizacion: 'Legalización Urbanística', mejoramiento: 'Mejoramiento Vivienda' };
+    return `<button class="filter-btn${vivSubMode === m ? ' active' : ''}" data-vivsub="${m}">${labels[m]}</button>`;
+  }).join('');
+
+  const dyn = document.getElementById('filter-dynamic');
+  dyn.innerHTML =
+    `<div class="filter-row filter-row-primary">
+      <span class="filter-row-label">Programa</span>
+      ${subBtns}
+    </div>
+    <div class="filter-row-divider"></div>
+    <div id="viv-sub-filters"></div>`;
+
+  dyn.querySelectorAll('[data-vivsub]').forEach(b => b.addEventListener('click', e => {
+    dyn.querySelectorAll('[data-vivsub]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active');
+    vivSubMode = e.target.dataset.vivsub;
+    vivAño = 'all'; vivProceso = 'all'; vivEstado = 'all';
+    renderVivSubMode();
+  }));
+
+  renderVivSubMode();
+}
+
+function renderVivSubMode() {
+  vivSubMode === 'legalizacion' ? renderVivLegalizacion(true) : renderVivMejoramiento(true);
+}
+
+function renderVivLegalizacion(shouldFit = false) {
+  if (vivLayer) { map.removeLayer(vivLayer); vivLayer = null; }
+
+  const sf = document.getElementById('viv-sub-filters');
+  if (!vivLegalizacionData) {
+    if (sf) sf.innerHTML = '<div class="filter-row"><span class="filter-row-label" style="color:#E74C3C;">⚠ Datos no disponibles</span></div>';
+    return;
+  }
+
+  const feats    = vivLegalizacionData.features;
+  const años     = [...new Set(feats.map(f => String(f.properties.Ano_interv)).filter(Boolean))].sort();
+  const procesos = [...new Set(feats.map(f => f.properties.PROCESO).filter(Boolean))].sort();
+
+  if (sf) sf.innerHTML =
+    `<div class="filter-row">
+      <span class="filter-row-label">Año</span>
+      <button class="filter-btn ${vivAño==='all'?'active':''}" data-viv-anio="all">Todos</button>` +
+      años.map(a => `<button class="filter-btn ${vivAño===a?'active':''}" data-viv-anio="${a}">${a}</button>`).join('') +
+    `</div>
+    <div class="filter-row">
+      <span class="filter-row-label">Proceso</span>
+      <button class="filter-btn ${vivProceso==='all'?'active':''}" data-viv-proc="all">Todos</button>` +
+      procesos.map(p => {
+        const c = getVivLegColor(p);
+        return `<button class="filter-btn ${vivProceso===p?'active':''}" data-viv-proc="${p}" style="border-color:${c};">${p}</button>`;
+      }).join('') +
+    `</div>`;
+
+  sf.querySelectorAll('[data-viv-anio]').forEach(b => b.addEventListener('click', e => {
+    sf.querySelectorAll('[data-viv-anio]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active'); vivAño = e.target.dataset.vivAnio; renderVivLegalizacion();
+  }));
+  sf.querySelectorAll('[data-viv-proc]').forEach(b => b.addEventListener('click', e => {
+    sf.querySelectorAll('[data-viv-proc]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active'); vivProceso = e.target.dataset.vivProc; renderVivLegalizacion();
+  }));
+
+  const filtered = feats.filter(f => {
+    const p = f.properties;
+    return (vivAño === 'all' || String(p.Ano_interv) === vivAño) &&
+           (vivProceso === 'all' || p.PROCESO === vivProceso);
+  });
+
+  const totalHa = filtered.reduce((s, f) => s + (f.properties.AREA_HA || 0), 0);
+  const avgUrb  = filtered.length ? filtered.reduce((s, f) => s + (f.properties.PORC_URBAN || 0), 0) / filtered.length : 0;
+  setKPI(filtered.length, 'Polígonos AHDI', totalHa.toFixed(1) + ' ha', `Promedio ${avgUrb.toFixed(0)}% urbanizado`);
+
+  document.getElementById('legend-dynamic').innerHTML = legendItems(
+    Object.entries(VIV_LEG_COLORS).map(([t,c]) => [t, c]).concat([['Sin clasificar','#607D8B']])
+  );
+
+  vivLayer = L.geoJSON({ type:'FeatureCollection', features: filtered }, {
+    style: f => {
+      const c = getVivLegColor(f.properties.PROCESO);
+      return { color: c, weight: 2.5, fillColor: c, fillOpacity: 0.28, opacity: 0.9 };
+    },
+    onEachFeature: (f, layer) => {
+      const p = f.properties;
+      const c = getVivLegColor(p.PROCESO);
+      layer.bindPopup(`
+        <div style="min-width:240px;">
+          <div class="popup-title" style="color:${c};">🏘 ${p.NOMBRE||'—'}</div>
+          <div class="popup-row"><span class="popup-label">Barrio</span><span class="popup-val">${p.BARRIOS_SE||'—'}</span></div>
+          <div class="popup-row"><span class="popup-label">Área total</span><span class="popup-val">${p.AREA_HA} ha</span></div>
+          <div class="popup-row"><span class="popup-label">% Urbanizado</span><span class="popup-val" style="color:${c};font-weight:700;">${p.PORC_URBAN}%</span></div>
+          <div class="popup-row"><span class="popup-label">Año</span><span class="popup-val">${p.Ano_interv||'—'}</span></div>
+          <div class="popup-row"><span class="popup-label">Proceso</span><span class="popup-val">${p.PROCESO||'—'}</span></div>
+          <div class="popup-row"><span class="popup-label">Estado</span><span class="popup-val">${p.ESTADO_LU||'—'}</span></div>
+        </div>`, { maxWidth: 320 });
+      layer.on('mouseover', () => layer.setStyle({ fillOpacity: 0.55, weight: 3.5 }));
+      layer.on('mouseout',  () => vivLayer?.resetStyle(layer));
+    }
+  }).addTo(map);
+
+  if (shouldFit && filtered.length) map.fitBounds(vivLayer.getBounds(), { padding: [50, 50] });
+}
+
+function renderVivMejoramiento(shouldFit = false) {
+  if (vivLayer) { map.removeLayer(vivLayer); vivLayer = null; }
+
+  const sf = document.getElementById('viv-sub-filters');
+  if (!vivMejoramientoData) {
+    if (sf) sf.innerHTML = '<div class="filter-row"><span class="filter-row-label" style="color:#E74C3C;">⚠ Datos no disponibles</span></div>';
+    return;
+  }
+
+  const feats   = vivMejoramientoData.features;
+  // Deduplicate estados por color-category para evitar labels duplicadas
+  const estadosSeen = new Map(); // label → original value
+  feats.forEach(f => {
+    const est = f.properties.ESTADO;
+    if (!est) return;
+    const lbl = getEstadoLabel(est);
+    if (!estadosSeen.has(lbl)) estadosSeen.set(lbl, est);
+  });
+  const convocs = [...new Set(feats.map(f => f.properties.CONVOCATOR).filter(Boolean))].sort();
+
+  if (sf) sf.innerHTML =
+    `<div class="filter-row">
+      <span class="filter-row-label">Estado</span>
+      <button class="filter-btn ${vivEstado==='all'?'active':''}" data-viv-est="all">Todos</button>` +
+      [...estadosSeen.entries()].map(([lbl, val]) => {
+        const c = getVivMejColor(val);
+        // active if vivEstado matches any feature with this label
+        const isActive = vivEstado !== 'all' && getEstadoLabel(vivEstado) === lbl;
+        return `<button class="filter-btn ${isActive?'active':''}" data-viv-est-lbl="${lbl}" style="border-color:${c};">${lbl}</button>`;
+      }).join('') +
+    `</div>
+    <div class="filter-row">
+      <span class="filter-row-label">Fuente</span>
+      <button class="filter-btn ${vivProceso==='all'?'active':''}" data-viv-conv="all">Todas</button>` +
+      convocs.map(c => {
+        return `<button class="filter-btn ${vivProceso===c?'active':''}" data-viv-conv="${c}">${getConvocLabel(c)}</button>`;
+      }).join('') +
+    `</div>`;
+
+  sf.querySelectorAll('[data-viv-est-lbl]').forEach(b => b.addEventListener('click', e => {
+    sf.querySelectorAll('[data-viv-est-lbl]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active');
+    // map label back to a filter: store the label, match at filter time
+    vivEstado = e.target.dataset.vivEstLbl;
+    renderVivMejoramiento();
+  }));
+  sf.querySelectorAll('[data-viv-est="all"]').forEach(b => b.addEventListener('click', e => {
+    sf.querySelectorAll('[data-viv-est]').forEach(x => x.classList.remove('active'));
+    sf.querySelectorAll('[data-viv-est-lbl]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active'); vivEstado = 'all'; renderVivMejoramiento();
+  }));
+  sf.querySelectorAll('[data-viv-conv]').forEach(b => b.addEventListener('click', e => {
+    sf.querySelectorAll('[data-viv-conv]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active'); vivProceso = e.target.dataset.vivConv; renderVivMejoramiento();
+  }));
+
+  const filtered = feats.filter(f => {
+    const p = f.properties;
+    const estadoMatch = vivEstado === 'all' || getEstadoLabel(p.ESTADO) === vivEstado;
+    const convMatch   = vivProceso === 'all' || p.CONVOCATOR === vivProceso;
+    return estadoMatch && convMatch;
+  });
+
+  const totalViv = filtered.reduce((s, f) => s + (parseInt(f.properties.CANT_MEJOR) || 0), 0);
+  setKPI(filtered.length, 'Sectores activos', totalViv, 'Viviendas beneficiadas');
+
+  document.getElementById('legend-dynamic').innerHTML = legendItems([
+    ['Asignado',     VIV_MEJ_COLORS.ASIGNADO],
+    ['En Ejecución', VIV_MEJ_COLORS.EJECUCION],
+    ['Ejecutado',    VIV_MEJ_COLORS.EJECUTADO],
+  ]);
+
+  vivLayer = L.geoJSON({ type:'FeatureCollection', features: filtered }, {
+    style: f => {
+      const c = getVivMejColor(f.properties.ESTADO);
+      return { color: c, weight: 2.5, fillColor: c, fillOpacity: 0.30, opacity: 0.9 };
+    },
+    onEachFeature: (f, layer) => {
+      const p = f.properties;
+      const c = getVivMejColor(p.ESTADO);
+      const cant = parseInt(p.CANT_MEJOR) || 0;
+      const pct  = totalViv ? Math.round(cant / totalViv * 100) : 0;
+      layer.bindPopup(`
+        <div style="min-width:240px;">
+          <div class="popup-title" style="color:${c};">🏠 ${p.NOMBRE_LOC||'—'}</div>
+          <div class="popup-row"><span class="popup-label">Mejoramientos</span><span class="popup-val" style="color:${c};font-size:18px;font-weight:800;">${cant}</span></div>
+          <div class="popup-row"><span class="popup-label">% del total</span><span class="popup-val">${pct}%</span></div>
+          <div class="popup-row"><span class="popup-label">Estado</span><span class="popup-val">${getEstadoLabel(p.ESTADO)}</span></div>
+          <div class="popup-row"><span class="popup-label">Fuente</span><span class="popup-val" style="white-space:normal;max-width:140px;">${getConvocLabel(p.CONVOCATOR)||'—'}</span></div>
+        </div>`, { maxWidth: 300 });
+      layer.on('mouseover', () => layer.setStyle({ fillOpacity: 0.58, weight: 3.5 }));
+      layer.on('mouseout',  () => vivLayer?.resetStyle(layer));
+    }
+  }).addTo(map);
+
+  if (shouldFit && filtered.length) map.fitBounds(vivLayer.getBounds(), { padding: [50, 50] });
+}
+
 // ── RENDER PRINCIPAL ─────────────────────────────────────────────────────────
 function renderMapData() {
-  // Ocultar/mostrar capa MECAL según modo
+  // Limpiar vivLayer al salir del modo vivienda
+  if (vivLayer && currentDataMode !== 'vivienda') {
+    map.removeLayer(vivLayer);
+    vivLayer = null;
+  }
+  // MECAL solo en equipamientos
   if (mecalLayer) {
     currentDataMode === 'equipamientos' ? mecalLayer.addTo(map) : map.removeLayer(mecalLayer);
   }
@@ -665,6 +967,7 @@ function renderMapData() {
     case 'seguridad':       renderSeguridad();       break;
     case 'equipamientos':   renderEquipamientos();   break;
     case 'ambiente':        renderAmbiente();         break;
+    case 'vivienda':        renderVivienda();         break;
   }
   syncHeatmapUI();
 }
@@ -739,6 +1042,12 @@ async function initDynamicMap() {
           onEachFeature: (f, layer) => layer.bindTooltip(`<b>${f.properties.ESTACION||'Estación MECAL'}</b>`)
         });
       }).catch(e => console.warn('MECAL:', e)),
+
+    fetch('../data/vivienda/INTERV_AHDI_LEG_URBA_PULMON.geojson').then(r=>r.json())
+      .then(g => { vivLegalizacionData = reprojectGeoJSONToWGS84(g); }).catch(e => console.warn('Vivienda AHDI:', e)),
+
+    fetch('../data/vivienda/INTERV_MEJOR_VIV_25_26_PULMON.geojson').then(r=>r.json())
+      .then(g => { vivMejoramientoData = reprojectGeoJSONToWGS84(g); }).catch(e => console.warn('Vivienda Mejoramiento:', e)),
   ];
   await Promise.allSettled(loads);
 
@@ -771,6 +1080,7 @@ document.querySelectorAll('#filter-data-mode .filter-btn').forEach(btn => {
     activeFilter = 'all'; activeEstado = 'all'; currentMode = 'ups';
     secSubMode = 'hurtos'; secAño = 'all'; secTipo = 'all'; secComuna = 'all';
     eqTipo = 'all'; ambEstado = 'all'; ambComuna = 'all';
+    vivSubMode = 'legalizacion'; vivAño = 'all'; vivProceso = 'all'; vivEstado = 'all';
     renderMapData();
   });
 });
@@ -779,6 +1089,7 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   activeFilter = 'all'; activeEstado = 'all'; currentMode = 'ups';
   secAño = 'all'; secTipo = 'all'; secComuna = 'all';
   eqTipo = 'all'; ambEstado = 'all'; ambComuna = 'all';
+  vivAño = 'all'; vivProceso = 'all'; vivEstado = 'all';
   renderMapData();
 });
 

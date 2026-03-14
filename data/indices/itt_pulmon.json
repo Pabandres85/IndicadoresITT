@@ -4,10 +4,10 @@
     "version": "preliminar",
     "periodo": "2025-T4",
     "fecha_calculo": "2026-03-01",
-    "cobertura_datos": 72,
-    "fuentes_activas": 10,
+    "cobertura_datos": 78,
+    "fuentes_activas": 12,
     "fuentes_total": 14,
-    "nota": "ITT preliminar. Seguridad actualizada con datos reales SIEDCO: 3.990 hurtos + 287 homicidios + 1.502 VIF + 98 VBG. 68 sedes educativas geolocalizadas. Otros indicadores en validación."
+    "nota": "ITT preliminar. Seguridad: 3.990 hurtos + 287 homicidios + 1.502 VIF + 98 VBG (SIEDCO). Entorno Urbano: 6 polígonos AHDI (11.71 ha) + 157 mejoramientos de vivienda 2025-2026. 68 sedes educativas geolocalizadas. Otros indicadores en validación."
   },
   "itt_global": {
     "score": 58.3,
@@ -72,14 +72,16 @@
         { "nombre": "Espacio público recuperado", "valor": 4.2, "unidad": "ha", "tendencia": "alza", "fuente": "Secretaría de Vivienda", "oficial": true },
         { "nombre": "Obras de infraestructura activas", "valor": 34, "unidad": "frentes", "tendencia": "alza", "fuente": "UP Secretarías", "oficial": true },
         { "nombre": "Luminarias instaladas", "valor": 210, "unidad": "unidades", "tendencia": "alza", "fuente": "Emcali / Alumbrado", "oficial": true },
-        { "nombre": "Parques y zonas verdes intervenidos", "valor": 6, "unidad": "equipamientos", "tendencia": "alza", "fuente": "Secretaría de Deporte", "oficial": true }
+        { "nombre": "Parques y zonas verdes intervenidos", "valor": 6, "unidad": "equipamientos", "tendencia": "alza", "fuente": "Secretaría de Deporte", "oficial": true },
+        { "nombre": "Polígonos en legalización urbanística (AHDI)", "valor": 6, "unidad": "polígonos / 11.71 ha", "tendencia": "alza", "fuente": "Secretaría de Vivienda AHDI · verificado GIS", "oficial": true, "nota_real": "6 polígonos priorizados LU 2024-2027 · 10.23 ha urbanizadas (87.4% prom.) · Barrios: Mojica, Alfonso Bonilla Aragón, El Poblado II, Laguna del Pondaje" },
+        { "nombre": "Viviendas en mejoramiento (2025-2026)", "valor": 157, "unidad": "viviendas", "tendencia": "alza", "fuente": "Secretaría de Vivienda / Convenio Ministerio · verificado GIS", "oficial": true, "nota_real": "8 sectores · 157 viviendas · Los Lagos=78, Mojica=24, JMM II=14, JMM I=13, Charco Azul+ABA=12c/u · 1 ejecutado, 3 en ejecución, 5 asignados" }
       ]
     },
     {
       "id": "movilidad",
       "nombre": "Movilidad",
       "icono": "route",
-      "peso": 0.15,
+      "peso": 0.20,
       "score": 55.2,
       "score_anterior": 53.1,
       "variacion": 2.1,
@@ -97,7 +99,7 @@
       "id": "desarrollo_social",
       "nombre": "Desarrollo Social",
       "icono": "people",
-      "peso": 0.20,
+      "peso": 0.15,
       "score": 63.5,
       "score_anterior": 57.7,
       "variacion": 5.8,
