@@ -2,8 +2,8 @@
   "meta": {
     "territorio": "Pulmón de Oriente",
     "version": "preliminar",
-    "periodo": "2025-T4",
-    "lapso": "trimestral",
+    "periodo": "2025-S2",
+    "lapso": "semestral",
     "fecha_calculo": "2026-03-14",
     "cobertura_datos": 100,
     "fuentes_activas": 17,
@@ -11,15 +11,15 @@
     "nota": "ITT preliminar. Fuentes GIS verificadas: 7 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 61.1,
-    "score_anterior": 58.2,
-    "variacion": 2.9,
+    "score": 61.0,
+    "score_anterior": 60.7,
+    "variacion": 0.3,
     "clasificacion": "Nivel 3 · Avance",
     "rango": [
       60,
       80
     ],
-    "periodo_comparacion": "2025-T3"
+    "periodo_comparacion": "2025-S1"
   },
   "dimensiones": [
     {
@@ -27,16 +27,16 @@
       "nombre": "Seguridad",
       "icono": "shield",
       "peso": 0.3,
-      "score": 72.8,
-      "score_anterior": 77.4,
-      "variacion": -4.6,
+      "score": 76.2,
+      "score_anterior": 74.2,
+      "variacion": 2.0,
       "color": "#C1272D",
       "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
           "nombre": "Homicidios en polígono (trimestral)",
-          "valor": 36,
+          "valor": 45,
           "unidad": "casos",
           "tendencia": "alza",
           "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
@@ -45,12 +45,12 @@
         },
         {
           "nombre": "Hurtos en polígono (trimestral)",
-          "valor": 260,
+          "valor": 550,
           "unidad": "casos",
           "tendencia": "baja",
           "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
           "oficial": true,
-          "nota_real": "Pico 434 (2023-T1) → 260 (2025-T4) — reducción 40%"
+          "nota_real": "Pico 434 (2023-T1) → 550 (2025-S2) — reducción -27%"
         }
       ],
       "hurtos_series": {
@@ -199,8 +199,8 @@
       "icono": "school",
       "peso": 0.13,
       "score": 61.0,
-      "score_anterior": 55.8,
-      "variacion": 5.2,
+      "score_anterior": 61.0,
+      "variacion": 0.0,
       "color": "#6A1B9A",
       "calidad_dato": "preliminar",
       "cobertura": 100,
@@ -209,7 +209,7 @@
           "nombre": "Matrícula escolar · Territorio Pulmón",
           "valor": 50336,
           "unidad": "estudiantes",
-          "tendencia": "alza",
+          "tendencia": "estable",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
@@ -217,7 +217,7 @@
           "nombre": "Deserción escolar · Territorio Pulmón",
           "valor": 4.3,
           "unidad": "%",
-          "tendencia": "alza",
+          "tendencia": "estable",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
@@ -225,7 +225,7 @@
           "nombre": "Repitencia escolar · Territorio Pulmón",
           "valor": 8.4,
           "unidad": "%",
-          "tendencia": "alza",
+          "tendencia": "estable",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
@@ -233,7 +233,7 @@
           "nombre": "Estudiantes por docente · Territorio Pulmón",
           "valor": 27.1,
           "unidad": "ratio",
-          "tendencia": "baja",
+          "tendencia": "estable",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
@@ -252,18 +252,18 @@
       "nombre": "Cohesión Social",
       "icono": "people",
       "peso": 0.12,
-      "score": 72.7,
-      "score_anterior": 42.6,
-      "variacion": 30.1,
+      "score": 62.7,
+      "score_anterior": 65.8,
+      "variacion": -3.1,
       "color": "#8E24AA",
       "calidad_dato": "preliminar",
       "cobertura": 100,
       "indicadores": [
         {
           "nombre": "Violencia intrafamiliar (VIF) trimestral",
-          "valor": 105,
+          "valor": 294,
           "unidad": "casos",
-          "tendencia": "baja",
+          "tendencia": "alza",
           "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
           "oficial": true,
           "nota_real": "ALERTA: 2023=457 · 2024=483 · 2025=562 — incremento +23%"
@@ -289,22 +289,49 @@
   ],
   "serie_temporal": [
     {
+      "periodo": "2023",
+      "itt": 57.1,
+      "seguridad": 61.1,
+      "movilidad": 55.7,
+      "entorno_urbano": 43.6,
+      "educacion_desarrollo": 58.8,
+      "cohesion_social": 70.5
+    },
+    {
+      "periodo": "2024",
+      "itt": 58.4,
+      "seguridad": 65.9,
+      "movilidad": 55.7,
+      "entorno_urbano": 43.6,
+      "educacion_desarrollo": 59.0,
+      "cohesion_social": 69.0
+    },
+    {
       "periodo": "2025",
-      "itt": 41.5,
-      "seguridad": 18.4,
+      "itt": 60.9,
+      "seguridad": 75.2,
       "movilidad": 55.7,
       "entorno_urbano": 43.6,
       "educacion_desarrollo": 61.0,
-      "cohesion_social": 45.4
+      "cohesion_social": 64.3
+    },
+    {
+      "periodo": "2025-S1",
+      "itt": 60.7,
+      "seguridad": 74.2,
+      "movilidad": 55.7,
+      "entorno_urbano": 43.6,
+      "educacion_desarrollo": 61.0,
+      "cohesion_social": 65.8
     },
     {
       "periodo": "2025-S2",
-      "itt": 46.5,
-      "seguridad": 34.8,
+      "itt": 61.0,
+      "seguridad": 76.2,
       "movilidad": 55.7,
       "entorno_urbano": 43.6,
       "educacion_desarrollo": 61.0,
-      "cohesion_social": 45.4
+      "cohesion_social": 62.7
     },
     {
       "periodo": "2025-T3",

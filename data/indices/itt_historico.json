@@ -1,6 +1,206 @@
 {
   "periodos": [
     {
+      "periodo": "2023",
+      "itt_score": 57.1,
+      "dimensiones_scores": {
+        "seguridad": 61.1,
+        "movilidad": 55.7,
+        "entorno_urbano": 43.6,
+        "educacion_desarrollo": 58.8,
+        "cohesion_social": 70.5
+      },
+      "valores_crudos": {
+        "seguridad": {
+          "homicidios": 117,
+          "hurtos": 1444
+        },
+        "movilidad": {
+          "siniestralidad_vial": 118,
+          "accidentes_lesionados": 83,
+          "muertes_via": 11,
+          "velocidad_corredor": 18.5
+        },
+        "entorno_urbano": {
+          "ndvi_cobertura_vegetal": 0.38,
+          "area_verde_neta": 148000,
+          "deficit_habitacional_cualitativo": 29.0
+        },
+        "educacion_desarrollo": {
+          "matricula_escolar": 53746,
+          "desercion_escolar": 4.7,
+          "repitencia_escolar": 9.4,
+          "estudiantes_por_docente": 28.3,
+          "aforo_villa_lago": 4200
+        },
+        "cohesion_social": {
+          "vif": 457,
+          "rinas_conflictividad": 74,
+          "concentracion_vulnerabilidad_activa": 78.0
+        }
+      }
+    },
+    {
+      "periodo": "2024",
+      "itt_score": 58.4,
+      "dimensiones_scores": {
+        "seguridad": 65.9,
+        "movilidad": 55.7,
+        "entorno_urbano": 43.6,
+        "educacion_desarrollo": 59.0,
+        "cohesion_social": 69.0
+      },
+      "valores_crudos": {
+        "seguridad": {
+          "homicidios": 85,
+          "hurtos": 1404
+        },
+        "movilidad": {
+          "siniestralidad_vial": 118,
+          "accidentes_lesionados": 83,
+          "muertes_via": 11,
+          "velocidad_corredor": 18.5
+        },
+        "entorno_urbano": {
+          "ndvi_cobertura_vegetal": 0.38,
+          "area_verde_neta": 148000,
+          "deficit_habitacional_cualitativo": 29.0
+        },
+        "educacion_desarrollo": {
+          "matricula_escolar": 53138,
+          "desercion_escolar": 5.3,
+          "repitencia_escolar": 9.2,
+          "estudiantes_por_docente": 26.7,
+          "aforo_villa_lago": 4200
+        },
+        "cohesion_social": {
+          "vif": 483,
+          "rinas_conflictividad": 74,
+          "concentracion_vulnerabilidad_activa": 78.0
+        }
+      }
+    },
+    {
+      "periodo": "2025",
+      "itt_score": 60.9,
+      "dimensiones_scores": {
+        "seguridad": 75.2,
+        "movilidad": 55.7,
+        "entorno_urbano": 43.6,
+        "educacion_desarrollo": 61.0,
+        "cohesion_social": 64.3
+      },
+      "valores_crudos": {
+        "seguridad": {
+          "homicidios": 85,
+          "hurtos": 1142
+        },
+        "movilidad": {
+          "siniestralidad_vial": 118,
+          "accidentes_lesionados": 83,
+          "muertes_via": 11,
+          "velocidad_corredor": 18.5
+        },
+        "entorno_urbano": {
+          "ndvi_cobertura_vegetal": 0.38,
+          "area_verde_neta": 148000,
+          "deficit_habitacional_cualitativo": 29.0
+        },
+        "educacion_desarrollo": {
+          "matricula_escolar": 50336,
+          "desercion_escolar": 4.3,
+          "repitencia_escolar": 8.4,
+          "estudiantes_por_docente": 27.1,
+          "aforo_villa_lago": 4200
+        },
+        "cohesion_social": {
+          "vif": 562,
+          "rinas_conflictividad": 74,
+          "concentracion_vulnerabilidad_activa": 78.0
+        }
+      }
+    },
+    {
+      "periodo": "2025-S1",
+      "itt_score": 60.7,
+      "dimensiones_scores": {
+        "seguridad": 74.2,
+        "movilidad": 55.7,
+        "entorno_urbano": 43.6,
+        "educacion_desarrollo": 61.0,
+        "cohesion_social": 65.8
+      },
+      "valores_crudos": {
+        "seguridad": {
+          "homicidios": 40,
+          "hurtos": 592
+        },
+        "movilidad": {
+          "siniestralidad_vial": 118,
+          "accidentes_lesionados": 83,
+          "muertes_via": 11,
+          "velocidad_corredor": 18.5
+        },
+        "entorno_urbano": {
+          "ndvi_cobertura_vegetal": 0.38,
+          "area_verde_neta": 148000,
+          "deficit_habitacional_cualitativo": 29.0
+        },
+        "educacion_desarrollo": {
+          "matricula_escolar": 50336,
+          "desercion_escolar": 4.3,
+          "repitencia_escolar": 8.4,
+          "estudiantes_por_docente": 27.1,
+          "aforo_villa_lago": 4200
+        },
+        "cohesion_social": {
+          "vif": 268,
+          "rinas_conflictividad": 74,
+          "concentracion_vulnerabilidad_activa": 78.0
+        }
+      }
+    },
+    {
+      "periodo": "2025-S2",
+      "itt_score": 61.0,
+      "dimensiones_scores": {
+        "seguridad": 76.2,
+        "movilidad": 55.7,
+        "entorno_urbano": 43.6,
+        "educacion_desarrollo": 61.0,
+        "cohesion_social": 62.7
+      },
+      "valores_crudos": {
+        "seguridad": {
+          "homicidios": 45,
+          "hurtos": 550
+        },
+        "movilidad": {
+          "siniestralidad_vial": 118,
+          "accidentes_lesionados": 83,
+          "muertes_via": 11,
+          "velocidad_corredor": 18.5
+        },
+        "entorno_urbano": {
+          "ndvi_cobertura_vegetal": 0.38,
+          "area_verde_neta": 148000,
+          "deficit_habitacional_cualitativo": 29.0
+        },
+        "educacion_desarrollo": {
+          "matricula_escolar": 50336,
+          "desercion_escolar": 4.3,
+          "repitencia_escolar": 8.4,
+          "estudiantes_por_docente": 27.1,
+          "aforo_villa_lago": 4200
+        },
+        "cohesion_social": {
+          "vif": 294,
+          "rinas_conflictividad": 74,
+          "concentracion_vulnerabilidad_activa": 78.0
+        }
+      }
+    },
+    {
       "periodo": "2025-T3",
       "itt_score": 58.2,
       "dimensiones_scores": {

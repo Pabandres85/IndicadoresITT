@@ -22,6 +22,11 @@
           <h1>ITT · Pulmón de<br><span>Oriente</span></h1>
           <p class="hero-sub">Medición integral de transformación territorial. 5 dimensiones · 20 indicadores.</p>
           <p class="hero-date" id="hero-date-line">// PERIODO: — · SECRETARÍAS DISTRITALES + ENTIDADES</p>
+          <div class="lapso-selector">
+            <button class="lapso-btn active" data-lapso="trimestral">Trimestral</button>
+            <button class="lapso-btn" data-lapso="semestral">Semestral</button>
+            <button class="lapso-btn" data-lapso="anual">Anual</button>
+          </div>
         </div>
       </div>
     </div>
@@ -234,7 +239,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
-(async () => {
+  /* ═══ CONFIGURACIÓN GLOBAL ══════════════════════════════════════════════ */
   Chart.defaults.font.family = 'Inter, sans-serif';
   Chart.defaults.color = '#526273';
   Chart.defaults.plugins.legend.labels.usePointStyle = true;
@@ -242,33 +247,44 @@
   Chart.defaults.plugins.legend.labels.boxHeight = 10;
   Chart.defaults.scale.grid.color = 'rgba(0,0,0,0.06)';
 
-  /* ── Carga de datos ───────────────────────────────────────────────────── */
-  let D;
-  try {
-    const res = await fetch('../data/indices/itt_pulmon.json');
-    D = await res.json();
-  } catch(e) {
-    document.body.innerHTML = '<div style="padding:60px;text-align:center;font-family:sans-serif"><h2>Error cargando datos ITT</h2><p>' + e.message + '</p></div>';
-    return;
-  }
-
-  /* ── Helpers ──────────────────────────────────────────────────────────── */
-  const ICONS = {
-    seguridad:'🛡️',
-    movilidad:'🚦',
-    entorno_urbano:'🏙️',
-    educacion_desarrollo:'🎓',
-    cohesion_social:'🤝',
-    // Compatibilidad con esquemas anteriores
-    desarrollo_social:'👥',
-    actividad_economica:'🏪'
+  const LAPSO_FILES = {
+    trimestral: '../data/indices/itt_pulmon_trimestral.json',
+    semestral:  '../data/indices/itt_pulmon_semestral.json',
+    anual:      '../data/indices/itt_pulmon_anual.json',
   };
+
+  const ICONS = {
+    seguridad:'🛡️', movilidad:'🚦', entorno_urbano:'🏙️',
+    educacion_desarrollo:'🎓', cohesion_social:'🤝',
+    desarrollo_social:'👥', actividad_economica:'🏪'
+  };
+
   const chartRegistry = {};
   let chartModalState = null;
+  let currentSort = 'itt';
 
-  function registerChart(id, chart) {
-    chartRegistry[id] = chart;
-    return chart;
+  function registerChart(id, chart) { chartRegistry[id] = chart; return chart; }
+
+  function destroyAllCharts() {
+    Object.values(chartRegistry).forEach(c => { try { c.destroy(); } catch(e) {} });
+    Object.keys(chartRegistry).forEach(k => delete chartRegistry[k]);
+    chartModalState = null;
+  }
+
+  function clearDashboard() {
+    destroyAllCharts();
+    ['kpi-strip','alertas-grid','dim-grid','dim-tabs','dim-contents',
+     'dim-line-toggles','barrios-grid','calidad-grid','meta-nota'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '';
+    });
+    document.getElementById('alertas-outer').style.display = 'none';
+    document.getElementById('insight-gauge').innerHTML = 'Cargando...';
+    document.getElementById('insight-contrib').innerHTML = '';
+    document.getElementById('insight-evolucion').innerHTML = '';
+    const badge = document.getElementById('hero-badge');
+    badge.textContent = '⚠ Dato Preliminar';
+    badge.className = 'badge-prelim';
   }
 
   function getChartWrapFromId(chartId) {
@@ -276,12 +292,10 @@
     if (!canvas) return null;
     return canvas.closest('.chart-wrap, .chart-wrap-radar, .gauge-wrap');
   }
-
   function getChartTitleFromWrap(wrap) {
     const card = wrap?.closest('.chart-card');
     return card?.querySelector('.chart-card-title')?.textContent?.trim() || 'Gráfica';
   }
-
   function openChartModal(chartId) {
     const chart = chartRegistry[chartId];
     const wrap = getChartWrapFromId(chartId);
@@ -289,16 +303,8 @@
     const host = document.getElementById('chart-modal-host');
     const titleEl = document.getElementById('chart-modal-title');
     if (!chart || !wrap || !modal || !host || !titleEl) return;
-
     if (chartModalState) closeChartModal();
-
-    chartModalState = {
-      chart,
-      wrap,
-      parent: wrap.parentNode,
-      nextSibling: wrap.nextSibling
-    };
-
+    chartModalState = { chart, wrap, parent: wrap.parentNode, nextSibling: wrap.nextSibling };
     wrap.classList.add('chart-wrap-expanded');
     titleEl.textContent = getChartTitleFromWrap(wrap);
     host.appendChild(wrap);
@@ -307,23 +313,19 @@
     document.body.classList.add('chart-modal-open');
     chart.resize();
   }
-
   function closeChartModal() {
     const modal = document.getElementById('chart-modal');
     if (!chartModalState || !modal) return;
-
     const { chart, wrap, parent, nextSibling } = chartModalState;
     wrap.classList.remove('chart-wrap-expanded');
     if (nextSibling) parent.insertBefore(wrap, nextSibling);
     else parent.appendChild(wrap);
-
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('chart-modal-open');
     chart.resize();
     chartModalState = null;
   }
-
   function attachExpandButtons() {
     document.querySelectorAll('.chart-card').forEach(card => {
       const header = card.querySelector('.chart-card-header');
@@ -339,11 +341,10 @@
       header.appendChild(btn);
     });
   }
-
   function countUp(el, target, decimals = 1, duration = 1200) {
     const start = performance.now();
     const step = ts => {
-      const prog  = Math.min((ts - start) / duration, 1);
+      const prog = Math.min((ts - start) / duration, 1);
       const eased = 1 - Math.pow(1 - prog, 3);
       el.textContent = (target * eased).toFixed(decimals);
       if (prog < 1) requestAnimationFrame(step);
@@ -351,6 +352,25 @@
     };
     requestAnimationFrame(step);
   }
+
+  async function loadAndRender(lapso) {
+    document.querySelectorAll('.lapso-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.lapso === lapso));
+    let D;
+    try {
+      const res = await fetch(LAPSO_FILES[lapso]);
+      if (!res.ok) throw new Error(`HTTP ${res.status} — archivo ${lapso} no encontrado. Genéralo con: python scripts/calcular_itt.py --lapso ${lapso}`);
+      D = await res.json();
+    } catch(e) {
+      document.getElementById('hero-clasif').textContent = 'Error: ' + e.message;
+      return;
+    }
+    clearDashboard();
+    renderDashboard(D);
+  }
+
+  /* ═══ RENDER PRINCIPAL ══════════════════════════════════════════════════ */
+  function renderDashboard(D) {
 
   function findInd(dimId, keyword) {
     const dim = D.dimensiones.find(d => d.id === dimId);
@@ -454,14 +474,41 @@
      Trazabilidad: <strong>${oficiales}</strong> oficiales / <strong>${estimados}</strong> estimados`;
 
   /* ── RADAR ───────────────────────────────────────────────────────────── */
+  const radarPalette = [
+    { border:'#003087', bg:'rgba(0,48,135,0.15)',   dash:[], radius:5 },
+    { border:'#1565C0', bg:'rgba(21,101,192,0.10)', dash:[4,4], radius:4 },
+    { border:'#90A4AE', bg:'rgba(144,164,174,0.08)',dash:[3,5], radius:3 },
+  ];
+  const radarDatasets = (() => {
+    // Modo anual: mostrar todos los años de serie_temporal
+    if (D.meta.lapso === 'anual' && D.serie_temporal) {
+      const series = D.serie_temporal.filter(p => !p.periodo.includes('-'));
+      return series.map((p, i) => {
+        const pal = radarPalette[Math.min(i, radarPalette.length-1)];
+        const isLast = i === series.length - 1;
+        return {
+          label: p.periodo,
+          data: D.dimensiones.map(d => p[d.id] ?? 0),
+          backgroundColor: pal.bg,
+          borderColor: pal.border,
+          borderWidth: isLast ? 2.5 : 1.8,
+          pointBackgroundColor: isLast ? D.dimensiones.map(d => d.color) : pal.border,
+          pointRadius: pal.radius,
+          borderDash: pal.dash,
+        };
+      });
+    }
+    // Modo trimestral/semestral: actual vs anterior (solo si hay datos reales)
+    const actual = { label: D.meta.periodo, data: D.dimensiones.map(d => d.score), backgroundColor:'rgba(0,48,135,0.15)', borderColor:'#003087', borderWidth:2.5, pointBackgroundColor:D.dimensiones.map(d=>d.color), pointRadius:5 };
+    const hayAnterior = D.dimensiones.some(d => d.score_anterior > 0);
+    if (!hayAnterior) return [actual];
+    return [actual, { label: g.periodo_comparacion, data: D.dimensiones.map(d => d.score_anterior), backgroundColor:'rgba(255,195,0,0.10)', borderColor:'rgba(255,195,0,0.65)', borderWidth:1.5, pointRadius:3, borderDash:[4,4] }];
+  })();
   registerChart('chartRadar', new Chart(document.getElementById('chartRadar'), {
     type: 'radar',
     data: {
       labels: D.dimensiones.map(d => d.nombre),
-      datasets: [
-        { label: D.meta.periodo,           data: D.dimensiones.map(d => d.score),          backgroundColor:'rgba(0,48,135,0.15)', borderColor:'#003087', borderWidth:2.5, pointBackgroundColor:D.dimensiones.map(d=>d.color), pointRadius:5 },
-        { label: g.periodo_comparacion,    data: D.dimensiones.map(d => d.score_anterior),  backgroundColor:'rgba(255,195,0,0.10)', borderColor:'rgba(255,195,0,0.65)', borderWidth:1.5, pointRadius:3, borderDash:[4,4] }
-      ]
+      datasets: radarDatasets
     },
     options: {
       responsive:true, maintainAspectRatio:false,
@@ -697,7 +744,6 @@
   }
 
   /* ── BARRIOS ─────────────────────────────────────────────────────────── */
-  let currentSort = 'itt';
   let barChart;
 
   function renderBarrios() {
@@ -797,15 +843,20 @@
   }
 
   attachExpandButtons();
+
+  } // fin renderDashboard
+
+  /* ═══ HANDLERS GLOBALES (una sola vez) ══════════════════════════════════ */
   document.getElementById('chart-modal-close')?.addEventListener('click', closeChartModal);
   document.getElementById('chart-modal')?.addEventListener('click', e => {
     if (e.target.id === 'chart-modal') closeChartModal();
   });
-  document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') closeChartModal();
-  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeChartModal(); });
+  document.querySelectorAll('.lapso-btn').forEach(btn =>
+    btn.addEventListener('click', () => loadAndRender(btn.dataset.lapso)));
 
-})();
+  /* ═══ CARGA INICIAL ═════════════════════════════════════════════════════ */
+  loadAndRender('trimestral');
 </script>
 </body>
 </html>

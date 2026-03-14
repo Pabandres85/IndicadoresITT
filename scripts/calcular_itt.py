@@ -229,21 +229,42 @@ DIMENSIONES = {
 # ══════════════════════════════════════════════════════════════════════════════
 
 def parsear_periodo(periodo_str):
-    """'2025-T4' → (2025, 4)"""
-    partes = periodo_str.upper().split("-T")
-    return int(partes[0]), int(partes[1])
+    """
+    Parsea un período y devuelve (year, mes_inicio, mes_fin, lapso, periodo_anterior).
+
+    Formatos soportados:
+      '2025-T4' → trimestral: (2025, 10, 12, 'trimestral', '2025-T3')
+      '2025-S2' → semestral:  (2025,  7, 12, 'semestral',  '2025-S1')
+      '2025'    → anual:      (2025,  1, 12, 'anual',      '2024')
+    """
+    s = periodo_str.upper().strip()
+    if '-T' in s:
+        parts = s.split('-T')
+        year, trim = int(parts[0]), int(parts[1])
+        mes_inicio = (trim - 1) * 3 + 1
+        mes_fin    = trim * 3
+        ant = f"{year}-T{trim-1}" if trim > 1 else f"{year-1}-T4"
+        return year, mes_inicio, mes_fin, 'trimestral', ant
+    elif '-S' in s:
+        parts = s.split('-S')
+        year, sem = int(parts[0]), int(parts[1])
+        mes_inicio = 1 if sem == 1 else 7
+        mes_fin    = 6 if sem == 1 else 12
+        ant = f"{year}-S1" if sem == 2 else f"{year-1}-S2"
+        return year, mes_inicio, mes_fin, 'semestral', ant
+    else:
+        year = int(s)
+        return year, 1, 12, 'anual', str(year - 1)
 
 
-def en_periodo(fecha_val, year, trim):
-    """True si fecha_val (str YYYY-MM-DD) cae en el año/trimestre."""
+def en_rango(fecha_val, year, mes_inicio, mes_fin):
+    """True si fecha_val (str YYYY-MM-DD) cae en el año y rango de meses."""
     if not fecha_val:
         return False
     s = str(fecha_val)[:10]
     try:
         d = datetime.strptime(s, "%Y-%m-%d").date()
-        inicio = (trim - 1) * 3 + 1
-        fin    = trim * 3
-        return d.year == year and inicio <= d.month <= fin
+        return d.year == year and mes_inicio <= d.month <= mes_fin
     except Exception:
         return False
 
@@ -318,7 +339,7 @@ def calcular_longitud_linea(coords):
     return total
 
 
-def extraer_gis(ind_cfg, year, trim):
+def extraer_gis(ind_cfg, year, mes_inicio, mes_fin):
     """
     Extrae el valor de un indicador según su configuración GIS.
     Devuelve None si no tiene fuente GIS.
@@ -331,7 +352,7 @@ def extraer_gis(ind_cfg, year, trim):
     if tipo == "conteo_periodo":
         feats = leer_geojsons_dir(ind_cfg["gis_dir"], ind_cfg.get("gis_patron"))
         campo = ind_cfg.get("gis_campo_fecha", "FECHA_HECH")
-        return sum(1 for f in feats if en_periodo(f["properties"].get(campo), year, trim))
+        return sum(1 for f in feats if en_rango(f["properties"].get(campo), year, mes_inicio, mes_fin))
 
     # ── conteo_total: cuenta todos los features (sin filtro de fecha) ─────
     if tipo == "conteo_total":
@@ -621,7 +642,7 @@ def _conteos_trimestrales(features, campo_fecha):
     return dict(c)
 
 
-def nota_hurtos(year, trim):
+def nota_hurtos(year, mes_inicio, mes_fin, periodo_str):
     feats = leer_geojsons_dir("seguridad/hurtos")
     if not feats:
         return None
@@ -630,14 +651,29 @@ def nota_hurtos(year, trim):
         return None
     max_p = max(trims, key=trims.get)
     max_v = trims[max_p]
-    cur   = trims.get(f"{year}-T{trim}", 0)
+    # Sumar todos los trimestres que caen dentro del rango
+    cur = sum(v for k, v in trims.items() if _trim_en_rango(k, year, mes_inicio, mes_fin))
     if max_v and cur:
-        pct = round((max_v - cur) / max_v * 100)
-        return f"Pico {max_v} ({max_p}) → {cur} ({year}-T{trim}) — reducción {pct}%"
+        if mes_fin - mes_inicio < 6:  # trimestral
+            pct = round((max_v - cur) / max_v * 100)
+            return f"Pico {max_v} ({max_p}) → {cur} ({periodo_str}) — reducción {pct}%"
+        else:
+            return f"Acumulado {periodo_str}: {cur} hurtos · Pico trimestral: {max_v} ({max_p})"
     return None
 
 
-def nota_homicidios(year, trim):
+def _trim_en_rango(trim_key, year, mes_inicio, mes_fin):
+    """'2025-T3' → True si ese trimestre cae dentro del rango año/meses."""
+    try:
+        y, t = int(trim_key[:4]), int(trim_key[-1])
+        t_ini = (t - 1) * 3 + 1
+        t_fin = t * 3
+        return y == year and t_ini >= mes_inicio and t_fin <= mes_fin
+    except Exception:
+        return False
+
+
+def nota_homicidios(year):
     feats = leer_geojsons_dir("seguridad/homicidios")
     if not feats:
         return None
@@ -801,18 +837,35 @@ def tendencia(valor, ind_id, vals_previos_dim):
 # HISTORICO
 # ══════════════════════════════════════════════════════════════════════════════
 
-def leer_historico(periodo_actual=None):
-    """Lee itt_historico.json y devuelve el último período distinto al actual."""
+def _lapso_de_periodo(periodo_str):
+    """Devuelve el lapso inferido del string de período."""
+    s = periodo_str.upper()
+    if '-T' in s:   return 'trimestral'
+    if '-S' in s:   return 'semestral'
+    return 'anual'
+
+
+def leer_historico(periodo_actual=None, lapso=None):
+    """Lee itt_historico.json y devuelve el último período del mismo lapso distinto al actual."""
     hist = leer_json(HIST, default={"periodos": []})
     periodos = hist.get("periodos", [])
     if not periodos:
         return None
+
+    def mismo_lapso(p):
+        if lapso is None:
+            return True
+        return _lapso_de_periodo(p.get("periodo", "")) == lapso
+
     if periodo_actual:
         for p in reversed(periodos):
-            if p.get("periodo") != periodo_actual:
+            if p.get("periodo") != periodo_actual and mismo_lapso(p):
                 return p
         return None
-    return periodos[-1]
+    for p in reversed(periodos):
+        if mismo_lapso(p):
+            return p
+    return None
 
 
 def guardar_historico(nuevo):
@@ -856,15 +909,20 @@ def leer_manuales(periodo_str):
 # ══════════════════════════════════════════════════════════════════════════════
 
 def calcular_itt(periodo_str, version="preliminar"):
-    year, trim = parsear_periodo(periodo_str)
-    historico  = leer_historico(periodo_str)
+    year, mes_inicio, mes_fin, lapso, periodo_ant_def = parsear_periodo(periodo_str)
+    # Factor para escalar refs de indicadores de conteo (1=trimestral, 2=semestral, 4=anual)
+    n_trim = (mes_fin - mes_inicio + 1) // 3
+    historico  = leer_historico(periodo_str, lapso=lapso)
     manuales   = leer_manuales(periodo_str)
 
-    prev_vals  = historico.get("valores_crudos", {})      if historico else {}
-    prev_dim_s = historico.get("dimensiones_scores", {})   if historico else {}
-    prev_period = historico.get("periodo", "N/A")           if historico else "N/A"
+    prev_vals   = historico.get("valores_crudos", {})     if historico else {}
+    prev_dim_s  = historico.get("dimensiones_scores", {}) if historico else {}
+    prev_period = historico.get("periodo", "N/A")          if historico else "N/A"
+    # Si no hay histórico, usar el anterior calculado por parsear_periodo
+    if prev_period == "N/A":
+        prev_period = periodo_ant_def
 
-    print(f"\n  Período: {periodo_str}  |  Comparación vs: {prev_period}")
+    print(f"\n  Período: {periodo_str}  |  Lapso: {lapso}  |  Comparación vs: {prev_period}")
 
     resultado_dims = []
     itt_global     = 0.0
@@ -872,8 +930,8 @@ def calcular_itt(periodo_str, version="preliminar"):
 
     # ── Notas reales por dimensión (se calculan una vez) ──────────────────
     notas_seg = {
-        "hurtos": nota_hurtos(year, trim),
-        "homicidios": nota_homicidios(year, trim),
+        "hurtos": nota_hurtos(year, mes_inicio, mes_fin, periodo_str),
+        "homicidios": nota_homicidios(year),
     }
     notas_coh = {
         "vif": nota_vif(year),
@@ -894,7 +952,7 @@ def calcular_itt(periodo_str, version="preliminar"):
             ind_id = ind["id"]
 
             # 1. Intentar obtener valor GIS
-            valor = extraer_gis(ind, year, trim)
+            valor = extraer_gis(ind, year, mes_inicio, mes_fin)
 
             # 2. Si no hay GIS, usar manual
             if valor is None:
@@ -909,7 +967,9 @@ def calcular_itt(periodo_str, version="preliminar"):
                 continue
 
             vals_dim[ind_id] = valor
-            score = normalizar(valor, ind["ref_min"], ind["ref_max"], ind["inverso"])
+            # Escalar refs para indicadores de conteo en períodos > 1 trimestre
+            ref_factor = n_trim if ind.get("gis_tipo") == "conteo_periodo" else 1
+            score = normalizar(valor, ind["ref_min"] * ref_factor, ind["ref_max"] * ref_factor, ind["inverso"])
             scores_ind.append(score)
 
             ind_out = {
@@ -991,6 +1051,7 @@ def calcular_itt(periodo_str, version="preliminar"):
             "territorio":      "Pulmón de Oriente",
             "version":         version,
             "periodo":         periodo_str,
+            "lapso":           lapso,
             "fecha_calculo":   datetime.today().strftime("%Y-%m-%d"),
             "cobertura_datos": cobertura_g,
             "fuentes_activas": con_valor,
@@ -1089,15 +1150,25 @@ def generar_manuales():
 # CLI
 # ══════════════════════════════════════════════════════════════════════════════
 
+LAPSO_OUT = {
+    'trimestral': DATA / 'indices' / 'itt_pulmon_trimestral.json',
+    'semestral':  DATA / 'indices' / 'itt_pulmon_semestral.json',
+    'anual':      DATA / 'indices' / 'itt_pulmon_anual.json',
+}
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Calcula el ITT del Pulmón de Oriente desde fuentes GeoJSON.")
     parser.add_argument("--periodo",          default=None,
-                        help="Período (ej. 2025-T4). Default: trimestre actual.")
+                        help="Período (ej. 2025-T4, 2025-S2, 2025). Default: período actual según lapso.")
+    parser.add_argument("--lapso",            default="trimestral",
+                        choices=["trimestral", "semestral", "anual"],
+                        help="Granularidad temporal (default: trimestral)")
     parser.add_argument("--version",          default="preliminar",
                         help="'preliminar' u 'oficial'")
     parser.add_argument("--output",           default=None,
-                        help="Ruta de salida del JSON (default: data/indices/itt_pulmon.json)")
+                        help="Ruta de salida del JSON (default: según --lapso)")
     parser.add_argument("--generar-manuales", action="store_true",
                         help="Crea data/indices/indicadores_manuales.json con valores por defecto")
     args = parser.parse_args()
@@ -1107,11 +1178,17 @@ def main():
         generar_manuales()
         return
 
-    # Período por defecto: trimestre actual
+    # Período por defecto según lapso
     if not args.periodo:
         hoy = datetime.today()
-        trim = (hoy.month - 1) // 3 + 1
-        args.periodo = f"{hoy.year}-T{trim}"
+        if args.lapso == 'trimestral':
+            trim = (hoy.month - 1) // 3 + 1
+            args.periodo = f"{hoy.year}-T{trim}"
+        elif args.lapso == 'semestral':
+            sem = 1 if hoy.month <= 6 else 2
+            args.periodo = f"{hoy.year}-S{sem}"
+        else:
+            args.periodo = str(hoy.year)
 
     # Verificar que existen los manuales
     if not MAN.exists():
@@ -1125,10 +1202,19 @@ def main():
 
     resultado = calcular_itt(args.periodo, args.version)
 
-    # Guardar JSON
-    out_path = Path(args.output) if args.output else OUT
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(resultado, ensure_ascii=False, indent=2), encoding="utf-8")
+    # Determinar archivo de salida
+    if args.output:
+        out_paths = [Path(args.output)]
+    else:
+        lapso_det = resultado['meta'].get('lapso', args.lapso)
+        out_paths = [LAPSO_OUT[lapso_det]]
+        # Para trimestral también actualiza el JSON genérico (compatibilidad)
+        if lapso_det == 'trimestral':
+            out_paths.append(OUT)
+
+    for out_path in out_paths:
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(json.dumps(resultado, ensure_ascii=False, indent=2), encoding="utf-8")
 
     g = resultado["itt_global"]
     print(f"\n{'='*60}")
@@ -1136,7 +1222,8 @@ def main():
     print(f"  Variación:  {g['variacion']:+.1f} pts vs {g['periodo_comparacion']}")
     print(f"  Cobertura:  {resultado['meta']['cobertura_datos']}%  "
           f"({resultado['meta']['fuentes_activas']}/{resultado['meta']['fuentes_total']} indicadores)")
-    print(f"  Guardado:   {out_path}")
+    for p in out_paths:
+        print(f"  Guardado:   {p}")
     print(f"{'='*60}\n")
 
 
