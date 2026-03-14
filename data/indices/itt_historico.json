@@ -1,0 +1,98 @@
+{
+  "periodos": [
+    {
+      "periodo": "2025-T3",
+      "itt_score": 41.1,
+      "dimensiones_scores": {
+        "seguridad": 47.0,
+        "entorno_urbano": 38.7,
+        "movilidad": 40.2,
+        "desarrollo_social": 47.0,
+        "actividad_economica": 33.5
+      },
+      "valores_crudos": {
+        "seguridad": {
+          "homicidios": 9,
+          "hurtos": 290,
+          "vif": 189,
+          "vbg": 98,
+          "percepcion_seguridad": 38,
+          "presencia_institucional": 3
+        },
+        "entorno_urbano": {
+          "espacio_publico": 4.2,
+          "frentes_obra": 5,
+          "luminarias": 210,
+          "parques": 6,
+          "poligonos_ahdi": 6,
+          "viviendas_mejoramiento": 157
+        },
+        "movilidad": {
+          "tramos_viales": 3.21,
+          "accesibilidad_mio": 72,
+          "tiempo_desplazamiento": 38,
+          "ciclorutas": 1.2
+        },
+        "desarrollo_social": {
+          "ninos_programas": 1840,
+          "sedes_educativas": 68,
+          "acceso_salud": 76,
+          "familias_subsidio": 520
+        },
+        "actividad_economica": {
+          "negocios_formalizados": 87,
+          "empleos_obra": 340,
+          "inversion_privada": 4200,
+          "emprendimientos": 23
+        }
+      }
+    },
+    {
+      "periodo": "2025-T4",
+      "itt_score": 43.0,
+      "dimensiones_scores": {
+        "seguridad": 56.5,
+        "entorno_urbano": 38.7,
+        "movilidad": 40.2,
+        "desarrollo_social": 47.0,
+        "actividad_economica": 33.5
+      },
+      "valores_crudos": {
+        "seguridad": {
+          "homicidios": 36,
+          "hurtos": 260,
+          "vif": 105,
+          "vbg": 98,
+          "percepcion_seguridad": 38,
+          "presencia_institucional": 3
+        },
+        "entorno_urbano": {
+          "espacio_publico": 4.2,
+          "frentes_obra": 5,
+          "luminarias": 210,
+          "parques": 6,
+          "poligonos_ahdi": 6,
+          "viviendas_mejoramiento": 157
+        },
+        "movilidad": {
+          "tramos_viales": 3.21,
+          "accesibilidad_mio": 72,
+          "tiempo_desplazamiento": 38,
+          "ciclorutas": 1.2
+        },
+        "desarrollo_social": {
+          "ninos_programas": 1840,
+          "sedes_educativas": 68,
+          "acceso_salud": 76,
+          "familias_subsidio": 520
+        },
+        "actividad_economica": {
+          "negocios_formalizados": 87,
+          "empleos_obra": 340,
+          "inversion_privada": 4200,
+          "emprendimientos": 23
+        }
+      }
+    }
+  ]
+}

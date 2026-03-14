@@ -21,7 +21,7 @@
         <div class="hero-brand-text">
           <h1>ITT · Pulmón de<br><span>Oriente</span></h1>
           <p class="hero-sub">Medición integral de transformación territorial. 5 dimensiones · 20 indicadores.</p>
-          <p class="hero-date">// PERIODO: 2025-T4 · SECRETARÍAS DISTRITALES + ENTIDADES</p>
+          <p class="hero-date" id="hero-date-line">// PERIODO: — · SECRETARÍAS DISTRITALES + ENTIDADES</p>
         </div>
       </div>
     </div>
@@ -29,7 +29,7 @@
       <div class="itt-score-block">
         <div class="itt-score-label">ITT Global · Pulmón de Oriente</div>
         <div>
-          <span class="itt-score-num" id="hero-itt-num">—</span>
+          <span class="itt-score-num" id="hero-itt-num">0.0</span>
           <span class="itt-score-denom">/100</span>
         </div>
         <div class="itt-score-clasif" id="hero-clasif">Cargando...</div>
@@ -40,11 +40,30 @@
   </div>
 </header>
 
+<!-- KPI STRIP -->
+<div class="kpi-strip-outer">
+  <div class="container">
+    <div class="kpi-strip" id="kpi-strip"></div>
+  </div>
+</div>
+
+<!-- ALERTAS AUTO -->
+<div class="alertas-outer" id="alertas-outer" style="display:none">
+  <div class="container">
+    <div class="alertas-header">
+      <span class="alertas-icon">⚠</span>
+      <span class="alertas-title">Alertas activas — indicadores que requieren atención</span>
+    </div>
+    <div class="alertas-grid" id="alertas-grid"></div>
+  </div>
+</div>
+
 <!-- 01 RESUMEN DIMENSIONAL -->
 <section class="section">
   <div class="container">
     <div class="section-header"><span class="section-num">01 —</span><h2>Resumen por Dimensión</h2></div>
     <div class="divider"></div>
+
     <div class="charts-itt">
       <div class="chart-card">
         <div class="chart-card-header"><div class="chart-card-title">Gauge ITT Global</div></div>
@@ -60,12 +79,25 @@
         </div>
       </div>
       <div class="chart-card">
-        <div class="chart-card-header"><div class="chart-card-title">Radar de Dimensiones · 2025-T4 vs 2025-T3</div></div>
+        <div class="chart-card-header"><div class="chart-card-title">Radar de Dimensiones · actual vs anterior</div></div>
         <div class="chart-body">
           <div class="chart-wrap-radar"><canvas id="chartRadar"></canvas></div>
         </div>
       </div>
     </div>
+
+    <!-- Contribución ponderada al ITT -->
+    <div class="chart-card" style="margin-top:24px">
+      <div class="chart-card-header">
+        <div class="chart-card-title">Contribución Ponderada al ITT Global</div>
+        <span class="chart-badge">pts = score × peso</span>
+      </div>
+      <div class="chart-body">
+        <div class="chart-wrap" style="height:260px"><canvas id="chartContrib"></canvas></div>
+        <div class="chart-insight" id="insight-contrib"></div>
+      </div>
+    </div>
+
     <div class="dim-grid" id="dim-grid"></div>
   </div>
 </section>
@@ -76,9 +108,12 @@
     <div class="section-header"><span class="section-num">02 —</span><h2>Evolución Temporal</h2></div>
     <div class="divider"></div>
     <div class="chart-card">
-      <div class="chart-card-header"><div class="chart-card-title">ITT Global y por Dimensión · Últimos 4 Periodos</div></div>
+      <div class="chart-card-header">
+        <div class="chart-card-title">ITT Global y por Dimensión · Últimos Periodos</div>
+        <div class="dim-line-toggles" id="dim-line-toggles"></div>
+      </div>
       <div class="chart-body">
-        <div class="chart-wrap" style="height:300px"><canvas id="chartEvolucion"></canvas></div>
+        <div class="chart-wrap" style="height:360px"><canvas id="chartEvolucion"></canvas></div>
         <div class="chart-insight" id="insight-evolucion"></div>
       </div>
     </div>
@@ -101,9 +136,17 @@
     <div class="section-header"><span class="section-num">04 —</span><h2>Ranking de Barrios · ITT Estimado</h2></div>
     <div class="divider"></div>
     <div class="chart-card" style="margin-bottom:20px">
-      <div class="chart-card-header"><div class="chart-card-title">ITT por Barrio</div></div>
+      <div class="chart-card-header">
+        <div class="chart-card-title">ITT por Barrio</div>
+        <div class="barrio-sort-group" id="barrio-sort-group">
+          <span style="font-size:11px;color:var(--gris-light);margin-right:6px">Ordenar:</span>
+          <button class="barrio-sort-btn active" data-sort="itt">ITT ↓</button>
+          <button class="barrio-sort-btn" data-sort="poblacion">Población</button>
+          <button class="barrio-sort-btn" data-sort="proyectos">Proyectos</button>
+        </div>
+      </div>
       <div class="chart-body">
-        <div class="chart-wrap" style="height:260px"><canvas id="chartBarrios"></canvas></div>
+        <div class="chart-wrap" style="height:320px"><canvas id="chartBarrios"></canvas></div>
       </div>
     </div>
     <div class="barrios-grid" id="barrios-grid"></div>
@@ -116,6 +159,7 @@
     <div class="section-header"><span class="section-num">05 —</span><h2>Calidad y Madurez del Dato</h2></div>
     <div class="divider"></div>
     <div class="calidad-grid" id="calidad-grid"></div>
+    <div class="meta-nota" id="meta-nota"></div>
   </div>
 </section>
 
@@ -132,6 +176,10 @@
   <a class="switcher-btn" href="pulmon_oriente_seguridad.html">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
     Seguridad
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_metodologia.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+    Metodología
   </a>
   <a class="switcher-btn" href="pulmon_oriente_informe-v2.html">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
@@ -171,9 +219,30 @@
   </div>
 </footer>
 
+<!-- MODAL AMPLIAR GRÁFICA -->
+<div class="chart-modal" id="chart-modal" aria-hidden="true">
+  <div class="chart-modal-card" role="dialog" aria-modal="true" aria-labelledby="chart-modal-title">
+    <button class="chart-modal-close" id="chart-modal-close" aria-label="Cerrar">×</button>
+    <div class="chart-modal-head">
+      <div class="chart-modal-title" id="chart-modal-title">Gráfica</div>
+    </div>
+    <div class="chart-modal-body">
+      <div class="chart-modal-host" id="chart-modal-host"></div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
 (async () => {
+  Chart.defaults.font.family = 'Inter, sans-serif';
+  Chart.defaults.color = '#526273';
+  Chart.defaults.plugins.legend.labels.usePointStyle = true;
+  Chart.defaults.plugins.legend.labels.boxWidth = 10;
+  Chart.defaults.plugins.legend.labels.boxHeight = 10;
+  Chart.defaults.scale.grid.color = 'rgba(0,0,0,0.06)';
+
+  /* ── Carga de datos ───────────────────────────────────────────────────── */
   let D;
   try {
     const res = await fetch('../data/indices/itt_pulmon.json');
@@ -183,41 +252,207 @@
     return;
   }
 
+  /* ── Helpers ──────────────────────────────────────────────────────────── */
   const ICONS = { seguridad:'🛡️', entorno_urbano:'🏙️', movilidad:'🚦', desarrollo_social:'👥', actividad_economica:'🏪' };
-  const allInd = D.dimensiones.flatMap(d => d.indicadores);
-  const oficiales = allInd.filter(i => i.oficial).length;
-  const estimados = allInd.length - oficiales;
+  const chartRegistry = {};
+  let chartModalState = null;
+
+  function registerChart(id, chart) {
+    chartRegistry[id] = chart;
+    return chart;
+  }
+
+  function getChartWrapFromId(chartId) {
+    const canvas = document.getElementById(chartId);
+    if (!canvas) return null;
+    return canvas.closest('.chart-wrap, .chart-wrap-radar, .gauge-wrap');
+  }
+
+  function getChartTitleFromWrap(wrap) {
+    const card = wrap?.closest('.chart-card');
+    return card?.querySelector('.chart-card-title')?.textContent?.trim() || 'Gráfica';
+  }
+
+  function openChartModal(chartId) {
+    const chart = chartRegistry[chartId];
+    const wrap = getChartWrapFromId(chartId);
+    const modal = document.getElementById('chart-modal');
+    const host = document.getElementById('chart-modal-host');
+    const titleEl = document.getElementById('chart-modal-title');
+    if (!chart || !wrap || !modal || !host || !titleEl) return;
+
+    if (chartModalState) closeChartModal();
+
+    chartModalState = {
+      chart,
+      wrap,
+      parent: wrap.parentNode,
+      nextSibling: wrap.nextSibling
+    };
+
+    wrap.classList.add('chart-wrap-expanded');
+    titleEl.textContent = getChartTitleFromWrap(wrap);
+    host.appendChild(wrap);
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('chart-modal-open');
+    chart.resize();
+  }
+
+  function closeChartModal() {
+    const modal = document.getElementById('chart-modal');
+    if (!chartModalState || !modal) return;
+
+    const { chart, wrap, parent, nextSibling } = chartModalState;
+    wrap.classList.remove('chart-wrap-expanded');
+    if (nextSibling) parent.insertBefore(wrap, nextSibling);
+    else parent.appendChild(wrap);
+
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('chart-modal-open');
+    chart.resize();
+    chartModalState = null;
+  }
+
+  function attachExpandButtons() {
+    document.querySelectorAll('.chart-card').forEach(card => {
+      const header = card.querySelector('.chart-card-header');
+      const canvas = card.querySelector('canvas[id]');
+      if (!header || !canvas || header.querySelector('.chart-expand-btn')) return;
+      const btn = document.createElement('button');
+      btn.className = 'chart-expand-btn';
+      btn.type = 'button';
+      btn.textContent = 'Ampliar';
+      btn.setAttribute('aria-label', 'Ampliar gráfica');
+      btn.dataset.chartId = canvas.id;
+      btn.addEventListener('click', () => openChartModal(canvas.id));
+      header.appendChild(btn);
+    });
+  }
+
+  function countUp(el, target, decimals = 1, duration = 1200) {
+    const start = performance.now();
+    const step = ts => {
+      const prog  = Math.min((ts - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - prog, 3);
+      el.textContent = (target * eased).toFixed(decimals);
+      if (prog < 1) requestAnimationFrame(step);
+      else el.textContent = target.toFixed(decimals);
+    };
+    requestAnimationFrame(step);
+  }
+
+  function findInd(dimId, keyword) {
+    const dim = D.dimensiones.find(d => d.id === dimId);
+    return dim?.indicadores.find(i => i.nombre.toLowerCase().includes(keyword.toLowerCase()));
+  }
+
+  function colorByITT(v) {
+    return v >= 62 ? '#003087' : v >= 55 ? '#1565C0' : '#90A4AE';
+  }
+
+  const allInd       = D.dimensiones.flatMap(d => d.indicadores);
+  const oficiales    = allInd.filter(i => i.oficial).length;
+  const estimados    = allInd.length - oficiales;
   const pctOficiales = Math.round(oficiales / allInd.length * 100);
-  const pctEstimados = 100 - pctOficiales;
 
-  // HERO
+  /* ── HERO ─────────────────────────────────────────────────────────────── */
   const g = D.itt_global;
-  document.getElementById('hero-itt-num').textContent = g.score.toFixed(1);
-  document.getElementById('hero-clasif').textContent  = g.clasificacion;
-  document.getElementById('hero-var').textContent     = `↑ +${g.variacion.toFixed(1)} pts vs ${g.periodo_comparacion}`;
-  if (D.meta.version !== 'preliminar') document.getElementById('hero-badge').textContent = '✓ ITT Oficial';
+  document.getElementById('hero-date-line').textContent = `// PERIODO: ${D.meta.periodo} · SECRETARÍAS DISTRITALES + ENTIDADES`;
+  countUp(document.getElementById('hero-itt-num'), g.score, 1, 1400);
+  document.getElementById('hero-clasif').textContent = g.clasificacion;
+  const heroVar = document.getElementById('hero-var');
+  if (g.periodo_comparacion && g.periodo_comparacion !== 'N/A') {
+    const varSign = g.variacion >= 0 ? '+' : '';
+    heroVar.textContent = `${g.variacion >= 0 ? '↑' : '↓'} ${varSign}${g.variacion.toFixed(1)} pts vs ${g.periodo_comparacion}`;
+  } else {
+    heroVar.textContent = `Primer período calculado`;
+  }
+  if (D.meta.version !== 'preliminar') {
+    const badge = document.getElementById('hero-badge');
+    badge.textContent = '✓ ITT Oficial';
+    badge.classList.replace('badge-prelim', 'badge-oficial');
+  }
 
-  // GAUGE
-  document.getElementById('gauge-val').textContent = g.score.toFixed(1);
-  new Chart(document.getElementById('chartGauge'), {
+  /* ── KPI STRIP ───────────────────────────────────────────────────────── */
+  const hurtosInd   = findInd('seguridad',      'hurto');
+  const vifInd      = findInd('seguridad',      'intrafamiliar');
+  const obrasInd    = findInd('entorno_urbano',  'infraestructura');
+  const vivMejInd   = findInd('entorno_urbano',  'mejoramiento');
+  const vivLegInd   = findInd('entorno_urbano',  'legalización');
+  const empleosInd  = findInd('actividad_economica', 'empleos');
+
+  const kpis = [
+    { label: 'ITT Global', val: g.score.toFixed(1), unit: '/100', sub: g.clasificacion,           cls: 'kpi-itt',   decimals: 1, raw: g.score },
+    hurtosInd  && { label: 'Hurtos (trim.)',    val: hurtosInd.valor,   unit: 'casos',  sub: hurtosInd.nota_real?.split('—')[1]?.trim() || '↓ reducción',   cls: 'kpi-ok', decimals:0, raw: hurtosInd.valor },
+    vifInd     && { label: 'VIF (trimestral)',  val: vifInd.valor,      unit: 'casos',  sub: '⚠ incremento +23%',    cls: 'kpi-alert', decimals:0, raw: vifInd.valor },
+    obrasInd   && { label: 'Obras activas',     val: obrasInd.valor,    unit: 'frentes',sub: 'infraestructura vial', cls: 'kpi-ok', decimals:0, raw: obrasInd.valor },
+    vivMejInd  && { label: 'Viviendas mejor.',  val: vivMejInd.valor,   unit: 'unidades',sub: '8 sectores · 2025-26', cls: 'kpi-ok', decimals:0, raw: vivMejInd.valor },
+    vivLegInd  && { label: 'Polígonos AHDI',    val: vivLegInd.valor,   unit: 'polígonos',sub: '11.71 ha · LU 2024-27', cls: 'kpi-ok', decimals:0, raw: vivLegInd.valor },
+  ].filter(Boolean);
+
+  const strip = document.getElementById('kpi-strip');
+  kpis.forEach(k => {
+    const el = document.createElement('div');
+    el.className = `kpi-strip-item ${k.cls}`;
+    el.innerHTML = `
+      <div class="kpi-strip-val" data-raw="${k.raw}" data-dec="${k.decimals}">0</div>
+      <div class="kpi-strip-unit">${k.unit}</div>
+      <div class="kpi-strip-label">${k.label}</div>
+      <div class="kpi-strip-sub">${k.sub}</div>`;
+    strip.appendChild(el);
+  });
+  // animate strip numbers
+  strip.querySelectorAll('.kpi-strip-val').forEach(el => {
+    countUp(el, parseFloat(el.dataset.raw), parseInt(el.dataset.dec), 1300);
+  });
+
+  /* ── ALERTAS ─────────────────────────────────────────────────────────── */
+  const alertas = D.dimensiones.flatMap(dim =>
+    dim.indicadores
+      .filter(i => i.nota_real?.includes('ALERTA') ||
+                   (dim.id === 'seguridad' && i.tendencia === 'alza' && i.oficial))
+      .map(i => ({ dim, ind: i }))
+  );
+  if (alertas.length) {
+    document.getElementById('alertas-outer').style.display = '';
+    const ag = document.getElementById('alertas-grid');
+    alertas.forEach(({ dim, ind }) => {
+      const div = document.createElement('div');
+      div.className = 'alerta-card';
+      const nota = ind.nota_real?.includes('ALERTA')
+        ? ind.nota_real.replace('ALERTA: ', '')
+        : ind.nota_real || ind.fuente;
+      div.innerHTML = `
+        <div class="alerta-dim" style="color:${dim.color}">${ICONS[dim.id]} ${dim.nombre}</div>
+        <div class="alerta-ind">${ind.nombre}</div>
+        <div class="alerta-nota">${nota}</div>`;
+      ag.appendChild(div);
+    });
+  }
+
+  /* ── GAUGE ───────────────────────────────────────────────────────────── */
+  countUp(document.getElementById('gauge-val'), g.score, 1, 1400);
+  registerChart('chartGauge', new Chart(document.getElementById('chartGauge'), {
     type: 'doughnut',
     data: { datasets: [{ data:[g.score, 100-g.score], backgroundColor:['#003087','#F0F5FF'], borderWidth:0, circumference:180, rotation:270 }] },
     options: { cutout:'75%', plugins:{ legend:{display:false}, tooltip:{enabled:false} } }
-  });
+  }));
   document.getElementById('insight-gauge').innerHTML =
     `<span class="ci-label">Clasificación:</span> ${g.clasificacion} ·
-     Variación: <strong>+${g.variacion.toFixed(1)} pts</strong> ·
+     ${g.periodo_comparacion && g.periodo_comparacion !== 'N/A' ? `Variación: <strong>${g.variacion >= 0 ? '+' : ''}${g.variacion.toFixed(1)} pts</strong> vs ${g.periodo_comparacion} ·` : ''}
      Cobertura de datos: <strong>${D.meta.cobertura_datos}%</strong> (${D.meta.fuentes_activas}/${D.meta.fuentes_total} fuentes) ·
      Trazabilidad: <strong>${oficiales}</strong> oficiales / <strong>${estimados}</strong> estimados`;
 
-  // RADAR
-  new Chart(document.getElementById('chartRadar'), {
+  /* ── RADAR ───────────────────────────────────────────────────────────── */
+  registerChart('chartRadar', new Chart(document.getElementById('chartRadar'), {
     type: 'radar',
     data: {
       labels: D.dimensiones.map(d => d.nombre),
       datasets: [
-        { label:'2025-T4', data:D.dimensiones.map(d=>d.score), backgroundColor:'rgba(0,48,135,0.15)', borderColor:'#003087', borderWidth:2.5, pointBackgroundColor:D.dimensiones.map(d=>d.color), pointRadius:5 },
-        { label:'2025-T3', data:D.dimensiones.map(d=>d.score_anterior), backgroundColor:'rgba(255,195,0,0.10)', borderColor:'rgba(255,195,0,0.65)', borderWidth:1.5, pointRadius:3, borderDash:[4,4] }
+        { label: D.meta.periodo,           data: D.dimensiones.map(d => d.score),          backgroundColor:'rgba(0,48,135,0.15)', borderColor:'#003087', borderWidth:2.5, pointBackgroundColor:D.dimensiones.map(d=>d.color), pointRadius:5 },
+        { label: g.periodo_comparacion,    data: D.dimensiones.map(d => d.score_anterior),  backgroundColor:'rgba(255,195,0,0.10)', borderColor:'rgba(255,195,0,0.65)', borderWidth:1.5, pointRadius:3, borderDash:[4,4] }
       ]
     },
     options: {
@@ -225,9 +460,41 @@
       scales:{ r:{ min:0, max:100, ticks:{stepSize:25,font:{size:10},color:'#90A4AE'}, grid:{color:'rgba(0,0,0,0.07)'}, pointLabels:{font:{size:11,weight:'600'},color:'#003087'} } },
       plugins:{ legend:{position:'bottom',labels:{font:{size:11}}} }
     }
-  });
+  }));
 
-  // DIM CARDS
+  /* ── CONTRIBUCIÓN PONDERADA ──────────────────────────────────────────── */
+  // contrib = score × peso (puntos que cada dim aporta al ITT global)
+  const contribActual = D.dimensiones.map(d => parseFloat((d.score * d.peso).toFixed(2)));
+  const contribPotencial = D.dimensiones.map(d => parseFloat(((100 - d.score) * d.peso).toFixed(2)));
+  registerChart('chartContrib', new Chart(document.getElementById('chartContrib'), {
+    type: 'bar',
+    data: {
+      labels: D.dimensiones.map(d => d.nombre),
+      datasets: [
+        { label:'Contribución actual (pts)',     data: contribActual,    backgroundColor: D.dimensiones.map(d=>d.color+'CC'), borderColor: D.dimensiones.map(d=>d.color), borderWidth:2, borderRadius:5, borderSkipped:false },
+        { label:'Potencial adicional (pts)',      data: contribPotencial, backgroundColor: D.dimensiones.map(d=>d.color+'28'), borderColor:'transparent', borderWidth:0, borderRadius:0, borderSkipped:false }
+      ]
+    },
+    options: {
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      scales:{
+        x:{ stacked:true, max:30, grid:{color:'rgba(0,0,0,0.05)'}, ticks:{callback:v=>v+' pts'} },
+        y:{ stacked:true, grid:{display:false}, ticks:{font:{size:11}} }
+      },
+      plugins:{
+        legend:{ position:'bottom', labels:{ font:{size:11}, boxWidth:14 } },
+        tooltip:{ callbacks:{ label: ctx => ctx.datasetIndex===0 ? ` Aporta ${ctx.raw} pts al ITT` : ` Potencial +${ctx.raw} pts adicionales` } }
+      }
+    }
+  }));
+  // insight contribution
+  const topDim    = D.dimensiones.reduce((a,b) => a.score*a.peso>b.score*b.peso ? a : b);
+  const bottomDim = D.dimensiones.reduce((a,b) => a.score*a.peso<b.score*b.peso ? a : b);
+  document.getElementById('insight-contrib').innerHTML =
+    `<span class="ci-label">Mayor contribución:</span> <strong style="color:${topDim.color}">${topDim.nombre}</strong> aporta <strong>${(topDim.score*topDim.peso).toFixed(1)} pts</strong> ·
+     Mayor potencial de mejora: <strong style="color:${bottomDim.color}">${bottomDim.nombre}</strong> puede sumar hasta <strong>${((100-bottomDim.score)*bottomDim.peso).toFixed(1)} pts</strong> adicionales.`;
+
+  /* ── DIM CARDS ───────────────────────────────────────────────────────── */
   const dimGrid = document.getElementById('dim-grid');
   D.dimensiones.forEach(dim => {
     const vc = dim.variacion >= 0 ? 'var-up' : 'var-down';
@@ -235,6 +502,7 @@
     const vs = dim.variacion >= 0 ? '+' : '';
     const cc = dim.calidad_dato === 'oficial' ? 'cal-oficial' : 'cal-preliminar';
     const cl = dim.calidad_dato === 'oficial' ? '✓ Oficial' : '⚠ Preliminar';
+    const contrib = (dim.score * dim.peso).toFixed(1);
     const card = document.createElement('div');
     card.className = 'dim-card';
     card.style.borderTopColor = dim.color;
@@ -242,37 +510,66 @@
       <div class="dim-icon">${ICONS[dim.id]||'📊'}</div>
       <div class="dim-nombre">${dim.nombre}</div>
       <div><span class="dim-score-num" style="color:${dim.color}">${dim.score.toFixed(1)}</span><span class="dim-score-max">/100</span></div>
-      <div class="dim-peso">Peso: ${(dim.peso*100).toFixed(0)}%</div>
-      <div class="dim-var ${vc}">${va} ${vs}${dim.variacion.toFixed(1)} pts</div>
+      <div class="dim-peso">Peso: ${(dim.peso*100).toFixed(0)}% · <strong>${contrib} pts</strong> al ITT</div>
+      <div class="dim-var ${vc}">${va} ${vs}${dim.variacion.toFixed(1)} pts vs anterior</div>
       <div class="dim-bar-track"><div class="dim-bar-fill" style="width:${dim.score}%;background:${dim.color}"></div></div>
       <span class="dim-calidad ${cc}">${cl}</span>`;
     dimGrid.appendChild(card);
   });
 
-  // EVOLUCIÓN
-  new Chart(document.getElementById('chartEvolucion'), {
+  /* ── EVOLUCIÓN ───────────────────────────────────────────────────────── */
+  const evolChart = registerChart('chartEvolucion', new Chart(document.getElementById('chartEvolucion'), {
     type: 'line',
     data: {
       labels: D.serie_temporal.map(p => p.periodo),
       datasets: [
-        { label:'ITT Global', data:D.serie_temporal.map(p=>p.itt), borderColor:'#003087', backgroundColor:'rgba(0,48,135,0.10)', borderWidth:3, pointRadius:5, fill:true, tension:0.3 },
-        ...D.dimensiones.map(d => ({ label:d.nombre, data:D.serie_temporal.map(p=>p[d.id]), borderColor:d.color, backgroundColor:'transparent', borderWidth:1.5, pointRadius:3, fill:false, tension:0.3, borderDash:[5,3] }))
+        { label:'ITT Global', data:D.serie_temporal.map(p=>p.itt), borderColor:'#003087', backgroundColor:'rgba(0,48,135,0.10)', borderWidth:3, pointRadius:6, pointHoverRadius:8, fill:true, tension:0.35 },
+        ...D.dimensiones.map(d => ({
+          label:d.nombre, data:D.serie_temporal.map(p=>p[d.id]),
+          borderColor:d.color, backgroundColor:'transparent', borderWidth:1.8,
+          pointRadius:4, fill:false, tension:0.35, borderDash:[5,3],
+          hidden: false
+        }))
       ]
     },
     options: {
       responsive:true, maintainAspectRatio:false,
       scales:{ y:{min:0,max:100,ticks:{stepSize:20},grid:{color:'rgba(0,0,0,0.06)'}}, x:{grid:{display:false}} },
-      plugins:{ legend:{position:'bottom',labels:{font:{size:11},boxWidth:16}}, tooltip:{mode:'index',intersect:false} }
+      plugins:{ legend:{display:false}, tooltip:{mode:'index',intersect:false} }
     }
+  }));
+
+  // Toggle buttons for dimension lines
+  const togglesEl = document.getElementById('dim-line-toggles');
+  const evolDatasets = evolChart.data.datasets;
+  // Create toggle for each dataset
+  evolDatasets.forEach((ds, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'dim-toggle-btn' + (i === 0 ? ' active' : '');
+    btn.style.borderColor = i === 0 ? '#003087' : D.dimensiones[i-1]?.color || '#ccc';
+    if (i > 0 && !btn.classList.contains('active')) btn.style.color = D.dimensiones[i-1]?.color;
+    btn.textContent = i === 0 ? 'Global' : (ICONS[D.dimensiones[i-1]?.id] || '') + ' ' + D.dimensiones[i-1]?.nombre.split(' ')[0];
+    btn.dataset.dsIdx = i;
+    btn.addEventListener('click', () => {
+      const meta = evolChart.getDatasetMeta(i);
+      const hidden = !meta.hidden;
+      evolChart.setDatasetVisibility(i, !hidden);
+      btn.classList.toggle('active', !hidden);
+      evolChart.update();
+    });
+    togglesEl.appendChild(btn);
   });
+
   const p0 = D.serie_temporal[0], pN = D.serie_temporal[D.serie_temporal.length-1];
   document.getElementById('insight-evolucion').innerHTML =
     `<span class="ci-label">Tendencia:</span> El ITT global avanzó <strong>+${(pN.itt-p0.itt).toFixed(1)} pts</strong> desde ${p0.periodo} hasta ${pN.periodo}.
-     Mayor crecimiento: <strong>Entorno Urbano (+${D.dimensiones.find(d=>d.id==='entorno_urbano').variacion.toFixed(1)} pts)</strong>.`;
+     Dimensión de mayor crecimiento: <strong style="color:${D.dimensiones.find(d=>d.id==='entorno_urbano')?.color}">Entorno Urbano (+${D.dimensiones.find(d=>d.id==='entorno_urbano').variacion.toFixed(1)} pts)</strong>.
+     Dimensión con mayor brecha por cerrar: <strong style="color:${D.dimensiones.reduce((a,b)=>a.score<b.score?a:b).color}">${D.dimensiones.reduce((a,b)=>a.score<b.score?a:b).nombre} (${D.dimensiones.reduce((a,b)=>a.score<b.score?a:b).score.toFixed(1)}/100)</strong>.`;
 
-  // TABS INDICADORES
+  /* ── TABS INDICADORES ────────────────────────────────────────────────── */
   const tabsEl = document.getElementById('dim-tabs');
   const ctsEl  = document.getElementById('dim-contents');
+
   D.dimensiones.forEach((dim, idx) => {
     const btn = document.createElement('button');
     btn.className = 'dim-tab' + (idx===0?' active':'');
@@ -286,38 +583,56 @@
     const panel = document.createElement('div');
     panel.className = 'dim-content' + (idx===0?' active':'');
     panel.dataset.idx = idx;
-    const oficialesDim = dim.indicadores.filter(i => i.oficial).length;
-    const estimadosDim = dim.indicadores.length - oficialesDim;
-    const realesConNotaDim = dim.indicadores.filter(i => i.nota_real).length;
+    const ofDim  = dim.indicadores.filter(i=>i.oficial).length;
+    const estDim = dim.indicadores.length - ofDim;
+    const realDim= dim.indicadores.filter(i=>i.nota_real).length;
+
+    // Hurtos series chart slot (only for seguridad)
+    const hurtosChartSlot = dim.id === 'seguridad' && dim.hurtos_series
+      ? `<div class="chart-card" style="margin-bottom:20px">
+           <div class="chart-card-header"><div class="chart-card-title">Evolución de Hurtos por Trimestre · ${dim.hurtos_series.fuente}</div></div>
+           <div class="chart-body">
+             <div class="chart-wrap" style="height:200px"><canvas id="chartHurtos"></canvas></div>
+             <div class="chart-insight" id="insight-hurtos"></div>
+           </div>
+         </div>`
+      : '';
+
     panel.innerHTML = `
-      <div style="margin-bottom:12px;font-size:13px;color:#37474F">
-        Score: <strong style="color:${dim.color}">${dim.score.toFixed(1)}/100</strong> ·
-        Peso: ${(dim.peso*100).toFixed(0)}% ·
-        Cobertura: ${dim.cobertura}%
+      <div class="dim-panel-header">
+        <div>
+          Score: <strong style="color:${dim.color}">${dim.score.toFixed(1)}/100</strong> ·
+          Peso: ${(dim.peso*100).toFixed(0)}% ·
+          Contribución al ITT: <strong>${(dim.score*dim.peso).toFixed(1)} pts</strong> ·
+          Cobertura: ${dim.cobertura}%
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <span class="ind-badge-of">Oficiales: ${ofDim}/${dim.indicadores.length}</span>
+          <span class="ind-badge-est">Estimados: ${estDim}</span>
+          <span class="ind-badge-real">Con dato real: ${realDim}</span>
+        </div>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-        <span style="background:#E8F5E9;color:#2E7D32;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700">Oficiales: ${oficialesDim}/${dim.indicadores.length}</span>
-        <span style="background:#FFF8E1;color:#F57F17;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700">Estimados: ${estimadosDim}</span>
-        <span style="background:#E3F2FD;color:#1565C0;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700">Con dato real trazable: ${realesConNotaDim}</span>
-      </div>
+      ${hurtosChartSlot}
       <div class="ind-grid">
         ${dim.indicadores.map(ind => {
-          const tc = ind.tendencia==='alza'?'tend-alza':ind.tendencia==='baja'?'tend-baja':'tend-estable';
-          const ta = ind.tendencia==='alza'?'↑':ind.tendencia==='baja'?'↓':'→';
-          const oc = ind.oficial?'ind-of-si':'ind-of-no';
-          const ol = ind.oficial?'Oficial':'Estimado';
-          const v  = (typeof ind.valor==='number'&&ind.valor>999) ? ind.valor.toLocaleString('es-CO') : ind.valor;
-          return `<div class="ind-card" style="border-left-color:${dim.color}">
+          const tc  = ind.tendencia==='alza'?'tend-alza':ind.tendencia==='baja'?'tend-baja':'tend-estable';
+          const ta  = ind.tendencia==='alza'?'↑':ind.tendencia==='baja'?'↓':'→';
+          const oc  = ind.oficial?'ind-of-si':'ind-of-no';
+          const ol  = ind.oficial?'Oficial':'Estimado';
+          const v   = (typeof ind.valor==='number'&&ind.valor>999) ? ind.valor.toLocaleString('es-CO') : ind.valor;
+          const isAlert = ind.nota_real?.includes('ALERTA');
+          return `<div class="ind-card${isAlert?' ind-card-alert':''}" style="border-left-color:${dim.color}">
             <div class="ind-nombre">${ind.nombre}</div>
-            <div><span class="ind-val">${v}</span><span class="ind-unidad">${ind.unidad}</span></div>
+            <div class="ind-val-row">
+              <span class="ind-val">${v}</span>
+              <span class="ind-unidad">${ind.unidad}</span>
+              <span class="ind-tend ${tc}" style="margin-left:auto">${ta} ${ind.tendencia}</span>
+            </div>
             <div class="ind-meta">
               <span class="ind-fuente">${ind.fuente}</span>
-              <div style="display:flex;gap:6px;align-items:center">
-                <span class="ind-tend ${tc}">${ta} ${ind.tendencia}</span>
-                <span class="ind-oficial ${oc}">${ol}</span>
-              </div>
+              <span class="ind-oficial ${oc}">${ol}</span>
             </div>
-            ${ind.nota_real ? `<div style="margin-top:6px;padding-top:6px;border-top:1px dashed rgba(0,0,0,0.12);font-size:10px;line-height:1.5;color:#455A64"><strong>Dato real:</strong> ${ind.nota_real}</div>` : ''}
+            ${ind.nota_real ? `<div class="ind-nota-real${isAlert?' ind-nota-alert':''}">${isAlert?'<strong>⚠ ALERTA:</strong> ':'<strong>Dato real:</strong> '}${ind.nota_real.replace('ALERTA: ','')}</div>` : ''}
           </div>`;
         }).join('')}
       </div>`;
@@ -337,59 +652,125 @@
     ctsEl.querySelectorAll('.dim-content').forEach((p, i) => p.classList.toggle('active', i===idx));
   });
 
-  // BARRIOS
-  const bs = [...D.barrios].sort((a,b) => b.itt - a.itt);
-  new Chart(document.getElementById('chartBarrios'), {
-    type:'bar',
-    data:{
-      labels: bs.map(b=>b.nombre),
-      datasets:[{ label:'ITT Estimado', data:bs.map(b=>b.itt),
-        backgroundColor: bs.map(b => b.itt>=62?'#003087':b.itt>=55?'#1565C0':'#90A4AE'),
-        borderRadius:6, borderSkipped:false }]
-    },
-    options:{
-      responsive:true, maintainAspectRatio:false, indexAxis:'y',
-      scales:{ x:{min:0,max:100,grid:{color:'rgba(0,0,0,0.06)'}}, y:{grid:{display:false}} },
-      plugins:{ legend:{display:false} }
-    }
+  // Hurtos series chart (rendered after tab panel is in DOM)
+  const segDim = D.dimensiones.find(d => d.id === 'seguridad');
+  if (segDim?.hurtos_series) {
+    const hs = segDim.hurtos_series;
+    const lastIdx = hs.serie.length - 1;
+    registerChart('chartHurtos', new Chart(document.getElementById('chartHurtos'), {
+      type: 'bar',
+      data: {
+        labels: hs.serie.map(s => s.periodo),
+        datasets: [{
+          label: 'Hurtos',
+          data:  hs.serie.map(s => s.n),
+          backgroundColor: hs.serie.map((s, i) =>
+            i === lastIdx ? '#C1272D' : i >= lastIdx-3 ? 'rgba(193,39,45,0.5)' : 'rgba(193,39,45,0.25)'
+          ),
+          borderRadius: 4, borderSkipped: false
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        scales:{
+          y:{ beginAtZero:false, min:200, grid:{color:'rgba(0,0,0,0.05)'}, ticks:{font:{size:10}} },
+          x:{ grid:{display:false}, ticks:{font:{size:10}} }
+        },
+        plugins:{ legend:{display:false}, tooltip:{callbacks:{label: ctx=>`${ctx.raw} hurtos`}} }
+      }
+    }));
+    const hurtosMax = Math.max(...hs.serie.map(s=>s.n));
+    const hurtosMin = hs.serie[lastIdx].n;
+    const pctBaja   = Math.round((hurtosMax - hurtosMin) / hurtosMax * 100);
+    document.getElementById('insight-hurtos').innerHTML =
+      `<span class="ci-label">Tendencia:</span> Pico máximo <strong>${hurtosMax}</strong> hurtos (${hs.serie.find(s=>s.n===hurtosMax).periodo}) →
+       <strong>${hurtosMin}</strong> en ${hs.serie[lastIdx].periodo} — <strong style="color:#2E7D32">reducción del ${pctBaja}%</strong>.
+       Fuente: ${hs.fuente}.`;
+  }
+
+  /* ── BARRIOS ─────────────────────────────────────────────────────────── */
+  let currentSort = 'itt';
+  let barChart;
+
+  function renderBarrios() {
+    const bs = [...D.barrios].sort((a,b) => {
+      if (currentSort === 'itt')       return b.itt - a.itt;
+      if (currentSort === 'poblacion') return b.poblacion - a.poblacion;
+      if (currentSort === 'proyectos') return b.proyectos - a.proyectos;
+      return 0;
+    });
+
+    // Update chart
+    if (barChart) barChart.destroy();
+    barChart = registerChart('chartBarrios', new Chart(document.getElementById('chartBarrios'), {
+      type:'bar',
+      data:{
+        labels: bs.map(b=>b.nombre),
+        datasets:[{ label:'ITT Estimado', data:bs.map(b=>b.itt),
+          backgroundColor: bs.map(b => colorByITT(b.itt)),
+          borderRadius:6, borderSkipped:false }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false, indexAxis:'y',
+        scales:{ x:{min:0,max:100,grid:{color:'rgba(0,0,0,0.06)'},ticks:{stepSize:20}}, y:{grid:{display:false}} },
+        plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>`ITT ${ctx.raw.toFixed(1)}/100`}} }
+      }
+    }));
+
+    // Update cards
+    const barriosGrid = document.getElementById('barrios-grid');
+    barriosGrid.innerHTML = '';
+    bs.forEach((b,i) => {
+      const color = colorByITT(b.itt);
+      const div = document.createElement('div');
+      div.className = 'barrio-item';
+      div.innerHTML = `
+        <div class="barrio-top">
+          <div class="barrio-nombre">#${i+1} ${b.nombre}</div>
+          <div class="barrio-score" style="color:${color}">${b.itt.toFixed(1)}</div>
+        </div>
+        <div class="barrio-meta">
+          <span>👥 ${b.poblacion.toLocaleString('es-CO')} hab.</span>
+          <span>🔨 ${b.proyectos} proyectos</span>
+        </div>
+        <div class="barrio-bar-track"><div class="barrio-bar-fill" style="width:${b.itt}%;background:${color}"></div></div>`;
+      barriosGrid.appendChild(div);
+    });
+  }
+
+  renderBarrios();
+
+  document.getElementById('barrio-sort-group').addEventListener('click', e => {
+    const btn = e.target.closest('.barrio-sort-btn');
+    if (!btn) return;
+    document.querySelectorAll('.barrio-sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSort = btn.dataset.sort;
+    renderBarrios();
   });
 
-  const barriosGrid = document.getElementById('barrios-grid');
-  bs.forEach((b,i) => {
-    const color = b.itt>=62?'#003087':b.itt>=55?'#1565C0':'#90A4AE';
-    const div = document.createElement('div');
-    div.className = 'barrio-item';
-    div.innerHTML = `
-      <div class="barrio-top">
-        <div class="barrio-nombre">#${i+1} ${b.nombre}</div>
-        <div class="barrio-score" style="color:${color}">${b.itt.toFixed(1)}</div>
-      </div>
-      <div class="barrio-meta">
-        <span>👥 ${b.poblacion.toLocaleString('es-CO')} hab.</span>
-        <span>🔨 ${b.proyectos} proyectos</span>
-      </div>
-      <div class="barrio-bar-track"><div class="barrio-bar-fill" style="width:${b.itt}%"></div></div>`;
-    barriosGrid.appendChild(div);
-  });
-
-  // CALIDAD
+  /* ── CALIDAD ─────────────────────────────────────────────────────────── */
   const calidadGrid = document.getElementById('calidad-grid');
+  const madureza = D.meta.version==='preliminar'
+    ? Math.round((D.meta.cobertura_datos + pctOficiales) / 2) : 100;
+
   [
-    { titulo:'Cobertura de Fuentes',    pct:D.meta.cobertura_datos,                         sub:`${D.meta.fuentes_activas} de ${D.meta.fuentes_total} fuentes activas` },
-    { titulo:'Indicadores Oficiales',   pct:pctOficiales,                                     sub:`${oficiales} de ${allInd.length} indicadores con fuente oficial` },
-    { titulo:'Indicadores Estimados',   pct:pctEstimados,                                     sub:`${estimados} de ${allInd.length} indicadores con dato estimado` },
-    { titulo:'Madurez del ITT',         pct:D.meta.version==='preliminar'?Math.round((D.meta.cobertura_datos + pctOficiales) / 2):100, sub:D.meta.version==='preliminar'?'Preliminar · cobertura parcial de dimensiones':'ITT Oficial validado' }
+    { titulo:'Cobertura de Fuentes',   pct:D.meta.cobertura_datos, sub:`${D.meta.fuentes_activas} de ${D.meta.fuentes_total} fuentes activas`,               color:'#003087' },
+    { titulo:'Indicadores Oficiales',  pct:pctOficiales,           sub:`${oficiales} de ${allInd.length} indicadores con fuente oficial`,                    color:'#2E7D32' },
+    { titulo:'Indicadores Estimados',  pct:100-pctOficiales,       sub:`${estimados} de ${allInd.length} indicadores con dato estimado`,                     color:'#F57F17' },
+    { titulo:'Madurez del ITT',        pct:madureza,               sub:D.meta.version==='preliminar'?'Preliminar · cobertura parcial de dimensiones':'ITT Oficial validado', color:'#1565C0' }
   ].forEach(item => {
     const div = document.createElement('div');
     div.className = 'cal-card';
     div.innerHTML = `
       <div class="cal-titulo">${item.titulo}</div>
-      <div class="cal-progress-outer"><div class="cal-progress-fill" style="width:${item.pct}%"></div></div>
-      <div class="cal-pct">${item.pct}%</div>
+      <div class="cal-progress-outer"><div class="cal-progress-fill" style="width:${item.pct}%;background:${item.color}"></div></div>
+      <div class="cal-pct" style="color:${item.color}">${item.pct}%</div>
       <div class="cal-sub">${item.sub}</div>`;
     calidadGrid.appendChild(div);
   });
 
+  // Leyenda calidad
   const legDiv = document.createElement('div');
   legDiv.className = 'cal-card';
   legDiv.innerHTML = `
@@ -400,6 +781,21 @@
       <div class="cal-leg-item"><div class="cal-leg-dot" style="background:#90A4AE"></div><span><strong>Sin dato</strong> — Pendiente de recolección</span></div>
     </div>`;
   calidadGrid.appendChild(legDiv);
+
+  // Meta nota
+  if (D.meta.nota) {
+    document.getElementById('meta-nota').innerHTML =
+      `<div class="meta-nota-inner"><span class="ci-label">Nota metodológica:</span> ${D.meta.nota}</div>`;
+  }
+
+  attachExpandButtons();
+  document.getElementById('chart-modal-close')?.addEventListener('click', closeChartModal);
+  document.getElementById('chart-modal')?.addEventListener('click', e => {
+    if (e.target.id === 'chart-modal') closeChartModal();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeChartModal();
+  });
 
 })();
 </script>

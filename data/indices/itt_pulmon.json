@@ -3,18 +3,21 @@
     "territorio": "Pulmón de Oriente",
     "version": "preliminar",
     "periodo": "2025-T4",
-    "fecha_calculo": "2026-03-01",
-    "cobertura_datos": 78,
-    "fuentes_activas": 12,
-    "fuentes_total": 14,
-    "nota": "ITT preliminar. Seguridad: 3.990 hurtos + 287 homicidios + 1.502 VIF + 98 VBG (SIEDCO). Entorno Urbano: 6 polígonos AHDI (11.71 ha) + 157 mejoramientos de vivienda 2025-2026. 68 sedes educativas geolocalizadas. Otros indicadores en validación."
+    "fecha_calculo": "2026-03-14",
+    "cobertura_datos": 100,
+    "fuentes_activas": 24,
+    "fuentes_total": 24,
+    "nota": "ITT preliminar. Fuentes GIS verificadas: 19 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 58.3,
-    "score_anterior": 51.6,
-    "variacion": 6.7,
+    "score": 43.0,
+    "score_anterior": 41.1,
+    "variacion": 1.9,
     "clasificacion": "Nivel 2 · Consolidación",
-    "rango": [41, 60],
+    "rango": [
+      40,
+      60
+    ],
     "periodo_comparacion": "2025-T3"
   },
   "dimensiones": [
@@ -22,38 +25,121 @@
       "id": "seguridad",
       "nombre": "Seguridad",
       "icono": "shield",
-      "peso": 0.20,
-      "score": 44.3,
-      "score_anterior": 37.1,
-      "variacion": 7.2,
+      "peso": 0.2,
+      "score": 56.5,
+      "score_anterior": 47.0,
+      "variacion": 9.5,
       "color": "#C1272D",
       "calidad_dato": "preliminar",
-      "cobertura": 75,
+      "cobertura": 100,
       "indicadores": [
-        { "nombre": "Homicidios (trimestral 2025-T4)", "valor": 36, "unidad": "casos", "tendencia": "baja", "fuente": "Policía Nacional / SIEDCO · 287 registros 2023-2025", "oficial": true, "nota_real": "2023=117 · 2024=85 · 2025=85 — reducción 27%" },
-        { "nombre": "Hurtos reportados (trimestral)", "valor": 260, "unidad": "casos", "tendencia": "baja", "fuente": "Policía Nacional / SIEDCO · 3.990 registros 2023-2025", "oficial": true, "nota_real": "Pico 434 (2023-T1) → 260 (2025-T4) — reducción 40%" },
-        { "nombre": "Violencia Intrafamiliar (trimestral)", "valor": 105, "unidad": "casos", "tendencia": "alza", "fuente": "Policía Nacional / SIEDCO · 1.502 registros 2023-2025", "oficial": true, "nota_real": "ALERTA: 2023=457 · 2024=483 · 2025=562 — incremento +23%" },
-        { "nombre": "VBG reportadas (2025)", "valor": 98, "unidad": "casos", "tendencia": "estable", "fuente": "Policía Nacional / SIEDCO · 98 registros 2025", "oficial": true, "nota_real": "C13=58 · C14=37 — solo período 2025" },
-        { "nombre": "Percepción de seguridad", "valor": 38, "unidad": "%", "tendencia": "alza", "fuente": "Encuesta ITT (estimado)", "oficial": false },
-        { "nombre": "Presencia institucional", "valor": 3, "unidad": "CAI activos", "tendencia": "estable", "fuente": "Secretaría de Seguridad / MECAL · verificado GIS", "oficial": true, "nota_real": "CAI Charco Azul + 2 adicionales identificados en shapefile" }
+        {
+          "nombre": "Homicidios (trimestral)",
+          "valor": 36,
+          "unidad": "casos",
+          "tendencia": "alza",
+          "fuente": "Policía Nacional / SIEDCO",
+          "oficial": true,
+          "nota_real": "2023=117 · 2024=85 · 2025=85"
+        },
+        {
+          "nombre": "Hurtos reportados (trimestral)",
+          "valor": 260,
+          "unidad": "casos",
+          "tendencia": "baja",
+          "fuente": "Policía Nacional / SIEDCO",
+          "oficial": true,
+          "nota_real": "Pico 434 (2023-T1) → 260 (2025-T4) — reducción 40%"
+        },
+        {
+          "nombre": "Violencia Intrafamiliar (trimestral)",
+          "valor": 105,
+          "unidad": "casos",
+          "tendencia": "baja",
+          "fuente": "Policía Nacional / SIEDCO",
+          "oficial": true,
+          "nota_real": "ALERTA: 2023=457 · 2024=483 · 2025=562 — incremento +23%"
+        },
+        {
+          "nombre": "VBG reportadas (anual)",
+          "valor": 98,
+          "unidad": "casos",
+          "tendencia": "estable",
+          "fuente": "Policía Nacional / SIEDCO",
+          "oficial": true,
+          "nota_real": "CComuna 13=58 · CComuna 14=37 · CComuna 15=2 — solo período 2025"
+        },
+        {
+          "nombre": "Percepción de seguridad",
+          "valor": 38,
+          "unidad": "%",
+          "tendencia": "estable",
+          "fuente": "Encuesta ITT (estimado)",
+          "oficial": false
+        },
+        {
+          "nombre": "Presencia institucional",
+          "valor": 3,
+          "unidad": "CAI activos",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Seguridad / MECAL · verificado GIS",
+          "oficial": true,
+          "nota_real": "Cai Charco Azul + Cai Pondaje + Cai Bonilla Aragon"
+        }
       ],
       "hurtos_series": {
         "fuente": "Policía Nacional / SIEDCO",
         "unidad": "casos por trimestre",
-        "nota": "Datos reales 2023-2025. Área del Pulmón de Oriente.",
+        "nota": "Datos reales 2023–2025. Área del Pulmón de Oriente.",
         "serie": [
-          { "periodo": "2023-T1", "n": 434 },
-          { "periodo": "2023-T2", "n": 373 },
-          { "periodo": "2023-T3", "n": 378 },
-          { "periodo": "2023-T4", "n": 259 },
-          { "periodo": "2024-T1", "n": 377 },
-          { "periodo": "2024-T2", "n": 352 },
-          { "periodo": "2024-T3", "n": 349 },
-          { "periodo": "2024-T4", "n": 326 },
-          { "periodo": "2025-T1", "n": 287 },
-          { "periodo": "2025-T2", "n": 305 },
-          { "periodo": "2025-T3", "n": 290 },
-          { "periodo": "2025-T4", "n": 260 }
+          {
+            "periodo": "2023-T1",
+            "n": 434
+          },
+          {
+            "periodo": "2023-T2",
+            "n": 373
+          },
+          {
+            "periodo": "2023-T3",
+            "n": 378
+          },
+          {
+            "periodo": "2023-T4",
+            "n": 259
+          },
+          {
+            "periodo": "2024-T1",
+            "n": 377
+          },
+          {
+            "periodo": "2024-T2",
+            "n": 352
+          },
+          {
+            "periodo": "2024-T3",
+            "n": 349
+          },
+          {
+            "periodo": "2024-T4",
+            "n": 326
+          },
+          {
+            "periodo": "2025-T1",
+            "n": 287
+          },
+          {
+            "periodo": "2025-T2",
+            "n": 305
+          },
+          {
+            "periodo": "2025-T3",
+            "n": 290
+          },
+          {
+            "periodo": "2025-T4",
+            "n": 260
+          }
         ]
       }
     },
@@ -61,38 +147,110 @@
       "id": "entorno_urbano",
       "nombre": "Entorno Urbano",
       "icono": "city",
-      "peso": 0.30,
-      "score": 71.8,
-      "score_anterior": 59.4,
-      "variacion": 12.4,
+      "peso": 0.3,
+      "score": 38.7,
+      "score_anterior": 38.7,
+      "variacion": 0.0,
       "color": "#1565C0",
       "calidad_dato": "oficial",
-      "cobertura": 90,
+      "cobertura": 100,
       "indicadores": [
-        { "nombre": "Espacio público recuperado", "valor": 4.2, "unidad": "ha", "tendencia": "alza", "fuente": "Secretaría de Vivienda", "oficial": true },
-        { "nombre": "Obras de infraestructura activas", "valor": 34, "unidad": "frentes", "tendencia": "alza", "fuente": "UP Secretarías", "oficial": true },
-        { "nombre": "Luminarias instaladas", "valor": 210, "unidad": "unidades", "tendencia": "alza", "fuente": "Emcali / Alumbrado", "oficial": true },
-        { "nombre": "Parques y zonas verdes intervenidos", "valor": 6, "unidad": "equipamientos", "tendencia": "alza", "fuente": "Secretaría de Deporte", "oficial": true },
-        { "nombre": "Polígonos en legalización urbanística (AHDI)", "valor": 6, "unidad": "polígonos / 11.71 ha", "tendencia": "alza", "fuente": "Secretaría de Vivienda AHDI · verificado GIS", "oficial": true, "nota_real": "6 polígonos priorizados LU 2024-2027 · 10.23 ha urbanizadas (87.4% prom.) · Barrios: Mojica, Alfonso Bonilla Aragón, El Poblado II, Laguna del Pondaje" },
-        { "nombre": "Viviendas en mejoramiento (2025-2026)", "valor": 157, "unidad": "viviendas", "tendencia": "alza", "fuente": "Secretaría de Vivienda / Convenio Ministerio · verificado GIS", "oficial": true, "nota_real": "8 sectores · 157 viviendas · Los Lagos=78, Mojica=24, JMM II=14, JMM I=13, Charco Azul+ABA=12c/u · 1 ejecutado, 3 en ejecución, 5 asignados" }
+        {
+          "nombre": "Espacio público recuperado",
+          "valor": 4.2,
+          "unidad": "ha",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Vivienda",
+          "oficial": true
+        },
+        {
+          "nombre": "Obras de infraestructura activas",
+          "valor": 5,
+          "unidad": "frentes",
+          "tendencia": "estable",
+          "fuente": "UP Secretarías",
+          "oficial": true
+        },
+        {
+          "nombre": "Luminarias instaladas",
+          "valor": 210,
+          "unidad": "unidades",
+          "tendencia": "estable",
+          "fuente": "Emcali / Alumbrado",
+          "oficial": true
+        },
+        {
+          "nombre": "Parques y zonas verdes intervenidos",
+          "valor": 6,
+          "unidad": "equipamientos",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Deporte",
+          "oficial": true
+        },
+        {
+          "nombre": "Polígonos en legalización urbanística (AHDI)",
+          "valor": 6,
+          "unidad": "polígonos / ha",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Vivienda AHDI · verificado GIS",
+          "oficial": true,
+          "nota_real": "6 polígonos priorizados LU 2024-2027 · 11.71 ha urbanizadas (89.1% prom.) · Barrios: Sector Laguna del Pondaje, Alfonso Bonilla Aragón, Mojica, El Poblado II"
+        },
+        {
+          "nombre": "Viviendas en mejoramiento (2025-2026)",
+          "valor": 157,
+          "unidad": "viviendas",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Vivienda / Convenio Ministerio · verificado GIS",
+          "oficial": true,
+          "nota_real": "8 sectores · 157 viviendas · Los Lagos=78, Mojica=24, José Manuel Marroquín II=14 · 0 ejecutado, 3 en ejecución, 5 asignados"
+        }
       ]
     },
     {
       "id": "movilidad",
       "nombre": "Movilidad",
       "icono": "route",
-      "peso": 0.20,
-      "score": 55.2,
-      "score_anterior": 53.1,
-      "variacion": 2.1,
+      "peso": 0.2,
+      "score": 40.2,
+      "score_anterior": 40.2,
+      "variacion": 0.0,
       "color": "#00796B",
       "calidad_dato": "preliminar",
-      "cobertura": 60,
+      "cobertura": 100,
       "indicadores": [
-        { "nombre": "Tramos viales mejorados", "valor": 3.8, "unidad": "km", "tendencia": "alza", "fuente": "Infraestructura Vial", "oficial": true },
-        { "nombre": "Accesibilidad a MIO (500m)", "valor": 72, "unidad": "%", "tendencia": "estable", "fuente": "MIO / Metrocali", "oficial": true },
-        { "nombre": "Tiempo promedio de desplazamiento", "valor": 38, "unidad": "min", "tendencia": "baja", "fuente": "Encuesta estimada", "oficial": false },
-        { "nombre": "Ciclorutas activas en el área", "valor": 1.2, "unidad": "km", "tendencia": "alza", "fuente": "Secretaría de Movilidad", "oficial": true }
+        {
+          "nombre": "Tramos viales mejorados",
+          "valor": 3.21,
+          "unidad": "km",
+          "tendencia": "estable",
+          "fuente": "Infraestructura Vial · verificado GIS",
+          "oficial": true
+        },
+        {
+          "nombre": "Accesibilidad a MIO (500m)",
+          "valor": 72,
+          "unidad": "%",
+          "tendencia": "estable",
+          "fuente": "MIO / Metrocali",
+          "oficial": true
+        },
+        {
+          "nombre": "Tiempo promedio de desplazamiento",
+          "valor": 38,
+          "unidad": "min",
+          "tendencia": "estable",
+          "fuente": "Encuesta estimada",
+          "oficial": false
+        },
+        {
+          "nombre": "Ciclorutas activas en el área",
+          "valor": 1.2,
+          "unidad": "km",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Movilidad",
+          "oficial": true
+        }
       ]
     },
     {
@@ -100,17 +258,45 @@
       "nombre": "Desarrollo Social",
       "icono": "people",
       "peso": 0.15,
-      "score": 63.5,
-      "score_anterior": 57.7,
-      "variacion": 5.8,
+      "score": 47.0,
+      "score_anterior": 47.0,
+      "variacion": 0.0,
       "color": "#6A1B9A",
       "calidad_dato": "oficial",
-      "cobertura": 75,
+      "cobertura": 100,
       "indicadores": [
-        { "nombre": "Niños en programas de atención", "valor": 1840, "unidad": "beneficiarios", "tendencia": "alza", "fuente": "Secretaría de Bienestar", "oficial": true },
-        { "nombre": "Sedes educativas oficiales activas", "valor": 68, "unidad": "sedes", "tendencia": "estable", "fuente": "Secretaría de Educación · verificado GIS", "oficial": true, "nota_real": "68 sedes geolocalizadas en el área del Pulmón de Oriente" },
-        { "nombre": "Acceso a servicios de salud", "valor": 76, "unidad": "%", "tendencia": "alza", "fuente": "Secretaría de Salud", "oficial": true },
-        { "nombre": "Familias en programas de subsidio", "valor": 520, "unidad": "familias", "tendencia": "alza", "fuente": "Secretaría de Bienestar", "oficial": true }
+        {
+          "nombre": "Niños en programas de atención",
+          "valor": 1840,
+          "unidad": "beneficiarios",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Bienestar",
+          "oficial": true
+        },
+        {
+          "nombre": "Sedes educativas oficiales activas",
+          "valor": 68,
+          "unidad": "sedes",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Educación · verificado GIS",
+          "oficial": true
+        },
+        {
+          "nombre": "Acceso a servicios de salud",
+          "valor": 76,
+          "unidad": "%",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Salud",
+          "oficial": true
+        },
+        {
+          "nombre": "Familias en programas de subsidio",
+          "valor": 520,
+          "unidad": "familias",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Bienestar",
+          "oficial": true
+        }
       ]
     },
     {
@@ -118,34 +304,116 @@
       "nombre": "Actividad Económica",
       "icono": "store",
       "peso": 0.15,
-      "score": 48.7,
-      "score_anterior": 47.5,
-      "variacion": 1.2,
+      "score": 33.5,
+      "score_anterior": 33.5,
+      "variacion": 0.0,
       "color": "#E65100",
       "calidad_dato": "preliminar",
-      "cobertura": 40,
+      "cobertura": 100,
       "indicadores": [
-        { "nombre": "Negocios formalizados en el área", "valor": 87, "unidad": "establecimientos", "tendencia": "alza", "fuente": "Cámara de Comercio (estimado)", "oficial": false },
-        { "nombre": "Empleos generados por obras", "valor": 340, "unidad": "empleos", "tendencia": "alza", "fuente": "UP Secretarías", "oficial": true },
-        { "nombre": "Inversión privada atraída", "valor": 4200, "unidad": "millones COP", "tendencia": "estable", "fuente": "Cámara de Comercio (estimado)", "oficial": false },
-        { "nombre": "Iniciativas de emprendimiento apoyadas", "valor": 23, "unidad": "unidades", "tendencia": "alza", "fuente": "Secretaría de Desarrollo", "oficial": false }
+        {
+          "nombre": "Negocios formalizados en el área",
+          "valor": 87,
+          "unidad": "establecimientos",
+          "tendencia": "estable",
+          "fuente": "Cámara de Comercio (estimado)",
+          "oficial": false
+        },
+        {
+          "nombre": "Empleos generados por obras",
+          "valor": 340,
+          "unidad": "empleos",
+          "tendencia": "estable",
+          "fuente": "UP Secretarías",
+          "oficial": true
+        },
+        {
+          "nombre": "Inversión privada atraída",
+          "valor": 4200,
+          "unidad": "millones COP",
+          "tendencia": "estable",
+          "fuente": "Cámara de Comercio (estimado)",
+          "oficial": false
+        },
+        {
+          "nombre": "Iniciativas de emprendimiento apoyadas",
+          "valor": 23,
+          "unidad": "unidades",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Desarrollo",
+          "oficial": false
+        }
       ]
     }
   ],
   "serie_temporal": [
-    { "periodo": "2023-T4", "itt": 43.0, "seguridad": 30.2, "entorno_urbano": 44.0, "movilidad": 50.0, "desarrollo_social": 48.0, "actividad_economica": 44.0 },
-    { "periodo": "2024-T2", "itt": 48.2, "seguridad": 33.5, "entorno_urbano": 54.2, "movilidad": 51.8, "desarrollo_social": 53.2, "actividad_economica": 45.9 },
-    { "periodo": "2025-T1", "itt": 53.4, "seguridad": 39.4, "entorno_urbano": 63.1, "movilidad": 53.5, "desarrollo_social": 58.8, "actividad_economica": 47.0 },
-    { "periodo": "2025-T4", "itt": 58.3, "seguridad": 44.3, "entorno_urbano": 71.8, "movilidad": 55.2, "desarrollo_social": 63.5, "actividad_economica": 48.7 }
+    {
+      "periodo": "2025-T3",
+      "itt": 41.1,
+      "seguridad": 47.0,
+      "entorno_urbano": 38.7,
+      "movilidad": 40.2,
+      "desarrollo_social": 47.0,
+      "actividad_economica": 33.5
+    },
+    {
+      "periodo": "2025-T4",
+      "itt": 43.0,
+      "seguridad": 56.5,
+      "entorno_urbano": 38.7,
+      "movilidad": 40.2,
+      "desarrollo_social": 47.0,
+      "actividad_economica": 33.5
+    }
   ],
   "barrios": [
-    { "nombre": "Alfonso López",    "itt": 65.2, "poblacion": 18400, "proyectos": 12 },
-    { "nombre": "El Vergel",        "itt": 61.8, "poblacion": 9200,  "proyectos": 8  },
-    { "nombre": "Mojica",           "itt": 59.4, "poblacion": 21300, "proyectos": 15 },
-    { "nombre": "Pízamos I",        "itt": 57.1, "poblacion": 7800,  "proyectos": 6  },
-    { "nombre": "Manuela Beltrán",  "itt": 54.9, "poblacion": 11200, "proyectos": 9  },
-    { "nombre": "Cauquita",         "itt": 52.3, "poblacion": 6400,  "proyectos": 5  },
-    { "nombre": "Nueva Floresta",   "itt": 50.8, "poblacion": 8900,  "proyectos": 7  },
-    { "nombre": "Sena",             "itt": 48.5, "poblacion": 5200,  "proyectos": 4  }
+    {
+      "nombre": "Alfonso López",
+      "itt": 65.2,
+      "poblacion": 18400,
+      "proyectos": 12
+    },
+    {
+      "nombre": "El Vergel",
+      "itt": 61.8,
+      "poblacion": 9200,
+      "proyectos": 8
+    },
+    {
+      "nombre": "Mojica",
+      "itt": 59.4,
+      "poblacion": 21300,
+      "proyectos": 15
+    },
+    {
+      "nombre": "Pízamos I",
+      "itt": 57.1,
+      "poblacion": 7800,
+      "proyectos": 6
+    },
+    {
+      "nombre": "Manuela Beltrán",
+      "itt": 54.9,
+      "poblacion": 11200,
+      "proyectos": 9
+    },
+    {
+      "nombre": "Cauquita",
+      "itt": 52.3,
+      "poblacion": 6400,
+      "proyectos": 5
+    },
+    {
+      "nombre": "Nueva Floresta",
+      "itt": 50.8,
+      "poblacion": 8900,
+      "proyectos": 7
+    },
+    {
+      "nombre": "Sena",
+      "itt": 48.5,
+      "poblacion": 5200,
+      "proyectos": 4
+    }
   ]
 }

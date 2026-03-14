@@ -1,0 +1,79 @@
+{
+  "_nota": "Valores manuales para indicadores sin fuente GeoJSON directa. Actualizar cada trimestre antes de ejecutar calcular_itt.py. Bloque 'default' se usa si no existe el bloque del período específico.",
+  "default": {
+    "seguridad": {
+      "percepcion_seguridad": 38
+    },
+    "entorno_urbano": {
+      "espacio_publico": 4.2,
+      "luminarias": 210,
+      "parques": 6
+    },
+    "movilidad": {
+      "accesibilidad_mio": 72,
+      "tiempo_desplazamiento": 38,
+      "ciclorutas": 1.2
+    },
+    "desarrollo_social": {
+      "ninos_programas": 1840,
+      "acceso_salud": 76,
+      "familias_subsidio": 520
+    },
+    "actividad_economica": {
+      "negocios_formalizados": 87,
+      "empleos_obra": 340,
+      "inversion_privada": 4200,
+      "emprendimientos": 23
+    },
+    "_barrios": [
+      {
+        "nombre": "Alfonso López",
+        "itt": 65.2,
+        "poblacion": 18400,
+        "proyectos": 12
+      },
+      {
+        "nombre": "El Vergel",
+        "itt": 61.8,
+        "poblacion": 9200,
+        "proyectos": 8
+      },
+      {
+        "nombre": "Mojica",
+        "itt": 59.4,
+        "poblacion": 21300,
+        "proyectos": 15
+      },
+      {
+        "nombre": "Pízamos I",
+        "itt": 57.1,
+        "poblacion": 7800,
+        "proyectos": 6
+      },
+      {
+        "nombre": "Manuela Beltrán",
+        "itt": 54.9,
+        "poblacion": 11200,
+        "proyectos": 9
+      },
+      {
+        "nombre": "Cauquita",
+        "itt": 52.3,
+        "poblacion": 6400,
+        "proyectos": 5
+      },
+      {
+        "nombre": "Nueva Floresta",
+        "itt": 50.8,
+        "poblacion": 8900,
+        "proyectos": 7
+      },
+      {
+        "nombre": "Sena",
+        "itt": 48.5,
+        "poblacion": 5200,
+        "proyectos": 4
+      }
+    ]
+  }
+}

@@ -27,11 +27,11 @@
     </div>
     <div class="hero-kpi-grid">
       <div class="hero-kpi accent">
-        <div class="hero-kpi-val">5</div>
+        <div class="hero-kpi-val" id="hero-kpi-dims">5</div>
         <div class="hero-kpi-lbl">Dimensiones</div>
       </div>
       <div class="hero-kpi">
-        <div class="hero-kpi-val">20</div>
+        <div class="hero-kpi-val" id="hero-kpi-inds">20</div>
         <div class="hero-kpi-lbl">Indicadores</div>
       </div>
       <div class="hero-kpi">
@@ -39,7 +39,7 @@
         <div class="hero-kpi-lbl">Escala ITT</div>
       </div>
       <div class="hero-kpi">
-        <div class="hero-kpi-val">Trim.</div>
+        <div class="hero-kpi-val" id="hero-kpi-freq">Trim.</div>
         <div class="hero-kpi-lbl">Frecuencia</div>
       </div>
     </div>
@@ -298,92 +298,128 @@
 </footer>
 
 <script>
-const DIMS = [
-  {
-    id:'seguridad', nombre:'Seguridad', icono:'🛡️', color:'#C1272D', peso:0.20,
-    desc:'Mide la reducción de hechos violentos y la percepción ciudadana de seguridad en el territorio.',
-    indicadores:['Tasa de homicidios (x 100k hab.)','Hurtos reportados','Percepción de seguridad ciudadana','Presencia institucional (CAI activos)']
-  },
-  {
-    id:'entorno_urbano', nombre:'Entorno Urbano', icono:'🏙️', color:'#1565C0', peso:0.30,
-    desc:'Mide la recuperación y mejora del espacio público, infraestructura y equipamientos.',
-    indicadores:['Espacio público recuperado (ha)','Frentes de obra activos','Luminarias instaladas','Parques y zonas verdes intervenidos']
-  },
-  {
-    id:'movilidad', nombre:'Movilidad', icono:'🚦', color:'#00796B', peso:0.20,
-    desc:'Evalúa la conectividad, accesibilidad al transporte público y mejora vial en el área.',
-    indicadores:['Tramos viales mejorados (km)','Accesibilidad a MIO (radio 500m)','Tiempo promedio de desplazamiento','Ciclorutas activas en el área']
-  },
-  {
-    id:'desarrollo_social', nombre:'Desarrollo Social', icono:'👥', color:'#6A1B9A', peso:0.15,
-    desc:'Mide el acceso a servicios sociales, cobertura educativa y programas de atención.',
-    indicadores:['Niños en programas de atención','Cobertura educativa preescolar-media','Acceso a servicios de salud','Familias en programas de subsidio']
-  },
-  {
-    id:'actividad_economica', nombre:'Actividad Económica', icono:'🏪', color:'#E65100', peso:0.15,
-    desc:'Captura la dinámica económica local: formalización, empleo y atracción de inversión.',
-    indicadores:['Negocios formalizados en el área','Empleos generados por obras','Inversión privada atraída','Iniciativas de emprendimiento apoyadas']
+(async () => {
+  const grid = document.getElementById('metod-dim-grid');
+  const tbody = document.getElementById('fuentes-tbody');
+  const kpiDims = document.getElementById('hero-kpi-dims');
+  const kpiInds = document.getElementById('hero-kpi-inds');
+  const kpiFreq = document.getElementById('hero-kpi-freq');
+  const heroDate = document.querySelector('.hero-date');
+
+  const DIM_META = {
+    seguridad: {
+      icono: '🛡️',
+      desc: 'Mide la reducción de hechos violentos y la percepción ciudadana de seguridad en el territorio.'
+    },
+    entorno_urbano: {
+      icono: '🏙️',
+      desc: 'Mide la recuperación y mejora del espacio público, infraestructura, equipamientos y vivienda.'
+    },
+    movilidad: {
+      icono: '🚦',
+      desc: 'Evalúa conectividad, accesibilidad al transporte público y mejora vial en el área.'
+    },
+    desarrollo_social: {
+      icono: '👥',
+      desc: 'Mide acceso a servicios sociales, cobertura educativa y programas de atención.'
+    },
+    actividad_economica: {
+      icono: '🏪',
+      desc: 'Captura la dinámica económica local: formalización, empleo y atracción de inversión.'
+    }
+  };
+
+  function inferTipo(indicador) {
+    const fuente = (indicador.fuente || '').toLowerCase();
+    if (fuente.includes('encuesta')) return 'Encuesta';
+    if (
+      fuente.includes('gis') ||
+      fuente.includes('geo') ||
+      fuente.includes('siedco') ||
+      fuente.includes('metrocali') ||
+      fuente.includes('polic')
+    ) return 'Geoespacial';
+    return 'Administrativo';
   }
-];
 
-// Tarjetas dimensión
-const grid = document.getElementById('metod-dim-grid');
-DIMS.forEach(dim => {
-  const card = document.createElement('div');
-  card.className = 'metod-dim-card';
-  card.style.borderTopColor = dim.color;
-  card.innerHTML = `
-    <div style="font-size:26px;margin-bottom:8px">${dim.icono}</div>
-    <div class="metod-dim-peso" style="color:${dim.color}">${(dim.peso*100).toFixed(0)}%</div>
-    <div class="metod-dim-peso-lbl">Ponderación</div>
-    <div class="metod-dim-nombre">${dim.nombre}</div>
-    <div style="font-size:11px;color:#37474F;line-height:1.5;margin-bottom:14px">${dim.desc}</div>
-    <ul class="metod-ind-list">
-      ${dim.indicadores.map(i=>`<li>${i}</li>`).join('')}
-    </ul>`;
-  grid.appendChild(card);
-});
+  function inferFrecuencia(indicador) {
+    const nombre = (indicador.nombre || '').toLowerCase();
+    const fuente = (indicador.fuente || '').toLowerCase();
+    if (nombre.includes('anual')) return 'Anual';
+    if (nombre.includes('semestral')) return 'Semestral';
+    if (nombre.includes('mensual')) return 'Mensual';
+    if (nombre.includes('trimestral')) return 'Trimestral';
+    if (fuente.includes('encuesta')) return 'Semestral';
+    return 'Trimestral';
+  }
 
-// Tabla fuentes
-const FUENTES = [
-  { ind:'Tasa de homicidios',           dim:'Seguridad',           fuente:'Policía Nacional / SIEDCO',    tipo:'Administrativo', freq:'Mensual',    estado:'Oficial'   },
-  { ind:'Hurtos reportados',            dim:'Seguridad',           fuente:'SIEDCO',                       tipo:'Administrativo', freq:'Mensual',    estado:'Oficial'   },
-  { ind:'Percepción de seguridad',      dim:'Seguridad',           fuente:'Encuesta ITT',                 tipo:'Encuesta',       freq:'Semestral',  estado:'Estimado'  },
-  { ind:'Presencia institucional',      dim:'Seguridad',           fuente:'Secretaría de Seguridad',      tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
-  { ind:'Espacio público recuperado',   dim:'Entorno Urbano',      fuente:'Secretaría de Vivienda',       tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
-  { ind:'Frentes de obra activos',      dim:'Entorno Urbano',      fuente:'UP Secretarías Distritales',   tipo:'Administrativo', freq:'Mensual',    estado:'Oficial'   },
-  { ind:'Luminarias instaladas',        dim:'Entorno Urbano',      fuente:'Emcali / Alumbrado Público',   tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
-  { ind:'Parques intervenidos',         dim:'Entorno Urbano',      fuente:'Secretaría de Deporte',        tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
-  { ind:'Tramos viales mejorados',      dim:'Movilidad',           fuente:'Infraestructura Vial',         tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
-  { ind:'Accesibilidad a MIO',          dim:'Movilidad',           fuente:'Metrocali',                    tipo:'Geoespacial',    freq:'Semestral',  estado:'Oficial'   },
-  { ind:'Tiempo de desplazamiento',     dim:'Movilidad',           fuente:'Encuesta ITT',                 tipo:'Encuesta',       freq:'Semestral',  estado:'Estimado'  },
-  { ind:'Ciclorutas activas',           dim:'Movilidad',           fuente:'Secretaría de Movilidad',      tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
-  { ind:'Niños en programas',           dim:'Desarrollo Social',   fuente:'Secretaría de Bienestar',      tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
-  { ind:'Cobertura educativa',          dim:'Desarrollo Social',   fuente:'Secretaría de Educación',      tipo:'Administrativo', freq:'Anual',      estado:'Oficial'   },
-  { ind:'Acceso a salud',               dim:'Desarrollo Social',   fuente:'Secretaría de Salud',          tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
-  { ind:'Familias con subsidio',        dim:'Desarrollo Social',   fuente:'Secretaría de Bienestar',      tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
-  { ind:'Negocios formalizados',        dim:'Act. Económica',      fuente:'Cámara de Comercio',           tipo:'Administrativo', freq:'Semestral',  estado:'Estimado'  },
-  { ind:'Empleos generados',            dim:'Act. Económica',      fuente:'UP Secretarías',               tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
-  { ind:'Inversión privada',            dim:'Act. Económica',      fuente:'Cámara de Comercio',           tipo:'Administrativo', freq:'Semestral',  estado:'Estimado'  },
-  { ind:'Emprendimientos apoyados',     dim:'Act. Económica',      fuente:'Sec. Desarrollo Económico',    tipo:'Administrativo', freq:'Trimestral', estado:'Estimado'  }
-];
+  try {
+    const res = await fetch('../data/indices/itt_pulmon.json');
+    const D = await res.json();
+    const dims = Array.isArray(D.dimensiones) ? D.dimensiones : [];
+    const indicadores = dims.flatMap(dim =>
+      (dim.indicadores || []).map(ind => ({ ...ind, _dim: dim }))
+    );
 
-const DIM_COLORS = { 'Seguridad':'#C1272D','Entorno Urbano':'#1565C0','Movilidad':'#00796B','Desarrollo Social':'#6A1B9A','Act. Económica':'#E65100' };
-const tbody = document.getElementById('fuentes-tbody');
-FUENTES.forEach(f => {
-  const col  = DIM_COLORS[f.dim] || '#90A4AE';
-  const esBg = f.estado==='Oficial' ? '#E8F5E9' : '#FFF8E1';
-  const esCl = f.estado==='Oficial' ? '#2E7D32'  : '#F57F17';
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td>${f.ind}</td>
-    <td><span style="color:${col};font-weight:600;font-size:12px">${f.dim}</span></td>
-    <td>${f.fuente}</td>
-    <td>${f.tipo}</td>
-    <td>${f.freq}</td>
-    <td><span style="background:${esBg};color:${esCl};padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700">${f.estado}</span></td>`;
-  tbody.appendChild(tr);
-});
+    kpiDims.textContent = String(dims.length || 5);
+    kpiInds.textContent = String(indicadores.length || 0);
+
+    const freqCount = indicadores.reduce((acc, ind) => {
+      const f = inferFrecuencia(ind);
+      acc[f] = (acc[f] || 0) + 1;
+      return acc;
+    }, {});
+    const dominantFreq = Object.entries(freqCount).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Trimestral';
+    kpiFreq.textContent = dominantFreq === 'Trimestral' ? 'Trim.' : dominantFreq;
+
+    if (heroDate && D.meta?.periodo) {
+      heroDate.textContent = `// PLAN DE DESARROLLO 2024-2027 · VERSIÓN METODOLÓGICA 1.1 · CORTE ${D.meta.periodo}`;
+    }
+
+    dims.forEach(dim => {
+      const meta = DIM_META[dim.id] || {};
+      const icono = meta.icono || '📊';
+      const desc = meta.desc || 'Dimensión del ITT.';
+      const color = dim.color || '#90A4AE';
+      const peso = typeof dim.peso === 'number' ? dim.peso : 0;
+      const indNames = (dim.indicadores || []).map(i => i.nombre);
+
+      const card = document.createElement('div');
+      card.className = 'metod-dim-card';
+      card.style.borderTopColor = color;
+      card.innerHTML = `
+        <div style="font-size:26px;margin-bottom:8px">${icono}</div>
+        <div class="metod-dim-peso" style="color:${color}">${(peso * 100).toFixed(0)}%</div>
+        <div class="metod-dim-peso-lbl">Ponderación</div>
+        <div class="metod-dim-nombre">${dim.nombre}</div>
+        <div style="font-size:11px;color:#37474F;line-height:1.5;margin-bottom:14px">${desc}</div>
+        <ul class="metod-ind-list">
+          ${indNames.map(i => `<li>${i}</li>`).join('')}
+        </ul>`;
+      grid.appendChild(card);
+    });
+
+    indicadores.forEach(ind => {
+      const dim = ind._dim || {};
+      const color = dim.color || '#90A4AE';
+      const estado = ind.oficial ? 'Oficial' : 'Estimado';
+      const esBg = ind.oficial ? '#E8F5E9' : '#FFF8E1';
+      const esCl = ind.oficial ? '#2E7D32' : '#F57F17';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${ind.nombre}</td>
+        <td><span style="color:${color};font-weight:600;font-size:12px">${dim.nombre || 'N/A'}</span></td>
+        <td>${ind.fuente || 'N/A'}</td>
+        <td>${inferTipo(ind)}</td>
+        <td>${inferFrecuencia(ind)}</td>
+        <td><span style="background:${esBg};color:${esCl};padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700">${estado}</span></td>`;
+      tbody.appendChild(tr);
+    });
+  } catch (e) {
+    grid.innerHTML = '<div class="metod-dim-card" style="grid-column:1/-1;border-top-color:#C1272D"><div class="metod-dim-nombre">Error cargando metodología dinámica</div><div style="font-size:12px;color:#37474F;line-height:1.6">No se pudo cargar <code>data/indices/itt_pulmon.json</code>. Verifica rutas o formato del archivo.</div></div>';
+    tbody.innerHTML = '<tr><td colspan="6" style="padding:14px;color:#C1272D;font-weight:600">No se pudieron cargar las fuentes dinámicas.</td></tr>';
+  }
+})();
 </script>
 
 </body>
