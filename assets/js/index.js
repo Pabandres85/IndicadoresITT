@@ -1,19 +1,21 @@
 async function initLandingData() {
   try {
-    const data      = await DataService.load('./data/');
-    const perimetro = DataService.getPerimetro(data.poly);
-    const proyectos = DataService.getProyectos({ pts: data.pts, perimetro, mode: 'ups' });
-    const kpis      = DataService.getKPIs(proyectos);
+    const res = await fetch('./data/indices/itt_pulmon.json');
+    if (!res.ok) throw new Error('No se pudo cargar itt_pulmon.json');
+    const itt = await res.json();
 
-    document.getElementById('kpi-frentes').innerText  = kpis.total;
-    document.getElementById('kpi-inversion').innerText = '$' + Math.round(kpis.inversion / 1e6).toLocaleString('es-CO') + 'M';
+    const estadoTxt = itt.meta?.version === 'preliminar' ? 'Preliminar' : 'Oficial';
+    const ittGlobal = typeof itt.itt_global?.score === 'number' ? `${itt.itt_global.score.toFixed(1)}/100` : 'N/D';
+    const variacion = typeof itt.itt_global?.variacion === 'number' ? `${itt.itt_global.variacion >= 0 ? '+' : ''}${itt.itt_global.variacion.toFixed(1)} pts` : 'N/D';
 
-    const mapDesc = document.getElementById('map-desc');
-    if (mapDesc) {
-      mapDesc.innerText = kpis.total + ' frentes de obra (UPS) geolocalizados dentro del área de influencia del Pulmón del Oriente. Delineación del polígono, corredor hídrico y zonas de obra.';
-    }
+    document.getElementById('kpi-estado').innerText = estadoTxt;
+    document.getElementById('kpi-itt-global').innerText = ittGlobal;
+    document.getElementById('kpi-variacion').innerText = variacion;
   } catch (error) {
-    console.error("Error cargando la data geoespacial:", error);
+    console.error('Error cargando datos de ITT en index:', error);
+    document.getElementById('kpi-estado').innerText = 'Preliminar';
+    document.getElementById('kpi-itt-global').innerText = 'N/D';
+    document.getElementById('kpi-variacion').innerText = 'N/D';
   }
 }
 

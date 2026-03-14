@@ -35,13 +35,19 @@
     <button class="filter-btn" data-datamode="equipamientos">🏫 Equipamientos</button>
     <button class="filter-btn" data-datamode="ambiente">🌿 Ambiente</button>
   </div>
-  <div class="filter-sep"></div>
-  <div id="filter-dynamic" style="display:contents;"></div>
-  <button id="btn-reset">↺ Limpiar</button>
-  <div class="filter-sep"></div>
-  <button class="filter-btn" id="btn-heatmap" onclick="toggleHeatmap()" title="3.990 hurtos 2023–2025">
-    🔥 Calor Hurtos
-  </button>
+  <button id="btn-filters-toggle" class="filter-btn" aria-expanded="false" aria-controls="filters-panel">⚙ Filtros</button>
+</div>
+
+<div id="filters-panel" aria-hidden="true">
+  <div id="filter-dynamic"></div>
+  <div class="filter-panel-actions">
+    <button id="btn-reset">↺ Limpiar</button>
+    <div id="heatmap-controls">
+      <button class="filter-btn" id="btn-heatmap" onclick="toggleHeatmap()" title="3.990 hurtos 2023–2025">
+        🔥 Calor Hurtos
+      </button>
+    </div>
+  </div>
 </div>
 
 <div id="map"></div>
@@ -60,6 +66,16 @@
   <div class="legend-item"><div class="legend-line" style="background:#00BCD4;"></div> Corredor hídrico</div>
   <div class="legend-sep"></div>
   <div id="legend-dynamic"></div>
+</div>
+
+<div id="heat-scale" aria-hidden="true">
+  <div class="heat-scale-title">Escala · Calor de hurtos</div>
+  <div class="heat-scale-bar"></div>
+  <div class="heat-scale-labels">
+    <span>Baja</span>
+    <span>Media</span>
+    <span>Alta</span>
+  </div>
 </div>
 
 <nav class="page-switcher" aria-label="Navegación entre vistas">

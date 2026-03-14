@@ -52,6 +52,7 @@ let heatLayer        = null;
 let heatVisible      = false;
 let comunasLayer     = null;
 let mecalLayer       = null;   // polígonos MECAL (equipamientos)
+let filtersPanelOpen = false;
 
 // Datasets cacheados
 let hurtosData      = null;
@@ -135,6 +136,51 @@ function getAmbColor(estado) {
 }
 function capitalize(s) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : '';
+}
+
+function shouldShowHeatmapControls() {
+  return currentDataMode === 'seguridad' && secSubMode === 'hurtos';
+}
+
+function syncFiltersPanelUI() {
+  const panel = document.getElementById('filters-panel');
+  const btn = document.getElementById('btn-filters-toggle');
+  if (!panel || !btn) return;
+  panel.classList.toggle('show', filtersPanelOpen);
+  panel.setAttribute('aria-hidden', filtersPanelOpen ? 'false' : 'true');
+  btn.classList.toggle('active', filtersPanelOpen);
+  btn.setAttribute('aria-expanded', filtersPanelOpen ? 'true' : 'false');
+}
+
+function setFiltersPanelOpen(open) {
+  filtersPanelOpen = !!open;
+  syncFiltersPanelUI();
+}
+
+function syncHeatmapUI() {
+  const controls = document.getElementById('heatmap-controls');
+  const btn = document.getElementById('btn-heatmap');
+  const scale = document.getElementById('heat-scale');
+  const allowHeat = shouldShowHeatmapControls();
+
+  if (controls) controls.classList.toggle('show', allowHeat);
+
+  if (!allowHeat && heatLayer && map.hasLayer(heatLayer)) {
+    map.removeLayer(heatLayer);
+    heatVisible = false;
+  }
+
+  if (btn) {
+    btn.classList.toggle('active', allowHeat && heatVisible);
+    btn.disabled = allowHeat && !heatLayer;
+    btn.title = allowHeat ? '3.990 hurtos 2023-2025' : 'Disponible en Seguridad > Hurtos';
+  }
+
+  if (scale) {
+    const showScale = allowHeat && heatVisible;
+    scale.classList.toggle('show', showScale);
+    scale.setAttribute('aria-hidden', showScale ? 'false' : 'true');
+  }
 }
 
 // ── HELPERS UI ───────────────────────────────────────────────────────────────
@@ -289,9 +335,11 @@ function renderSeguridad() {
     e.target.classList.add('active');
     secSubMode = e.target.dataset.subsec;
     secAño = 'all'; secTipo = 'all'; secComuna = 'all';
+    syncHeatmapUI();
     renderSecSubMode();
   }));
 
+  syncHeatmapUI();
   renderSecSubMode();
 }
 
@@ -339,6 +387,7 @@ function buildSecFilters(features, getAño, getTipo, getComuna, colorFn) {
 function renderSecSubMode() {
   clusters.clearLayers();
   allMarkers = [];
+  syncHeatmapUI();
 
   const subConfigs = {
     hurtos: {
@@ -617,6 +666,7 @@ function renderMapData() {
     case 'equipamientos':   renderEquipamientos();   break;
     case 'ambiente':        renderAmbiente();         break;
   }
+  syncHeatmapUI();
 }
 
 // ── CARGA INICIAL ────────────────────────────────────────────────────────────
@@ -706,11 +756,10 @@ async function initDynamicMap() {
 
 // ── HEATMAP TOGGLE ───────────────────────────────────────────────────────────
 window.toggleHeatmap = function() {
-  if (!heatLayer) return;
+  if (!heatLayer || !shouldShowHeatmapControls()) return;
   heatVisible = !heatVisible;
   heatVisible ? heatLayer.addTo(map) : map.removeLayer(heatLayer);
-  const btn = document.getElementById('btn-heatmap');
-  if (btn) btn.classList.toggle('active', heatVisible);
+  syncHeatmapUI();
 };
 
 // ── LISTENERS: MODO PRINCIPAL ────────────────────────────────────────────────
@@ -733,4 +782,22 @@ document.getElementById('btn-reset').addEventListener('click', () => {
   renderMapData();
 });
 
+const btnFiltersToggle = document.getElementById('btn-filters-toggle');
+if (btnFiltersToggle) {
+  btnFiltersToggle.addEventListener('click', () => setFiltersPanelOpen(!filtersPanelOpen));
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && filtersPanelOpen) setFiltersPanelOpen(false);
+});
+
+document.addEventListener('click', e => {
+  if (!filtersPanelOpen) return;
+  const panel = document.getElementById('filters-panel');
+  const bar = document.getElementById('filter-bar');
+  if (panel?.contains(e.target) || bar?.contains(e.target)) return;
+  setFiltersPanelOpen(false);
+});
+
+setFiltersPanelOpen(false);
 initDynamicMap();

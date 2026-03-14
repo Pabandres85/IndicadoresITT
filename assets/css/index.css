@@ -130,6 +130,7 @@ h1 span {
   justify-content: center;
   gap: 32px;
   flex-wrap: wrap;
+  margin-bottom: 18px;
 }
 .kpi { text-align: center; }
 .kpi-num {
@@ -151,6 +152,27 @@ h1 span {
   width: 1px; height: 40px;
   background: rgba(0,48,135,0.15);
   align-self: center;
+}
+
+.focus-chips {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.focus-chip {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--azul);
+  background: rgba(0,48,135,0.08);
+  border: 1px solid rgba(0,48,135,0.16);
+  border-radius: 999px;
+  padding: 5px 10px;
 }
 
 /* ── CARDS ── */
@@ -268,6 +290,7 @@ footer a:hover { color: var(--rojo); }
   .cards { grid-template-columns: 1fr; max-width: 400px; }
   .kpi-sep { display: none; }
   .kpi-row { gap: 20px; }
+  .focus-chip { font-size: 9px; }
 }
 @media (max-width: 420px) {
   .kpi-row { gap: 14px; flex-wrap: wrap; justify-content: center; }

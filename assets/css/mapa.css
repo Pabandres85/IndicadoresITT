@@ -35,7 +35,7 @@ html, body { height:100%; font-family:'Inter', sans-serif; background:#EEF0EB; o
   position:fixed; top:58px; left:0; right:0; z-index:1100;
   background:rgba(255,255,255,0.97); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
   padding:8px 16px; display:flex; align-items:center;
-  gap:10px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  justify-content:space-between; gap:10px; flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
   box-shadow:0 2px 8px rgba(0,0,0,0.10);
   border-bottom: 1px solid rgba(0,48,135,0.08);
@@ -51,16 +51,65 @@ html, body { height:100%; font-family:'Inter', sans-serif; background:#EEF0EB; o
 .filter-btn:hover { border-color:var(--amarillo); background:rgba(255,195,0,0.10); color:var(--azul); }
 .filter-btn.active { background:var(--amarillo); border-color:var(--dorado); color:var(--azul); font-weight:600; }
 .filter-sep { width:1px; height:24px; background:rgba(0,48,135,0.12); }
+#btn-filters-toggle { flex-shrink: 0; }
+#btn-filters-toggle.active { background: var(--azul); color: #fff; border-color: var(--azul); }
 
 /* Separación para la etiqueta del modo de vista */
 #filter-modo .filter-label { margin-left: 10px; }
 
 #btn-reset {
-  margin-left:auto; padding:4px 12px; border-radius:20px;
+  padding:4px 12px; border-radius:20px;
   border:1.5px solid var(--azul); background:transparent; color:var(--azul);
   font-size:12px; font-family:'Inter',sans-serif; cursor:pointer; transition:all 0.2s;
 }
 #btn-reset:hover { background:var(--azul); color:#fff; }
+
+#filters-panel {
+  position: fixed;
+  top: 104px;
+  left: 0;
+  right: 0;
+  z-index: 1095;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  padding: 0 16px;
+  background: rgba(255,255,255,0.96);
+  border-bottom: 1px solid rgba(0,48,135,0.08);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: max-height 0.22s ease, opacity 0.22s ease, padding 0.22s ease;
+}
+#filters-panel.show {
+  max-height: 240px;
+  opacity: 1;
+  padding: 10px 16px;
+}
+
+#filter-dynamic {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+#filter-dynamic .filter-sep { height: 20px; }
+
+.filter-panel-actions {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,48,135,0.10);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#heatmap-controls {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+#heatmap-controls.show { display: flex; }
 
 /* ── TOOLTIP COMUNAS ── */
 .comuna-tooltip {
@@ -89,6 +138,46 @@ html, body { height:100%; font-family:'Inter', sans-serif; background:#EEF0EB; o
 .legend-line { width:18px; height:3px; flex-shrink:0; border-radius:2px; }
 .legend-poly { width:18px; height:12px; border-radius:2px; flex-shrink:0; }
 .legend-sep { height:1px; background:rgba(0,48,135,0.10); margin:8px 0; }
+
+#heat-scale {
+  position: absolute;
+  bottom: 186px;
+  left: 16px;
+  z-index: 900;
+  display: none;
+  width: 190px;
+  background: rgba(255,255,255,0.96);
+  color: var(--azul);
+  border: 1px solid rgba(0,48,135,0.14);
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+#heat-scale.show { display: block; }
+
+.heat-scale-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(0,48,135,0.62);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+.heat-scale-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #1565C0 0%, #FFC300 55%, #C1272D 100%);
+}
+.heat-scale-labels {
+  margin-top: 6px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: rgba(0,48,135,0.78);
+}
 
 /* ── BOTONES DEL MAPA (Satélite, Calles) ── */
 #layer-ctrl {
@@ -204,6 +293,8 @@ html, body { height:100%; font-family:'Inter', sans-serif; background:#EEF0EB; o
   .header-title { font-size:14px; }
   .header-sub { display:none; }
   #filter-bar { gap:6px; padding:6px 10px; }
+  #filters-panel { top: 104px; padding-left: 10px; padding-right: 10px; }
+  #filters-panel.show { max-height: 52vh; padding: 8px 10px; }
   .filter-label { font-size:10px; }
   .filter-btn { font-size:11px; padding:3px 8px; }
 }
@@ -211,11 +302,14 @@ html, body { height:100%; font-family:'Inter', sans-serif; background:#EEF0EB; o
 @media(max-width:540px) {
   .kpis { display:none; }
   #filter-bar { padding:5px 8px; gap:6px; }
+  #filters-panel { top: 104px; }
+  #filters-panel.show { max-height: 58vh; }
   .filter-sep { display:none; }
   .filter-btn { font-size:10px; padding:3px 7px; }
   #btn-reset { font-size:10px; padding:3px 9px; flex-shrink:0; }
   #map { top:104px; }
   #legend { min-width:140px; padding:10px 12px; font-size:11px; bottom: 85px; left:10px; }
+  #heat-scale { bottom: 205px; left: 10px; width: 170px; }
   .legend-title { font-size:10px; }
   #layer-ctrl { bottom: 85px; right: 10px; }
   .layer-btn-group { flex-direction: column; background: rgba(255,255,255,0.95); }

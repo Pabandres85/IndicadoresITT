@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cali en Obra · Inversión Pública 2024–2027</title>
+  <title>ITT · Pulmón de Oriente · Plataforma Territorial</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=IBM+Plex+Sans:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/index.css">
 </head>
@@ -20,26 +20,33 @@
         <div class="badge-dot"></div>
         Plan de Desarrollo Distrital 2024–2027
       </div>
-      <h1>¡Cali<br><span>En Obra!</span></h1>
+      <h1>Pulmón<br><span>De oriente</span></h1>
       <p class="subtitle">
-        Seguimiento a la inversión pública del distrito de Santiago de Cali.
-        Datos de la Unidad de Proyectos · Secretarías Distritales.
+        Plataforma técnica de seguimiento territorial del ITT para Pulmón de Oriente.
+        Lectura integrada por dimensiones, mapas y módulos analíticos.
       </p>
       <div class="kpi-row">
         <div class="kpi">
-          <div class="kpi-num" id="kpi-frentes">...</div>
-          <div class="kpi-lab">Frentes de Obra</div>
+          <div class="kpi-num" id="kpi-estado">...</div>
+          <div class="kpi-lab">Estado ITT</div>
         </div>
         <div class="kpi-sep"></div>
         <div class="kpi">
-          <div class="kpi-num" id="kpi-inversion">...</div>
-          <div class="kpi-lab">Inversión COP</div>
+          <div class="kpi-num" id="kpi-itt-global">...</div>
+          <div class="kpi-lab">ITT Global</div>
         </div>
         <div class="kpi-sep"></div>
         <div class="kpi">
-          <div class="kpi-num">5.4</div>
-          <div class="kpi-lab">Área (km²)</div>
+          <div class="kpi-num" id="kpi-variacion">...</div>
+          <div class="kpi-lab">Variación trimestral</div>
         </div>
+      </div>
+      <div class="focus-chips">
+        <span class="focus-chip">Seguridad</span>
+        <span class="focus-chip">Entorno Urbano</span>
+        <span class="focus-chip">Movilidad</span>
+        <span class="focus-chip">Desarrollo Social</span>
+        <span class="focus-chip">Actividad Económica</span>
       </div>
     </section>
 
@@ -72,7 +79,7 @@
           <div class="card-tag">Mapa interactivo</div>
           <h2>Mapa de Proyectos</h2>
         </div>
-        <p id="map-desc">Frentes de obra geolocalizados dentro del área de influencia. Delineación del polígono, corredor hídrico y zonas. Filtra por estado y secretaría.</p>
+        <p id="map-desc">Mapa multivista del territorio: infraestructura, seguridad, equipamientos y ambiente. Incluye capas dinámicas, filtros por modo y contexto espacial.</p>
         <div class="card-cta">
           Explorar mapa
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
@@ -110,7 +117,7 @@
           <div class="card-tag">Análisis de Seguridad</div>
           <h2>Seguridad · Pulmón de Oriente</h2>
         </div>
-        <p>3.990 hurtos 2023–2025 (SIEDCO). Evolución trimestral, tipos, modalidades, distribución por barrio y horaria. Reducción del 40% en el período.</p>
+        <p>Panel dinámico por tipo de delito para lectura territorial comparada: hurtos, homicidios, violencia intrafamiliar y VBG.</p>
         <div class="card-cta">
           Ver seguridad
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
@@ -134,6 +141,7 @@
         </div>
       </a>
 
+      <!--
       <a class="card" href="paginas/intervenciones_v1.html">
         <div class="card-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
@@ -144,24 +152,23 @@
           <div class="card-tag">Dashboard ciudad completa</div>
           <h2>Intervenciones Distritales</h2>
         </div>
-        <p>2357 intervenciones en toda Cali: obras viales, equipamientos, subsidios y dotaciones. Filtra por secretaría, estado y tipo.</p>
+        <p>Vista distrital de intervenciones con filtros operativos y componentes de seguimiento para análisis transversal de gestión.</p>
         <div class="card-cta">
           Ver intervenciones
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg>
         </div>
       </a>
+      -->
 
     </div>
   </div>
 
   <footer>
-    Fuente: Unidad de Proyectos (UP) · Secretarías Distritales · Municipio de Santiago de Cali<br>
+    Fuente: Secretarías Distritales · Gobierno de Datos · Municipio de Santiago de Cali<br>
     Plan de Desarrollo Distrital 2024–2027 ·
     <a href="https://www.cali.gov.co" target="_blank" rel="noopener">cali.gov.co</a>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-  <script src="assets/js/services/dataService.js"></script>
   <script src="assets/js/index.js"></script>
 </body>
 </html>
