@@ -122,10 +122,10 @@
     },
     {
       "periodo": "2025",
-      "itt_score": 66.1,
+      "itt_score": 70.5,
       "dimensiones_scores": {
         "seguridad": 75.2,
-        "movilidad": 55.7,
+        "movilidad": 73.1,
         "entorno_urbano": 70.0,
         "educacion_desarrollo": 61.0,
         "cohesion_social": 64.3
@@ -136,9 +136,9 @@
           "hurtos": 1142
         },
         "movilidad": {
-          "siniestralidad_vial": 118,
-          "accidentes_lesionados": 83,
-          "muertes_via": 11,
+          "siniestralidad_vial": 230,
+          "accidentes_lesionados": 198,
+          "muertes_via": 19,
           "velocidad_corredor": 18.5
         },
         "entorno_urbano": {
@@ -202,10 +202,10 @@
     },
     {
       "periodo": "2025-S2",
-      "itt_score": 66.2,
+      "itt_score": 70.4,
       "dimensiones_scores": {
         "seguridad": 76.2,
-        "movilidad": 55.7,
+        "movilidad": 72.5,
         "entorno_urbano": 70.0,
         "educacion_desarrollo": 61.0,
         "cohesion_social": 62.7
@@ -216,9 +216,9 @@
           "hurtos": 550
         },
         "movilidad": {
-          "siniestralidad_vial": 118,
-          "accidentes_lesionados": 83,
-          "muertes_via": 11,
+          "siniestralidad_vial": 120,
+          "accidentes_lesionados": 106,
+          "muertes_via": 9,
           "velocidad_corredor": 18.5
         },
         "entorno_urbano": {
@@ -242,10 +242,10 @@
     },
     {
       "periodo": "2025-T4",
-      "itt_score": 66.4,
+      "itt_score": 70.2,
       "dimensiones_scores": {
         "seguridad": 72.8,
-        "movilidad": 55.7,
+        "movilidad": 70.8,
         "entorno_urbano": 70.0,
         "educacion_desarrollo": 61.0,
         "cohesion_social": 72.7
@@ -256,9 +256,9 @@
           "hurtos": 260
         },
         "movilidad": {
-          "siniestralidad_vial": 118,
-          "accidentes_lesionados": 83,
-          "muertes_via": 11,
+          "siniestralidad_vial": 63,
+          "accidentes_lesionados": 53,
+          "muertes_via": 6,
           "velocidad_corredor": 18.5
         },
         "entorno_urbano": {

@@ -25,6 +25,7 @@ function clusterStyle() {
   const styles = {
     infraestructura: ['rgba(27,77,46,0.95)',    '#4CAF77'],
     seguridad:       ['rgba(193,39,45,0.92)',   '#E57373'],
+    movilidad:       ['rgba(0,121,107,0.92)',   '#4DB6AC'],
     equipamientos:   ['rgba(21,101,192,0.92)',  '#64B5F6'],
     ambiente:        ['rgba(46,125,50,0.92)',   '#81C784'],
     vivienda:        ['rgba(106,27,154,0.92)',  '#CE93D8'],
@@ -65,6 +66,8 @@ let sedesData       = null;
 let caiData         = null;
 let arbolesData     = null;
 let arbolesLoading  = false;
+let siniestrosMovData = null;
+let comparendosMovData = null;
 
 // Datasets: Vivienda
 let vivLegalizacionData = null;
@@ -91,6 +94,15 @@ let secSubMode = 'hurtos';
 let secAño     = 'all';
 let secTipo    = 'all';
 let secComuna  = 'all';
+
+// Filtros: Movilidad
+let movSubMode = 'siniestros';
+let movAño     = 'all';
+let movTipo    = 'all';
+let movComuna  = 'all';
+let movMes     = 'all';
+let movClase   = 'all';
+let movInmov   = 'all';
 
 // Filtros: Equipamientos
 let eqTipo = 'all';   // 'sedes' | 'cai' | 'all'
@@ -190,6 +202,15 @@ const HOM_COLORS = {
 const AMB_COLORS = {
   'Nuevo': '#4CAF77', 'Vivo': '#2196F3', 'Muerto': '#9E9E9E', 'Eliminado': '#E74C3C'
 };
+const MOV_SIN_COLORS = {
+  'Lesiones': '#E65100',
+  'Mortal':   '#C1272D',
+  'Daños':    '#1565C0',
+};
+const MOV_COMP_COLORS = {
+  'SI': '#8E24AA',
+  'NO': '#00897B',
+};
 
 function getHurtoColor(tipo) {
   return HURTO_COLORS[(tipo || '').toUpperCase()] || HURTO_COLORS['OTRAS'];
@@ -200,8 +221,21 @@ function getHomColor(tipo) {
 function getAmbColor(estado) {
   return AMB_COLORS[estado] || '#607D8B';
 }
+function getMovSinColor(tipo) {
+  return MOV_SIN_COLORS[tipo] || '#607D8B';
+}
+function getMovCompColor(inmov) {
+  return MOV_COMP_COLORS[inmov] || '#607D8B';
+}
 function capitalize(s) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : '';
+}
+function normComuna(v) {
+  if (v === undefined || v === null) return '';
+  const s = String(v).trim();
+  if (!s) return '';
+  if (/COMUNA/i.test(s)) return s.replace(/\s+/g, ' ');
+  return `Comuna ${s}`;
 }
 
 function shouldShowHeatmapControls() {
@@ -275,6 +309,8 @@ function legendItems(entries) {
 function applyFilters() {
   clusters.clearLayers();
   let visible = 0;
+  let movMortalVisible = 0;
+  let movInmovVisible = 0;
 
   allMarkers.forEach(m => {
     let ok = false;
@@ -288,6 +324,20 @@ function applyFilters() {
              (secTipo   === 'all' || m._tipo   === secTipo) &&
              (secComuna === 'all' || m._comuna === secComuna);
         break;
+      case 'movilidad':
+        if (movSubMode === 'siniestros') {
+          ok = (m._movSub === 'siniestros') &&
+               (movAño    === 'all' || m._año    === movAño) &&
+               (movTipo   === 'all' || m._tipo   === movTipo) &&
+               (movComuna === 'all' || m._comuna === movComuna);
+        } else {
+          ok = (m._movSub === 'comparendos') &&
+               (movMes    === 'all' || m._mes    === movMes) &&
+               (movClase  === 'all' || m._clase  === movClase) &&
+               (movInmov  === 'all' || m._inmov  === movInmov) &&
+               (movComuna === 'all' || m._comuna === movComuna);
+        }
+        break;
       case 'equipamientos':
         ok = (eqTipo === 'all' || m._eqTipo === eqTipo);
         break;
@@ -296,7 +346,14 @@ function applyFilters() {
              (ambComuna === 'all' || m._comuna === ambComuna);
         break;
     }
-    if (ok) { clusters.addLayer(m); visible++; }
+    if (ok) {
+      clusters.addLayer(m);
+      visible++;
+      if (currentDataMode === 'movilidad') {
+        if (m._movSub === 'siniestros' && m._tipo === 'Mortal') movMortalVisible++;
+        if (m._movSub === 'comparendos' && m._inmov === 'SI') movInmovVisible++;
+      }
+    }
   });
 
   // KPIs dinámicos en modos no-infraestructura
@@ -305,6 +362,25 @@ function applyFilters() {
     const pct = Math.round(visible / total * 100);
     setKPI(visible.toLocaleString('es-CO'), 'Registros Filtrados',
            pct + '%', 'Del total (' + total.toLocaleString('es-CO') + ')');
+  }
+  if (currentDataMode === 'movilidad') {
+    const total = allMarkers.length || 1;
+    const pct = Math.round(visible / total * 100);
+    if (movSubMode === 'siniestros') {
+      setKPI(
+        visible.toLocaleString('es-CO'),
+        'Siniestros filtrados',
+        movMortalVisible.toLocaleString('es-CO'),
+        'Casos mortales'
+      );
+    } else {
+      setKPI(
+        visible.toLocaleString('es-CO'),
+        'Comparendos filtrados',
+        movInmovVisible.toLocaleString('es-CO'),
+        `Inmovilizados (${pct}%)`
+      );
+    }
   }
   if (currentDataMode === 'equipamientos') {
     setKPI(visible, 'Equipamientos', '—', 'Filtrados');
@@ -582,6 +658,236 @@ function renderSecSubMode() {
       .bindPopup(popupBuilders[secSubMode](props, color), { maxWidth: 300 });
     mk._año    = año;
     mk._tipo   = tipo;
+    mk._comuna = comuna;
+    allMarkers.push(mk);
+  });
+
+  applyFilters();
+}
+
+// ── RENDER: MOVILIDAD (siniestros / comparendos) ────────────────────────────
+function renderMovilidad() {
+  clusters.clearLayers();
+  allMarkers = [];
+
+  const subBtns = ['siniestros', 'comparendos'].map(m => {
+    const labels = { siniestros: 'Siniestros', comparendos: 'Comparendos' };
+    return `<button class="filter-btn${movSubMode === m ? ' active' : ''}" data-submov="${m}">${labels[m]}</button>`;
+  }).join('');
+
+  const dyn = document.getElementById('filter-dynamic');
+  dyn.innerHTML =
+    `<div class="filter-row filter-row-primary">
+      <span class="filter-row-label">Sub-modo</span>
+      ${subBtns}
+    </div>
+    <div class="filter-row-divider"></div>
+    <div id="mov-sub-filters"></div>`;
+
+  dyn.querySelectorAll('[data-submov]').forEach(b => b.addEventListener('click', e => {
+    dyn.querySelectorAll('[data-submov]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active');
+    movSubMode = e.target.dataset.submov;
+    movAño = 'all'; movTipo = 'all'; movComuna = 'all';
+    movMes = 'all'; movClase = 'all'; movInmov = 'all';
+    renderMovSubMode();
+  }));
+
+  renderMovSubMode();
+}
+
+function renderMovSubMode() {
+  clusters.clearLayers();
+  allMarkers = [];
+
+  const sf = document.getElementById('mov-sub-filters');
+  if (!sf) return;
+
+  if (movSubMode === 'siniestros') {
+    const data = siniestrosMovData;
+    if (!data) {
+      sf.innerHTML = '<span class="filter-label" style="color:#E74C3C;">⚠ Datos de siniestros no disponibles</span>';
+      setKPI('0', 'Siniestros', '0', 'Casos mortales');
+      return;
+    }
+
+    const años = [...new Set(data
+      .map(f => (f.properties.Fecha || '').toString().substring(0, 4))
+      .filter(Boolean))]
+      .sort();
+    const tipos = ['Lesiones', 'Mortal', 'Daños'].filter(t =>
+      data.some(f => (f.properties.Tipo_Confi || '') === t)
+    );
+    const comunas = [...new Set(data.map(f => normComuna(f.properties.nombre || f.properties.comuna)).filter(Boolean))]
+      .sort((a, b) => parseInt(a.replace(/\D/g, '')) - parseInt(b.replace(/\D/g, '')));
+
+    if (movAño !== 'all' && !años.includes(movAño)) movAño = 'all';
+    if (movTipo !== 'all' && !tipos.includes(movTipo)) movTipo = 'all';
+    if (movComuna !== 'all' && !comunas.includes(movComuna)) movComuna = 'all';
+
+    sf.innerHTML =
+      `<div class="filter-row">
+        <span class="filter-row-label">Período</span>
+        <button class="filter-btn ${movAño === 'all' ? 'active' : ''}" data-mov-anio="all">Todos</button>
+        ${años.map(a => `<button class="filter-btn ${movAño === a ? 'active' : ''}" data-mov-anio="${a}">${a}</button>`).join('')}
+      </div>
+      <div class="filter-row">
+        <span class="filter-row-label">Tipo</span>
+        <button class="filter-btn ${movTipo === 'all' ? 'active' : ''}" data-mov-tipo="all">Todos</button>
+        ${tipos.map(t => `<button class="filter-btn ${movTipo === t ? 'active' : ''}" data-mov-tipo="${t}" style="border-color:${getMovSinColor(t)};">${t}</button>`).join('')}
+      </div>
+      <div class="filter-row">
+        <span class="filter-row-label">Comuna</span>
+        <button class="filter-btn ${movComuna === 'all' ? 'active' : ''}" data-mov-comuna="all">Todas</button>
+        ${comunas.map(c => `<button class="filter-btn ${movComuna === c ? 'active' : ''}" data-mov-comuna="${c}">${c.replace(/COMUNA /i, 'C')}</button>`).join('')}
+      </div>`;
+
+    sf.querySelectorAll('[data-mov-anio]').forEach(b => b.addEventListener('click', e => {
+      sf.querySelectorAll('[data-mov-anio]').forEach(x => x.classList.remove('active'));
+      e.target.classList.add('active'); movAño = e.target.dataset.movAnio; applyFilters();
+    }));
+    sf.querySelectorAll('[data-mov-tipo]').forEach(b => b.addEventListener('click', e => {
+      sf.querySelectorAll('[data-mov-tipo]').forEach(x => x.classList.remove('active'));
+      e.target.classList.add('active'); movTipo = e.target.dataset.movTipo; applyFilters();
+    }));
+    sf.querySelectorAll('[data-mov-comuna]').forEach(b => b.addEventListener('click', e => {
+      sf.querySelectorAll('[data-mov-comuna]').forEach(x => x.classList.remove('active'));
+      e.target.classList.add('active'); movComuna = e.target.dataset.movComuna; applyFilters();
+    }));
+
+    document.getElementById('legend-dynamic').innerHTML = legendItems([
+      ['Lesiones', getMovSinColor('Lesiones')],
+      ['Mortal', getMovSinColor('Mortal')],
+      ['Daños', getMovSinColor('Daños')],
+    ]);
+
+    data.forEach(f => {
+      const coords = f.geometry?.coordinates;
+      if (!coords || coords.length < 2) return;
+      const p = f.properties || {};
+      const tipo = p.Tipo_Confi || 'Daños';
+      const comuna = normComuna(p.nombre || p.comuna);
+      const fecha = p.Fecha || '';
+      const año = fecha.toString().substring(0, 4);
+      const color = getMovSinColor(tipo);
+      const mk = L.marker([coords[1], coords[0]], { icon: dotIcon(color, tipo === 'Mortal' ? 13 : 10) })
+        .bindPopup(`
+          <div style="min-width:240px;">
+            <div class="popup-title" style="color:${color};">🚦 ${tipo}</div>
+            <div class="popup-row"><span class="popup-label">Barrio</span><span class="popup-val">${p.barrio || '—'}</span></div>
+            <div class="popup-row"><span class="popup-label">Comuna</span><span class="popup-val">${comuna || '—'}</span></div>
+            <div class="popup-row"><span class="popup-label">Fecha</span><span class="popup-val">${fecha || '—'}</span></div>
+            <div class="popup-row"><span class="popup-label">Vehículos</span><span class="popup-val">${p.No_Vehicul || '—'}</span></div>
+            <div class="popup-row"><span class="popup-label">Tipo vehículo</span><span class="popup-val">${p.Tipo_de_Ve || '—'}</span></div>
+            <div class="popup-row"><span class="popup-label">Dirección</span><span class="popup-val" style="white-space:normal;max-width:140px;">${p.direccion || '—'}</span></div>
+          </div>`, { maxWidth: 320 });
+      mk._movSub = 'siniestros';
+      mk._año = año;
+      mk._tipo = tipo;
+      mk._comuna = comuna;
+      allMarkers.push(mk);
+    });
+
+    applyFilters();
+    return;
+  }
+
+  // Comparendos
+  const data = comparendosMovData;
+  if (!data) {
+    sf.innerHTML = '<span class="filter-label" style="color:#E74C3C;">⚠ Datos de comparendos no disponibles</span>';
+    setKPI('0', 'Comparendos', '0', 'Con inmovilización');
+    return;
+  }
+
+  const meses = [...new Set(data
+    .map(f => (f.properties.FECHA_COMP || '').toString().substring(0, 7))
+    .filter(Boolean))]
+    .sort();
+  const inmov = ['SI', 'NO'].filter(v => data.some(f => (f.properties.INMOVILIZA || 'NO') === v));
+  const comunas = [...new Set(data.map(f => normComuna(f.properties.nombre || f.properties.comuna)).filter(Boolean))]
+    .sort((a, b) => parseInt(a.replace(/\D/g, '')) - parseInt(b.replace(/\D/g, '')));
+  const claseCount = {};
+  data.forEach(f => {
+    const c = (f.properties.CLASE || '').trim();
+    if (c) claseCount[c] = (claseCount[c] || 0) + 1;
+  });
+  const clases = Object.entries(claseCount).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([c]) => c);
+
+  if (movMes !== 'all' && !meses.includes(movMes)) movMes = 'all';
+  if (movClase !== 'all' && !clases.includes(movClase)) movClase = 'all';
+  if (movInmov !== 'all' && !inmov.includes(movInmov)) movInmov = 'all';
+  if (movComuna !== 'all' && !comunas.includes(movComuna)) movComuna = 'all';
+
+  sf.innerHTML =
+    `<div class="filter-row">
+      <span class="filter-row-label">Mes</span>
+      <button class="filter-btn ${movMes === 'all' ? 'active' : ''}" data-mov-mes="all">Todos</button>
+      ${meses.map(m => `<button class="filter-btn ${movMes === m ? 'active' : ''}" data-mov-mes="${m}">${m}</button>`).join('')}
+    </div>
+    <div class="filter-row">
+      <span class="filter-row-label">Clase</span>
+      <button class="filter-btn ${movClase === 'all' ? 'active' : ''}" data-mov-clase="all">Todas</button>
+      ${clases.map(c => `<button class="filter-btn ${movClase === c ? 'active' : ''}" data-mov-clase="${c}">${capitalize(c)}</button>`).join('')}
+    </div>
+    <div class="filter-row">
+      <span class="filter-row-label">Inmov.</span>
+      <button class="filter-btn ${movInmov === 'all' ? 'active' : ''}" data-mov-inmov="all">Todos</button>
+      ${inmov.map(v => `<button class="filter-btn ${movInmov === v ? 'active' : ''}" data-mov-inmov="${v}" style="border-color:${getMovCompColor(v)};">${v}</button>`).join('')}
+    </div>
+    <div class="filter-row">
+      <span class="filter-row-label">Comuna</span>
+      <button class="filter-btn ${movComuna === 'all' ? 'active' : ''}" data-mov-comuna="all">Todas</button>
+      ${comunas.map(c => `<button class="filter-btn ${movComuna === c ? 'active' : ''}" data-mov-comuna="${c}">${c.replace(/COMUNA /i, 'C')}</button>`).join('')}
+    </div>`;
+
+  sf.querySelectorAll('[data-mov-mes]').forEach(b => b.addEventListener('click', e => {
+    sf.querySelectorAll('[data-mov-mes]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active'); movMes = e.target.dataset.movMes; applyFilters();
+  }));
+  sf.querySelectorAll('[data-mov-clase]').forEach(b => b.addEventListener('click', e => {
+    sf.querySelectorAll('[data-mov-clase]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active'); movClase = e.target.dataset.movClase; applyFilters();
+  }));
+  sf.querySelectorAll('[data-mov-inmov]').forEach(b => b.addEventListener('click', e => {
+    sf.querySelectorAll('[data-mov-inmov]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active'); movInmov = e.target.dataset.movInmov; applyFilters();
+  }));
+  sf.querySelectorAll('[data-mov-comuna]').forEach(b => b.addEventListener('click', e => {
+    sf.querySelectorAll('[data-mov-comuna]').forEach(x => x.classList.remove('active'));
+    e.target.classList.add('active'); movComuna = e.target.dataset.movComuna; applyFilters();
+  }));
+
+  document.getElementById('legend-dynamic').innerHTML = legendItems([
+    ['Con inmovilización (SI)', getMovCompColor('SI')],
+    ['Sin inmovilización (NO)', getMovCompColor('NO')],
+  ]);
+
+  data.forEach(f => {
+    const coords = f.geometry?.coordinates;
+    if (!coords || coords.length < 2) return;
+    const p = f.properties || {};
+    const mes = (p.FECHA_COMP || '').toString().substring(0, 7);
+    const comuna = normComuna(p.nombre || p.comuna);
+    const inm = p.INMOVILIZA || 'NO';
+    const clase = (p.CLASE || '').trim();
+    const color = getMovCompColor(inm);
+    const mk = L.marker([coords[1], coords[0]], { icon: dotIcon(color, 9) })
+      .bindPopup(`
+        <div style="min-width:250px;">
+          <div class="popup-title" style="color:${color};">📋 Comparendo ${p.CODIGO_INF || '—'}</div>
+          <div class="popup-row"><span class="popup-label">Clase</span><span class="popup-val">${clase || '—'}</span></div>
+          <div class="popup-row"><span class="popup-label">Servicio</span><span class="popup-val">${p.SERVICIO || '—'}</span></div>
+          <div class="popup-row"><span class="popup-label">Inmoviliza</span><span class="popup-val">${inm}</span></div>
+          <div class="popup-row"><span class="popup-label">Fecha</span><span class="popup-val">${p.FECHA_COMP || '—'} ${p.HORA_COMPA || ''}</span></div>
+          <div class="popup-row"><span class="popup-label">Barrio</span><span class="popup-val">${p.barrio || '—'}</span></div>
+          <div class="popup-row"><span class="popup-label">Comuna</span><span class="popup-val">${comuna || '—'}</span></div>
+          <div class="popup-row"><span class="popup-label">Dirección</span><span class="popup-val" style="white-space:normal;max-width:140px;">${p.DIRECCION || '—'}</span></div>
+        </div>`, { maxWidth: 320 });
+    mk._movSub = 'comparendos';
+    mk._mes = mes;
+    mk._clase = clase;
+    mk._inmov = inm;
     mk._comuna = comuna;
     allMarkers.push(mk);
   });
@@ -999,6 +1305,7 @@ function renderMapData() {
   switch (currentDataMode) {
     case 'infraestructura': renderInfraestructura(); break;
     case 'seguridad':       renderSeguridad();       break;
+    case 'movilidad':       renderMovilidad();       break;
     case 'equipamientos':   renderEquipamientos();   break;
     case 'ambiente':        renderAmbiente();         break;
     case 'vivienda':        renderVivienda();         break;
@@ -1062,6 +1369,12 @@ async function initDynamicMap() {
 
     fetch('../data/seguridad/violencia/VBG_2025_PULMON.geojson').then(r=>r.json())
       .then(g => { vbgData = g.features; }).catch(e => console.warn('VBG:', e)),
+
+    fetch('../data/movilidad/BD_SINIESTROS_2023_2025_COMUNA_BARRIO_PULMON.geojson').then(r=>r.json())
+      .then(g => { siniestrosMovData = g.features; }).catch(e => console.warn('Movilidad Siniestros:', e)),
+
+    fetch('../data/movilidad/BD_COMPARENDOS_2025_COMUNA_BARRIO_PULMON.geojson').then(r=>r.json())
+      .then(g => { comparendosMovData = g.features; }).catch(e => console.warn('Movilidad Comparendos:', e)),
 
     fetch('../data/equipamientos/Sedes_educativas_oficiales_PULMON_1K.geojson').then(r=>r.json())
       .then(g => { sedesData = g.features; }).catch(e => console.warn('Sedes:', e)),
@@ -1171,6 +1484,7 @@ document.querySelectorAll('#filter-data-mode .filter-btn').forEach(btn => {
     currentDataMode = e.target.dataset.datamode;
     activeFilter = 'all'; activeEstado = 'all'; currentMode = 'ups';
     secSubMode = 'hurtos'; secAño = 'all'; secTipo = 'all'; secComuna = 'all';
+    movSubMode = 'siniestros'; movAño = 'all'; movTipo = 'all'; movComuna = 'all'; movMes = 'all'; movClase = 'all'; movInmov = 'all';
     eqTipo = 'all'; ambEstado = 'all'; ambComuna = 'all';
     vivSubMode = 'legalizacion'; vivAño = 'all'; vivProceso = 'all'; vivEstado = 'all';
     renderMapData();
@@ -1180,6 +1494,7 @@ document.querySelectorAll('#filter-data-mode .filter-btn').forEach(btn => {
 document.getElementById('btn-reset').addEventListener('click', () => {
   activeFilter = 'all'; activeEstado = 'all'; currentMode = 'ups';
   secAño = 'all'; secTipo = 'all'; secComuna = 'all';
+  movAño = 'all'; movTipo = 'all'; movComuna = 'all'; movMes = 'all'; movClase = 'all'; movInmov = 'all';
   eqTipo = 'all'; ambEstado = 'all'; ambComuna = 'all';
   vivAño = 'all'; vivProceso = 'all'; vivEstado = 'all';
   renderMapData();

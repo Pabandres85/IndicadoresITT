@@ -82,25 +82,33 @@ DIMENSIONES = {
         "color": "#00796B",
         "indicadores": [
             {
-                "id": "siniestralidad_vial", "oficial": False, "inverso": True,
+                "id": "siniestralidad_vial", "oficial": True, "inverso": True,
                 "nombre": "Siniestralidad vial (accidentes)",
                 "unidad": "eventos",
-                "fuente": "Secretaría de Movilidad",
+                "fuente": "Secretaría de Movilidad · verificado GIS",
                 "ref_min": 30, "ref_max": 260,
+                "gis_dir": "movilidad", "gis_tipo": "conteo_periodo",
+                "gis_patron": "SINIESTROS", "gis_campo_fecha": "Fecha",
             },
             {
-                "id": "accidentes_lesionados", "oficial": False, "inverso": True,
+                "id": "accidentes_lesionados", "oficial": True, "inverso": True,
                 "nombre": "Accidentes con lesionados",
                 "unidad": "eventos",
-                "fuente": "Secretaría de Movilidad",
+                "fuente": "Secretaría de Movilidad · verificado GIS",
                 "ref_min": 20, "ref_max": 180,
+                "gis_dir": "movilidad", "gis_tipo": "conteo_periodo",
+                "gis_patron": "SINIESTROS", "gis_campo_fecha": "Fecha",
+                "gis_filtro": {"Tipo_Confi": "Lesiones"},
             },
             {
-                "id": "muertes_via", "oficial": False, "inverso": True,
+                "id": "muertes_via", "oficial": True, "inverso": True,
                 "nombre": "Muertes en vía",
                 "unidad": "casos",
-                "fuente": "Secretaría de Movilidad",
+                "fuente": "Secretaría de Movilidad · verificado GIS",
                 "ref_min": 2, "ref_max": 30,
+                "gis_dir": "movilidad", "gis_tipo": "conteo_periodo",
+                "gis_patron": "SINIESTROS", "gis_campo_fecha": "Fecha",
+                "gis_filtro": {"Tipo_Confi": "Mortal"},
             },
             {
                 "id": "velocidad_corredor", "oficial": False, "inverso": False,
@@ -525,11 +533,24 @@ def extraer_gis(ind_cfg, year, mes_inicio, mes_fin):
     if not tipo:
         return None
 
+    def _cumple_filtro(props):
+        filtro = ind_cfg.get("gis_filtro")
+        if not filtro:
+            return True
+        try:
+            return all(props.get(k) == v for k, v in filtro.items())
+        except Exception:
+            return False
+
     # ── conteo_periodo: cuenta features cuya fecha cae en el período ──────
     if tipo == "conteo_periodo":
         feats = leer_geojsons_dir(ind_cfg["gis_dir"], ind_cfg.get("gis_patron"))
         campo = ind_cfg.get("gis_campo_fecha", "FECHA_HECH")
-        return sum(1 for f in feats if en_rango(f["properties"].get(campo), year, mes_inicio, mes_fin))
+        return sum(
+            1 for f in feats
+            if en_rango(f["properties"].get(campo), year, mes_inicio, mes_fin)
+            and _cumple_filtro(f.get("properties", {}))
+        )
 
     # ── conteo_total: cuenta todos los features (sin filtro de fecha) ─────
     if tipo == "conteo_total":

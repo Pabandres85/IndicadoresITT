@@ -8,12 +8,12 @@
     "cobertura_datos": 100,
     "fuentes_activas": 17,
     "fuentes_total": 17,
-    "nota": "ITT preliminar. Fuentes GIS verificadas: 10 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
+    "nota": "ITT preliminar. Fuentes GIS verificadas: 13 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 66.1,
+    "score": 70.5,
     "score_anterior": 58.4,
-    "variacion": 7.7,
+    "variacion": 12.1,
     "clasificacion": "Nivel 3 · Avance",
     "rango": [
       60,
@@ -114,36 +114,36 @@
       "nombre": "Movilidad",
       "icono": "route",
       "peso": 0.25,
-      "score": 55.7,
+      "score": 73.1,
       "score_anterior": 55.7,
-      "variacion": 0.0,
+      "variacion": 17.4,
       "color": "#00796B",
       "calidad_dato": "preliminar",
       "cobertura": 100,
       "indicadores": [
         {
           "nombre": "Siniestralidad vial (accidentes)",
-          "valor": 118,
+          "valor": 230,
           "unidad": "eventos",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Movilidad",
-          "oficial": false
+          "tendencia": "alza",
+          "fuente": "Secretaría de Movilidad · verificado GIS",
+          "oficial": true
         },
         {
           "nombre": "Accidentes con lesionados",
-          "valor": 83,
+          "valor": 198,
           "unidad": "eventos",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Movilidad",
-          "oficial": false
+          "tendencia": "alza",
+          "fuente": "Secretaría de Movilidad · verificado GIS",
+          "oficial": true
         },
         {
           "nombre": "Muertes en vía",
-          "valor": 11,
+          "valor": 19,
           "unidad": "casos",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Movilidad",
-          "oficial": false
+          "tendencia": "alza",
+          "fuente": "Secretaría de Movilidad · verificado GIS",
+          "oficial": true
         },
         {
           "nombre": "Velocidad promedio del corredor",

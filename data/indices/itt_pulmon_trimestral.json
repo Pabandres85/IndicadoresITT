@@ -8,12 +8,12 @@
     "cobertura_datos": 100,
     "fuentes_activas": 17,
     "fuentes_total": 17,
-    "nota": "ITT preliminar. Fuentes GIS verificadas: 10 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
+    "nota": "ITT preliminar. Fuentes GIS verificadas: 13 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 66.4,
+    "score": 70.2,
     "score_anterior": 66.1,
-    "variacion": 0.3,
+    "variacion": 4.1,
     "clasificacion": "Nivel 3 · Avance",
     "rango": [
       60,
@@ -114,36 +114,36 @@
       "nombre": "Movilidad",
       "icono": "route",
       "peso": 0.25,
-      "score": 55.7,
+      "score": 70.8,
       "score_anterior": 55.7,
-      "variacion": 0.0,
+      "variacion": 15.1,
       "color": "#00796B",
       "calidad_dato": "preliminar",
       "cobertura": 100,
       "indicadores": [
         {
           "nombre": "Siniestralidad vial (accidentes)",
-          "valor": 118,
+          "valor": 63,
           "unidad": "eventos",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Movilidad",
-          "oficial": false
+          "tendencia": "baja",
+          "fuente": "Secretaría de Movilidad · verificado GIS",
+          "oficial": true
         },
         {
           "nombre": "Accidentes con lesionados",
-          "valor": 83,
+          "valor": 53,
           "unidad": "eventos",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Movilidad",
-          "oficial": false
+          "tendencia": "baja",
+          "fuente": "Secretaría de Movilidad · verificado GIS",
+          "oficial": true
         },
         {
           "nombre": "Muertes en vía",
-          "valor": 11,
+          "valor": 6,
           "unidad": "casos",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Movilidad",
-          "oficial": false
+          "tendencia": "baja",
+          "fuente": "Secretaría de Movilidad · verificado GIS",
+          "oficial": true
         },
         {
           "nombre": "Velocidad promedio del corredor",
@@ -300,9 +300,9 @@
     },
     {
       "periodo": "2025-T4",
-      "itt": 66.4,
+      "itt": 70.2,
       "seguridad": 72.8,
-      "movilidad": 55.7,
+      "movilidad": 70.8,
       "entorno_urbano": 70.0,
       "educacion_desarrollo": 61.0,
       "cohesion_social": 72.7
