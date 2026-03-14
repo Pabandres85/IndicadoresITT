@@ -2,28 +2,28 @@
   "_nota": "Valores manuales para indicadores sin fuente GeoJSON directa. Actualizar cada trimestre antes de ejecutar calcular_itt.py. Bloque 'default' se usa si no existe el bloque del período específico.",
   "default": {
     "seguridad": {
-      "percepcion_seguridad": 38
-    },
-    "entorno_urbano": {
-      "espacio_publico": 4.2,
-      "luminarias": 210,
-      "parques": 6
+      "rinas_conflictividad": 74
     },
     "movilidad": {
-      "accesibilidad_mio": 72,
-      "tiempo_desplazamiento": 38,
-      "ciclorutas": 1.2
+      "siniestralidad_vial": 118,
+      "accidentes_lesionados": 83,
+      "muertes_via": 11,
+      "velocidad_corredor": 18.5
     },
-    "desarrollo_social": {
-      "ninos_programas": 1840,
-      "acceso_salud": 76,
-      "familias_subsidio": 520
+    "entorno_urbano": {
+      "ndvi_cobertura_vegetal": 0.38,
+      "area_verde_neta": 148000,
+      "deficit_habitacional_cualitativo": 29.0
     },
-    "actividad_economica": {
-      "negocios_formalizados": 87,
-      "empleos_obra": 340,
-      "inversion_privada": 4200,
-      "emprendimientos": 23
+    "educacion_desarrollo": {
+      "matricula_escolar": 12350,
+      "desercion_escolar": 3.8,
+      "repitencia_escolar": 4.7,
+      "estudiantes_por_docente": 29.0,
+      "aforo_villa_lago": 4200
+    },
+    "cohesion_social": {
+      "concentracion_vulnerabilidad_activa": 78.0
     },
     "_barrios": [
       {

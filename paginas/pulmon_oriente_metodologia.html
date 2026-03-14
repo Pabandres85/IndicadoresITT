@@ -56,7 +56,7 @@
         <div class="chart-card-header"><div class="chart-card-title">Definición</div></div>
         <div class="chart-body" style="font-size:14px;color:#37474F;line-height:1.8">
           <p style="margin-bottom:14px">El <strong>Índice de Transformación Territorial (ITT)</strong> es una medición compuesta que cuantifica el grado de transformación positiva que experimenta un territorio como resultado de la inversión pública y las intervenciones institucionales.</p>
-          <p style="margin-bottom:14px">Para el <strong>Pulmón de Oriente</strong> —área de aproximadamente 5.4 km² en el Distrito de Aguablanca, Cali— el ITT integra cinco dimensiones que capturan cambios en seguridad, infraestructura urbana, movilidad, desarrollo social y actividad económica.</p>
+          <p style="margin-bottom:14px">Para el <strong>Pulmón de Oriente</strong> —área de aproximadamente 5.4 km² en el Distrito de Aguablanca, Cali— el ITT integra cinco dimensiones que capturan cambios en seguridad, movilidad, entorno urbano, educación y desarrollo, y cohesión social.</p>
           <p>El índice opera en una <strong>escala de 0 a 100</strong>, donde valores más altos indican mayor nivel de transformación territorial. No mide solamente inversión ejecutada, sino resultados e impacto en condiciones de vida.</p>
         </div>
       </div>
@@ -97,14 +97,14 @@
       <div class="metod-formula-title">Fórmula General del ITT</div>
       <div class="metod-formula-eq">
         ITT = Σ (Score<sub>i</sub> × Peso<sub>i</sub>)<br>
-        <span style="font-size:.75em;opacity:.8">i ∈ {Seguridad, Entorno Urbano, Movilidad, Desarrollo Social, Actividad Económica}</span>
+        <span style="font-size:.75em;opacity:.8">i ∈ {Seguridad, Movilidad, Entorno Urbano, Educación y Desarrollo, Cohesión Social}</span>
       </div>
       <div class="metod-formula-note">
         Donde Score<sub>i</sub> es el puntaje normalizado [0–100] de la dimensión i,<br>
         y Peso<sub>i</sub> es la ponderación asignada (suma de pesos = 1.0)
       </div>
-      <div class="metod-formula-note" style="margin-top:10px">
-        Perfil Pulmón de Oriente: Seguridad 20% · Entorno Urbano 30% · Movilidad 20% · Desarrollo Social 15% · Actividad Económica 15%
+      <div class="metod-formula-note" style="margin-top:10px" id="perfil-pesos-linea">
+        Perfil Pulmón de Oriente: Seguridad 30% · Movilidad 25% · Entorno Urbano 20% · Educación y Desarrollo 13% · Cohesión Social 12%
       </div>
     </div>
 
@@ -305,27 +305,28 @@
   const kpiInds = document.getElementById('hero-kpi-inds');
   const kpiFreq = document.getElementById('hero-kpi-freq');
   const heroDate = document.querySelector('.hero-date');
+  const perfilPesos = document.getElementById('perfil-pesos-linea');
 
   const DIM_META = {
     seguridad: {
       icono: '🛡️',
-      desc: 'Mide la reducción de hechos violentos y la percepción ciudadana de seguridad en el territorio.'
-    },
-    entorno_urbano: {
-      icono: '🏙️',
-      desc: 'Mide la recuperación y mejora del espacio público, infraestructura, equipamientos y vivienda.'
+      desc: 'Mide hechos críticos de seguridad y conflictividad en el polígono priorizado.'
     },
     movilidad: {
       icono: '🚦',
-      desc: 'Evalúa conectividad, accesibilidad al transporte público y mejora vial en el área.'
+      desc: 'Evalúa seguridad vial y desempeño de movilidad en el corredor de intervención.'
     },
-    desarrollo_social: {
-      icono: '👥',
-      desc: 'Mide acceso a servicios sociales, cobertura educativa y programas de atención.'
+    entorno_urbano: {
+      icono: '🏙️',
+      desc: 'Mide cobertura vegetal, área verde y déficit habitacional cualitativo.'
     },
-    actividad_economica: {
-      icono: '🏪',
-      desc: 'Captura la dinámica económica local: formalización, empleo y atracción de inversión.'
+    educacion_desarrollo: {
+      icono: '🎓',
+      desc: 'Mide matrícula, deserción, repitencia, relación estudiante-docente y uso de equipamientos deportivos.'
+    },
+    cohesion_social: {
+      icono: '🤝',
+      desc: 'Mide cohesión social mediante VIF y concentración de vulnerabilidad activa.'
     }
   };
 
@@ -374,6 +375,20 @@
 
     if (heroDate && D.meta?.periodo) {
       heroDate.textContent = `// PLAN DE DESARROLLO 2024-2027 · VERSIÓN METODOLÓGICA 1.1 · CORTE ${D.meta.periodo}`;
+    }
+    if (perfilPesos) {
+      const orden = ['seguridad', 'movilidad', 'entorno_urbano', 'educacion_desarrollo', 'cohesion_social'];
+      const txt = orden
+        .map(id => {
+          const dim = dims.find(d => d.id === id);
+          if (!dim) return null;
+          return `${dim.nombre} ${(dim.peso * 100).toFixed(0)}%`;
+        })
+        .filter(Boolean)
+        .join(' · ');
+      if (txt) {
+        perfilPesos.textContent = `Perfil Pulmón de Oriente: ${txt}`;
+      }
     }
 
     dims.forEach(dim => {

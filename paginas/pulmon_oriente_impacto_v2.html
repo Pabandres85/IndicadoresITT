@@ -253,7 +253,16 @@
   }
 
   /* ── Helpers ──────────────────────────────────────────────────────────── */
-  const ICONS = { seguridad:'🛡️', entorno_urbano:'🏙️', movilidad:'🚦', desarrollo_social:'👥', actividad_economica:'🏪' };
+  const ICONS = {
+    seguridad:'🛡️',
+    movilidad:'🚦',
+    entorno_urbano:'🏙️',
+    educacion_desarrollo:'🎓',
+    cohesion_social:'🤝',
+    // Compatibilidad con esquemas anteriores
+    desarrollo_social:'👥',
+    actividad_economica:'🏪'
+  };
   const chartRegistry = {};
   let chartModalState = null;
 
@@ -376,20 +385,19 @@
   }
 
   /* ── KPI STRIP ───────────────────────────────────────────────────────── */
-  const hurtosInd   = findInd('seguridad',      'hurto');
-  const vifInd      = findInd('seguridad',      'intrafamiliar');
-  const obrasInd    = findInd('entorno_urbano',  'infraestructura');
-  const vivMejInd   = findInd('entorno_urbano',  'mejoramiento');
-  const vivLegInd   = findInd('entorno_urbano',  'legalización');
-  const empleosInd  = findInd('actividad_economica', 'empleos');
+  const hurtosInd    = findInd('seguridad', 'hurto');
+  const rinasInd     = findInd('seguridad', 'riñas') || findInd('seguridad', 'rinas');
+  const vifInd       = findInd('cohesion_social', 'intrafamiliar');
+  const ndviInd      = findInd('entorno_urbano', 'ndvi');
+  const desercionInd = findInd('educacion_desarrollo', 'deserción') || findInd('educacion_desarrollo', 'desercion');
 
   const kpis = [
-    { label: 'ITT Global', val: g.score.toFixed(1), unit: '/100', sub: g.clasificacion,           cls: 'kpi-itt',   decimals: 1, raw: g.score },
-    hurtosInd  && { label: 'Hurtos (trim.)',    val: hurtosInd.valor,   unit: 'casos',  sub: hurtosInd.nota_real?.split('—')[1]?.trim() || '↓ reducción',   cls: 'kpi-ok', decimals:0, raw: hurtosInd.valor },
-    vifInd     && { label: 'VIF (trimestral)',  val: vifInd.valor,      unit: 'casos',  sub: '⚠ incremento +23%',    cls: 'kpi-alert', decimals:0, raw: vifInd.valor },
-    obrasInd   && { label: 'Obras activas',     val: obrasInd.valor,    unit: 'frentes',sub: 'infraestructura vial', cls: 'kpi-ok', decimals:0, raw: obrasInd.valor },
-    vivMejInd  && { label: 'Viviendas mejor.',  val: vivMejInd.valor,   unit: 'unidades',sub: '8 sectores · 2025-26', cls: 'kpi-ok', decimals:0, raw: vivMejInd.valor },
-    vivLegInd  && { label: 'Polígonos AHDI',    val: vivLegInd.valor,   unit: 'polígonos',sub: '11.71 ha · LU 2024-27', cls: 'kpi-ok', decimals:0, raw: vivLegInd.valor },
+    { label: 'ITT Global', val: g.score.toFixed(1), unit: '/100', sub: g.clasificacion, cls: 'kpi-itt', decimals: 1, raw: g.score },
+    hurtosInd && { label: 'Hurtos (trim.)', val: hurtosInd.valor, unit: 'casos', sub: hurtosInd.nota_real?.split('—')[1]?.trim() || 'Seguridad', cls: 'kpi-ok', decimals: 0, raw: hurtosInd.valor },
+    rinasInd && { label: 'Riñas / conflict.', val: rinasInd.valor, unit: 'casos', sub: 'Indicador observatorio', cls: 'kpi-alert', decimals: 0, raw: rinasInd.valor },
+    vifInd && { label: 'VIF (trimestral)', val: vifInd.valor, unit: 'casos', sub: vifInd.nota_real?.replace('ALERTA: ', '') || 'Cohesión social', cls: 'kpi-alert', decimals: 0, raw: vifInd.valor },
+    ndviInd && { label: 'NDVI cobertura', val: ndviInd.valor, unit: 'índice', sub: 'Entorno urbano', cls: 'kpi-ok', decimals: 2, raw: ndviInd.valor },
+    desercionInd && { label: 'Deserción escolar', val: desercionInd.valor, unit: '%', sub: 'Educación y desarrollo', cls: 'kpi-ok', decimals: 1, raw: desercionInd.valor },
   ].filter(Boolean);
 
   const strip = document.getElementById('kpi-strip');

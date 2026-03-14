@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python scripts/calcular_itt.py --periodo 2025-T4)"
+    ]
+  }
+}

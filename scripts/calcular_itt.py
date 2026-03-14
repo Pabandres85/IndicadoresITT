@@ -17,11 +17,10 @@ Fuentes automáticas (GeoJSON):
 
 Fuentes manuales (JSON):
   data/indices/indicadores_manuales.json
-    → luminarias, espacio público, parques, percepción seguridad,
-      accesibilidad MIO, tiempo desplazamiento, ciclorutas,
-      niños programas, acceso salud, familias subsidio,
-      negocios formalizados, empleos obra, inversión privada, emprendimientos,
-      barrios (ranking ITT estimado por barrio)
+    → riñas, siniestralidad, lesionados, muertes en vía, velocidad,
+      NDVI, área verde, déficit habitacional,
+      matrícula, deserción, repitencia, estudiantes/docente, aforo,
+      concentración de vulnerabilidad y barrios (ranking ITT estimado por barrio)
 
 Uso:
   python scripts/calcular_itt.py                                 # período actual
@@ -52,236 +51,173 @@ MAN   = DATA / "indices" / "indicadores_manuales.json"
 DIMENSIONES = {
     "seguridad": {
         "nombre": "Seguridad",
-        "icono":  "shield",
-        "peso":   0.20,
-        "color":  "#C1272D",
+        "icono": "shield",
+        "peso": 0.30,
+        "color": "#C1272D",
         "indicadores": [
             {
                 "id": "homicidios", "oficial": True, "inverso": True,
-                "nombre": "Homicidios (trimestral)",
+                "nombre": "Homicidios en polígono (trimestral)",
                 "unidad": "casos",
-                "fuente": "Policía Nacional / SIEDCO",
-                "ref_min": 10, "ref_max": 130,
+                "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
+                "ref_min": 8, "ref_max": 130,
                 "gis_dir": "seguridad/homicidios", "gis_tipo": "conteo_periodo",
                 "gis_campo_fecha": "FECHA_HECH",
             },
             {
                 "id": "hurtos", "oficial": True, "inverso": True,
-                "nombre": "Hurtos reportados (trimestral)",
+                "nombre": "Hurtos en polígono (trimestral)",
                 "unidad": "casos",
-                "fuente": "Policía Nacional / SIEDCO",
+                "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
                 "ref_min": 150, "ref_max": 500,
                 "gis_dir": "seguridad/hurtos", "gis_tipo": "conteo_periodo",
                 "gis_campo_fecha": "FECHA_HECH",
             },
             {
-                "id": "vif", "oficial": True, "inverso": True,
-                "nombre": "Violencia Intrafamiliar (trimestral)",
+                "id": "rinas_conflictividad", "oficial": False, "inverso": True,
+                "nombre": "Riñas / conflictividad (trimestral)",
                 "unidad": "casos",
-                "fuente": "Policía Nacional / SIEDCO",
-                "ref_min": 80, "ref_max": 200,
+                "fuente": "Observatorio de Seguridad y Justicia",
+                "ref_min": 20, "ref_max": 220,
+            },
+        ],
+    },
+    "movilidad": {
+        "nombre": "Movilidad",
+        "icono": "route",
+        "peso": 0.25,
+        "color": "#00796B",
+        "indicadores": [
+            {
+                "id": "siniestralidad_vial", "oficial": False, "inverso": True,
+                "nombre": "Siniestralidad vial (accidentes)",
+                "unidad": "eventos",
+                "fuente": "Secretaría de Movilidad",
+                "ref_min": 30, "ref_max": 260,
+            },
+            {
+                "id": "accidentes_lesionados", "oficial": False, "inverso": True,
+                "nombre": "Accidentes con lesionados",
+                "unidad": "eventos",
+                "fuente": "Secretaría de Movilidad",
+                "ref_min": 20, "ref_max": 180,
+            },
+            {
+                "id": "muertes_via", "oficial": False, "inverso": True,
+                "nombre": "Muertes en vía",
+                "unidad": "casos",
+                "fuente": "Secretaría de Movilidad",
+                "ref_min": 2, "ref_max": 30,
+            },
+            {
+                "id": "velocidad_corredor", "oficial": False, "inverso": False,
+                "nombre": "Velocidad promedio del corredor",
+                "unidad": "km/h",
+                "fuente": "Secretaría de Movilidad (gestionando sensores)",
+                "ref_min": 12.0, "ref_max": 32.0,
+            },
+        ],
+    },
+    "entorno_urbano": {
+        "nombre": "Entorno Urbano",
+        "icono": "city",
+        "peso": 0.20,
+        "color": "#1565C0",
+        "indicadores": [
+            {
+                "id": "ndvi_cobertura_vegetal", "oficial": False, "inverso": False,
+                "nombre": "NDVI / cobertura vegetal",
+                "unidad": "índice",
+                "fuente": "Copernicus / Sentinel-2",
+                "ref_min": 0.15, "ref_max": 0.65,
+            },
+            {
+                "id": "area_verde_neta", "oficial": False, "inverso": False,
+                "nombre": "Área verde neta",
+                "unidad": "m²",
+                "fuente": "Copernicus / Sentinel-2",
+                "ref_min": 50000, "ref_max": 300000,
+            },
+            {
+                "id": "deficit_habitacional_cualitativo", "oficial": False, "inverso": True,
+                "nombre": "Déficit habitacional cualitativo",
+                "unidad": "%",
+                "fuente": "Secretaría de Vivienda",
+                "ref_min": 10.0, "ref_max": 45.0,
+            },
+        ],
+    },
+    "educacion_desarrollo": {
+        "nombre": "Educación y Desarrollo",
+        "icono": "school",
+        "peso": 0.13,
+        "color": "#6A1B9A",
+        "indicadores": [
+            {
+                "id": "matricula_escolar", "oficial": True, "inverso": False,
+                "nombre": "Matrícula escolar (Comunas 13+14)",
+                "unidad": "estudiantes",
+                "fuente": "Secretaría de Educación / Indicadores Sectoriales",
+                "ref_min": 5000, "ref_max": 60000,
+                "gis_tipo": "excel_edu", "edu_campo": "matricula",
+                # edu_sector omitido → usa EDU_SECTOR global ("total")
+            },
+            {
+                "id": "desercion_escolar", "oficial": True, "inverso": True,
+                "nombre": "Deserción escolar (Comunas 13+14)",
+                "unidad": "%",
+                "fuente": "Secretaría de Educación / Indicadores Sectoriales",
+                "ref_min": 1.0, "ref_max": 10.0,
+                "gis_tipo": "excel_edu", "edu_campo": "tasa_desercion",
+            },
+            {
+                "id": "repitencia_escolar", "oficial": True, "inverso": True,
+                "nombre": "Repitencia escolar (Comunas 13+14)",
+                "unidad": "%",
+                "fuente": "Secretaría de Educación / Indicadores Sectoriales",
+                "ref_min": 1.0, "ref_max": 15.0,
+                "gis_tipo": "excel_edu", "edu_campo": "tasa_repitencia",
+            },
+            {
+                "id": "estudiantes_por_docente", "oficial": True, "inverso": True,
+                "nombre": "Estudiantes por docente (Comunas 13+14)",
+                "unidad": "ratio",
+                "fuente": "Secretaría de Educación / Indicadores Sectoriales",
+                "ref_min": 18.0, "ref_max": 40.0,
+                "gis_tipo": "excel_edu", "edu_campo": "rad",
+            },
+            {
+                "id": "aforo_villa_lago", "oficial": False, "inverso": False,
+                "nombre": "Aforo polideportivo Villa del Lago",
+                "unidad": "personas/mes",
+                "fuente": "Secretaría de Deportes",
+                "ref_min": 1000, "ref_max": 7000,
+                # Sin gis_tipo → cae a manuales.json hasta recibir el dato
+            },
+        ],
+    },
+    "cohesion_social": {
+        "nombre": "Cohesión Social",
+        "icono": "people",
+        "peso": 0.12,
+        "color": "#8E24AA",
+        "indicadores": [
+            {
+                "id": "vif", "oficial": True, "inverso": True,
+                "nombre": "Violencia intrafamiliar (VIF) trimestral",
+                "unidad": "casos",
+                "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
+                "ref_min": 80, "ref_max": 220,
                 "gis_dir": "seguridad/violencia", "gis_tipo": "conteo_periodo",
                 "gis_campo_fecha": "FECHA_HECH",
                 "gis_patron": "VIOLENCIA_INTRAFAMILIAR",
             },
             {
-                "id": "vbg", "oficial": True, "inverso": True,
-                "nombre": "VBG reportadas (anual)",
-                "unidad": "casos",
-                "fuente": "Policía Nacional / SIEDCO",
-                "ref_min": 20, "ref_max": 150,
-                "gis_dir": "seguridad/violencia", "gis_tipo": "conteo_total",
-                "gis_patron": "VBG",
-            },
-            {
-                "id": "percepcion_seguridad", "oficial": False, "inverso": False,
-                "nombre": "Percepción de seguridad",
-                "unidad": "%",
-                "fuente": "Encuesta ITT (estimado)",
-                "ref_min": 20.0, "ref_max": 75.0,
-            },
-            {
-                "id": "presencia_institucional", "oficial": True, "inverso": False,
-                "nombre": "Presencia institucional",
-                "unidad": "CAI activos",
-                "fuente": "Secretaría de Seguridad / MECAL · verificado GIS",
-                "ref_min": 1, "ref_max": 6,
-                "gis_archivo": "data/seguridad/institucional/CAI_MECAL_CALI_PULMON.geojson",
-                "gis_tipo": "conteo_archivo",
-                "gis_filtro": {"TIPO": "CAI"},
-            },
-        ],
-    },
-
-    "entorno_urbano": {
-        "nombre": "Entorno Urbano",
-        "icono":  "city",
-        "peso":   0.30,
-        "color":  "#1565C0",
-        "indicadores": [
-            {
-                "id": "espacio_publico", "oficial": True, "inverso": False,
-                "nombre": "Espacio público recuperado",
-                "unidad": "ha",
-                "fuente": "Secretaría de Vivienda",
-                "ref_min": 0.0, "ref_max": 10.0,
-            },
-            {
-                "id": "frentes_obra", "oficial": True, "inverso": False,
-                "nombre": "Obras de infraestructura activas",
-                "unidad": "frentes",
-                "fuente": "UP Secretarías",
-                "ref_min": 0, "ref_max": 60,
-                "gis_archivo": "data/infraestructura/poligonos.geojson",
-                "gis_tipo": "conteo_archivo",
-            },
-            {
-                "id": "luminarias", "oficial": True, "inverso": False,
-                "nombre": "Luminarias instaladas",
-                "unidad": "unidades",
-                "fuente": "Emcali / Alumbrado",
-                "ref_min": 0, "ref_max": 400,
-            },
-            {
-                "id": "parques", "oficial": True, "inverso": False,
-                "nombre": "Parques y zonas verdes intervenidos",
-                "unidad": "equipamientos",
-                "fuente": "Secretaría de Deporte",
-                "ref_min": 0, "ref_max": 15,
-            },
-            {
-                "id": "poligonos_ahdi", "oficial": True, "inverso": False,
-                "nombre": "Polígonos en legalización urbanística (AHDI)",
-                "unidad": "polígonos / ha",
-                "fuente": "Secretaría de Vivienda AHDI · verificado GIS",
-                "ref_min": 0, "ref_max": 12,
-                "gis_archivo": "data/vivienda/INTERV_AHDI_LEG_URBA_PULMON.geojson",
-                "gis_tipo": "conteo_archivo",
-            },
-            {
-                "id": "viviendas_mejoramiento", "oficial": True, "inverso": False,
-                "nombre": "Viviendas en mejoramiento (2025-2026)",
-                "unidad": "viviendas",
-                "fuente": "Secretaría de Vivienda / Convenio Ministerio · verificado GIS",
-                "ref_min": 0, "ref_max": 400,
-                "gis_archivo": "data/vivienda/INTERV_MEJOR_VIV_25_26_PULMON.geojson",
-                "gis_tipo": "suma_campo",
-                "gis_campo": "CANT_MEJOR",
-            },
-        ],
-    },
-
-    "movilidad": {
-        "nombre": "Movilidad",
-        "icono":  "route",
-        "peso":   0.20,
-        "color":  "#00796B",
-        "indicadores": [
-            {
-                "id": "tramos_viales", "oficial": True, "inverso": False,
-                "nombre": "Tramos viales mejorados",
-                "unidad": "km",
-                "fuente": "Infraestructura Vial · verificado GIS",
-                "ref_min": 0.0, "ref_max": 8.0,
-                "gis_archivo": "data/infraestructura/tramos_oriente.geojson",
-                "gis_tipo": "longitud_lineas",
-            },
-            {
-                "id": "accesibilidad_mio", "oficial": True, "inverso": False,
-                "nombre": "Accesibilidad a MIO (500m)",
-                "unidad": "%",
-                "fuente": "MIO / Metrocali",
-                "ref_min": 60.0, "ref_max": 90.0,
-            },
-            {
-                "id": "tiempo_desplazamiento", "oficial": False, "inverso": True,
-                "nombre": "Tiempo promedio de desplazamiento",
-                "unidad": "min",
-                "fuente": "Encuesta estimada",
-                "ref_min": 25.0, "ref_max": 55.0,
-            },
-            {
-                "id": "ciclorutas", "oficial": True, "inverso": False,
-                "nombre": "Ciclorutas activas en el área",
-                "unidad": "km",
-                "fuente": "Secretaría de Movilidad",
-                "ref_min": 0.0, "ref_max": 5.0,
-            },
-        ],
-    },
-
-    "desarrollo_social": {
-        "nombre": "Desarrollo Social",
-        "icono":  "people",
-        "peso":   0.15,
-        "color":  "#6A1B9A",
-        "indicadores": [
-            {
-                "id": "ninos_programas", "oficial": True, "inverso": False,
-                "nombre": "Niños en programas de atención",
-                "unidad": "beneficiarios",
-                "fuente": "Secretaría de Bienestar",
-                "ref_min": 0, "ref_max": 4000,
-            },
-            {
-                "id": "sedes_educativas", "oficial": True, "inverso": False,
-                "nombre": "Sedes educativas oficiales activas",
-                "unidad": "sedes",
-                "fuente": "Secretaría de Educación · verificado GIS",
-                "ref_min": 40, "ref_max": 100,
-                "gis_archivo": "data/equipamientos/Sedes_educativas_oficiales_PULMON_1K.geojson",
-                "gis_tipo": "conteo_archivo",
-            },
-            {
-                "id": "acceso_salud", "oficial": True, "inverso": False,
-                "nombre": "Acceso a servicios de salud",
-                "unidad": "%",
-                "fuente": "Secretaría de Salud",
-                "ref_min": 50.0, "ref_max": 100.0,
-            },
-            {
-                "id": "familias_subsidio", "oficial": True, "inverso": False,
-                "nombre": "Familias en programas de subsidio",
-                "unidad": "familias",
-                "fuente": "Secretaría de Bienestar",
-                "ref_min": 0, "ref_max": 1200,
-            },
-        ],
-    },
-
-    "actividad_economica": {
-        "nombre": "Actividad Económica",
-        "icono":  "store",
-        "peso":   0.15,
-        "color":  "#E65100",
-        "indicadores": [
-            {
-                "id": "negocios_formalizados", "oficial": False, "inverso": False,
-                "nombre": "Negocios formalizados en el área",
-                "unidad": "establecimientos",
-                "fuente": "Cámara de Comercio (estimado)",
-                "ref_min": 0, "ref_max": 250,
-            },
-            {
-                "id": "empleos_obra", "oficial": True, "inverso": False,
-                "nombre": "Empleos generados por obras",
-                "unidad": "empleos",
-                "fuente": "UP Secretarías",
-                "ref_min": 0, "ref_max": 800,
-            },
-            {
-                "id": "inversion_privada", "oficial": False, "inverso": False,
-                "nombre": "Inversión privada atraída",
-                "unidad": "millones COP",
-                "fuente": "Cámara de Comercio (estimado)",
-                "ref_min": 0, "ref_max": 15000,
-            },
-            {
-                "id": "emprendimientos", "oficial": False, "inverso": False,
-                "nombre": "Iniciativas de emprendimiento apoyadas",
-                "unidad": "unidades",
-                "fuente": "Secretaría de Desarrollo",
-                "ref_min": 0, "ref_max": 80,
+                "id": "concentracion_vulnerabilidad_activa", "oficial": False, "inverso": True,
+                "nombre": "Concentración de vulnerabilidad activa",
+                "unidad": "personas por 1.000 hab",
+                "fuente": "Secretaría de Bienestar Social",
+                "ref_min": 30.0, "ref_max": 160.0,
             },
         ],
     },
@@ -437,7 +373,219 @@ def extraer_gis(ind_cfg, year, trim):
                     total += calcular_longitud_linea(seg)
         return round(total, 2)
 
+    # ── excel_edu: lee indicadores educativos desde Excel de Sec. Educación ──
+    if tipo == "excel_edu":
+        # year es el año del período; los Excel son anuales (no trimestrales)
+        datos = leer_indicadores_educacion(year, sector=ind_cfg.get("edu_sector"))
+        if datos is None:
+            return None
+        campo = ind_cfg.get("edu_campo")
+        return datos.get(campo)
+
     return None
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# EXTRACCIÓN DESDE EXCEL EDUCACIÓN
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Comunas que forman el polígono Pulmón de Oriente
+COMUNAS_PULMON_EDU = {13, 14}
+
+# Sector configurable: "total" | "oficial" | "no_oficial"
+# Cambiar aquí para alternar la base del cálculo educativo
+EDU_SECTOR = "total"
+
+
+def _leer_xlsx_sheet(path, sheet_name):
+    """Lee una hoja de un .xlsx y devuelve lista de listas de strings."""
+    import zipfile
+    import xml.etree.ElementTree as ET
+
+    ns_ss  = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+    ns_rel = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    ns_pkg = "http://schemas.openxmlformats.org/package/2006/relationships"
+
+    with zipfile.ZipFile(path) as z:
+        # Shared strings
+        try:
+            shared = [t.text or "" for t in ET.parse(z.open("xl/sharedStrings.xml")).findall(f".//{{{ns_ss}}}t")]
+        except Exception:
+            shared = []
+
+        # Leer relaciones del workbook para mapear rId → ruta de hoja
+        try:
+            rels_tree = ET.parse(z.open("xl/_rels/workbook.xml.rels"))
+            rid_to_target = {
+                r.get("Id"): "xl/" + r.get("Target", "").lstrip("/")
+                for r in rels_tree.findall(f"{{{ns_pkg}}}Relationship")
+                if "worksheet" in r.get("Type", "").lower()
+            }
+        except Exception:
+            rid_to_target = {}
+
+        # Mapear nombre de hoja → ruta real usando rId
+        wb_tree = ET.parse(z.open("xl/workbook.xml"))
+        sheet_map = {}
+        for s in wb_tree.findall(f".//{{{ns_ss}}}sheet"):
+            name = s.get(f"{{{ns_ss}}}name") or s.get("name", "")
+            rid  = s.get(f"{{{ns_rel}}}id") or s.get("r:id", "")
+            target = rid_to_target.get(rid)
+            if name and target:
+                # normalizar ruta: xl/worksheets/sheet1.xml
+                target = target.replace("xl/xl/", "xl/")
+                sheet_map[name] = target
+
+        sf = sheet_map.get(sheet_name)
+        if not sf or sf not in z.namelist():
+            return []
+
+        rows = []
+        for row in ET.parse(z.open(sf)).findall(f".//{{{ns_ss}}}row"):
+            cells = []
+            for c in row.findall(f"{{{ns_ss}}}c"):
+                t = c.get("t", "")
+                v = c.find(f"{{{ns_ss}}}v")
+                if v is not None:
+                    cells.append(shared[int(v.text)] if t == "s" else (v.text or ""))
+                else:
+                    cells.append("")
+            rows.append(cells)
+        return rows
+
+
+def _edu_excel_path(year):
+    """Devuelve la ruta del Excel de educación para el año dado, o None."""
+    base = DATA / "excel" / "educacion"
+    for fname in [f"Indicadores_Sectoriales_{year}.xlsx"]:
+        p = base / fname
+        if p.exists():
+            return p
+    return None
+
+
+def leer_indicadores_educacion(year, sector=None):
+    """
+    Lee los indicadores educativos desde el Excel de Secretaría de Educación.
+    Retorna dict: {matricula, tasa_repitencia, tasa_desercion, rad}
+    Si el archivo no existe, retorna None.
+
+    sector: "total" | "oficial" | "no_oficial"
+            Si es None, usa EDU_SECTOR global.
+
+    Mapa de hojas (por contenido real, independiente del nombre en workbook):
+      sheet7  – Matrícula por sector (Contratada/No Oficial/Oficial) y comuna
+                idx ignorado; fila de datos: [COMUNA, Cont_F, Cont_M, NoOf_F, NoOf_M, Of_F, Of_M, TOTAL]
+      sheet14 – Repitencia total: [idx, COMUNA, MAT, REP_abs, TASA_%]
+      sheet16 – Deserción sector oficial: [idx, COMUNA, DESERTORES, MAT_of, TASA_%]
+      sheet18 – Deserción sector no oficial: [idx, COMUNA, DESERTORES, MAT_noOf, TASA_%]
+      sheet20 – RAD sector oficial: [idx, COMUNA, MAT_of, DOCENTES_of, RAD_of]
+    """
+    sector = sector or EDU_SECTOR
+    path = _edu_excel_path(year)
+    if not path:
+        return None
+
+    COMUNAS = {f"Comuna {c}" for c in COMUNAS_PULMON_EDU}
+
+    def _f(x):
+        try:
+            return float(x) if x else 0.0
+        except (ValueError, TypeError):
+            return 0.0
+
+    def _read_file(fname):
+        """Lee un archivo de hoja directamente por nombre de archivo dentro del zip."""
+        import zipfile
+        import xml.etree.ElementTree as ET
+        ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+        rows = []
+        with zipfile.ZipFile(path) as z:
+            try:
+                shared = [t.text or "" for t in ET.parse(z.open("xl/sharedStrings.xml")).findall(f".//{{{ns}}}t")]
+            except Exception:
+                shared = []
+            sf = f"xl/worksheets/{fname}"
+            if sf not in z.namelist():
+                return []
+            for row in ET.parse(z.open(sf)).findall(f".//{{{ns}}}row"):
+                cells = []
+                for c in row.findall(f"{{{ns}}}c"):
+                    t = c.get("t", "")
+                    v = c.find(f"{{{ns}}}v")
+                    if v is not None:
+                        cells.append(shared[int(v.text)] if t == "s" else (v.text or ""))
+                    else:
+                        cells.append("")
+                rows.append(cells)
+        return rows
+
+    # ── Matrícula por sector (sheet7) ─────────────────────────────────────────
+    # Filas: [COMUNA, Cont_F, Cont_M, NoOf_F, NoOf_M, Of_F, Of_M, TOTAL]
+    # (hay 3 filas de header antes de los datos de comunas)
+    mat_total, mat_oficial, mat_no_oficial = 0.0, 0.0, 0.0
+    for r in _read_file("sheet7.xml"):
+        if len(r) >= 8 and r[0] in COMUNAS:
+            mat_total      += _f(r[7])
+            mat_oficial    += _f(r[5]) + _f(r[6])
+            mat_no_oficial += _f(r[3]) + _f(r[4])
+
+    if sector == "oficial":
+        mat_base = mat_oficial
+    elif sector == "no_oficial":
+        mat_base = mat_no_oficial
+    else:
+        mat_base = mat_total
+
+    if not mat_base:
+        return None
+
+    # ── Repitencia total (sheet14: idx | COMUNA | MAT | REP_abs | TASA_%) ────
+    rep_abs = 0.0
+    for r in _read_file("sheet14.xml"):
+        if len(r) >= 4 and r[1] in COMUNAS:
+            rep_abs += _f(r[3])
+    # Escalar proporcionalmente si sector != total
+    if mat_total and sector != "total":
+        rep_abs *= mat_base / mat_total
+    tasa_rep = round(rep_abs / mat_base * 100, 1) if mat_base else 0.0
+
+    # ── Deserción por sector ──────────────────────────────────────────────────
+    # sheet16 = oficial  (idx | COMUNA | DESERTORES | MAT_of | TASA_%)
+    # sheet18 = no oficial (misma estructura)
+    if sector == "oficial":
+        des_rows = _read_file("sheet16.xml")
+    elif sector == "no_oficial":
+        des_rows = _read_file("sheet18.xml")
+    else:
+        # total = oficial + no oficial
+        des_rows = _read_file("sheet16.xml") + _read_file("sheet18.xml")
+
+    des_abs, des_mat_sector = 0.0, 0.0
+    for r in des_rows:
+        if len(r) >= 5 and r[1] in COMUNAS:
+            des_abs        += _f(r[2])
+            des_mat_sector += _f(r[3])
+    tasa_des = round(des_abs / des_mat_sector * 100, 1) if des_mat_sector else 0.0
+
+    # ── RAD (sheet20: idx | COMUNA | MAT_of | DOCENTES_of | RAD_of) ──────────
+    # sheet20 contiene solo sector oficial; el RAD (~27-29) es el más significativo
+    # Para total/no_oficial se usa el mismo valor (no hay hoja equivalente para otros sectores)
+    rad_c, rad_w = 0.0, 0.0
+    for r in _read_file("sheet20.xml"):
+        if len(r) >= 5 and r[1] in COMUNAS:
+            mat_c = _f(r[2])
+            rad_c += _f(r[4]) * mat_c   # promedio ponderado
+            rad_w += mat_c
+    rad = round(rad_c / rad_w, 1) if rad_w else 0.0
+
+    return {
+        "matricula":       int(mat_base),
+        "tasa_repitencia": tasa_rep,
+        "tasa_desercion":  tasa_des,
+        "rad":             rad,
+        "sector_usado":    sector,
+    }
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -722,19 +870,18 @@ def calcular_itt(periodo_str, version="preliminar"):
     itt_global     = 0.0
     vals_actuales  = {}   # Para guardar en histórico
 
-    # ── Notas reales de seguridad (se calculan una vez) ───────────────────
+    # ── Notas reales por dimensión (se calculan una vez) ──────────────────
     notas_seg = {
-        "hurtos":                nota_hurtos(year, trim),
-        "homicidios":            nota_homicidios(year, trim),
-        "vif":                   nota_vif(year),
-        "vbg":                   nota_vbg(),
-        "presencia_institucional": nota_cai(),
+        "hurtos": nota_hurtos(year, trim),
+        "homicidios": nota_homicidios(year, trim),
     }
-    notas_ent = {
-        "poligonos_ahdi":       nota_ahdi(),
-        "viviendas_mejoramiento": nota_viviendas(),
+    notas_coh = {
+        "vif": nota_vif(year),
     }
-    NOTAS_EXTRA = {"seguridad": notas_seg, "entorno_urbano": notas_ent}
+    NOTAS_EXTRA = {
+        "seguridad": notas_seg,
+        "cohesion_social": notas_coh,
+    }
 
     for dim_id, dim_cfg in DIMENSIONES.items():
         man_dim   = manuales.get(dim_id, {})
@@ -890,28 +1037,28 @@ MANUALES_DEFAULT = {
     ),
     "default": {
         "seguridad": {
-            "percepcion_seguridad": 38
-        },
-        "entorno_urbano": {
-            "espacio_publico": 4.2,
-            "luminarias":      210,
-            "parques":         6
+            "rinas_conflictividad": 74
         },
         "movilidad": {
-            "accesibilidad_mio":       72,
-            "tiempo_desplazamiento":   38,
-            "ciclorutas":              1.2
+            "siniestralidad_vial": 118,
+            "accidentes_lesionados": 83,
+            "muertes_via": 11,
+            "velocidad_corredor": 18.5
         },
-        "desarrollo_social": {
-            "ninos_programas":   1840,
-            "acceso_salud":       76,
-            "familias_subsidio":  520
+        "entorno_urbano": {
+            "ndvi_cobertura_vegetal": 0.38,
+            "area_verde_neta": 148000,
+            "deficit_habitacional_cualitativo": 29.0
         },
-        "actividad_economica": {
-            "negocios_formalizados": 87,
-            "empleos_obra":          340,
-            "inversion_privada":     4200,
-            "emprendimientos":       23
+        "educacion_desarrollo": {
+            "matricula_escolar": 12350,
+            "desercion_escolar": 3.8,
+            "repitencia_escolar": 4.7,
+            "estudiantes_por_docente": 29.0,
+            "aforo_villa_lago": 4200
+        },
+        "cohesion_social": {
+            "concentracion_vulnerabilidad_activa": 78.0
         },
         "_barrios": [
             {"nombre": "Alfonso López",   "itt": 65.2, "poblacion": 18400, "proyectos": 12},

@@ -5,18 +5,18 @@
     "periodo": "2025-T4",
     "fecha_calculo": "2026-03-14",
     "cobertura_datos": 100,
-    "fuentes_activas": 24,
-    "fuentes_total": 24,
-    "nota": "ITT preliminar. Fuentes GIS verificadas: 19 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
+    "fuentes_activas": 17,
+    "fuentes_total": 17,
+    "nota": "ITT preliminar. Fuentes GIS verificadas: 7 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 43.0,
-    "score_anterior": 41.1,
-    "variacion": 1.9,
-    "clasificacion": "Nivel 2 · Consolidación",
+    "score": 61.2,
+    "score_anterior": 58.2,
+    "variacion": 3.0,
+    "clasificacion": "Nivel 3 · Avance",
     "rango": [
-      40,
-      60
+      60,
+      80
     ],
     "periodo_comparacion": "2025-T3"
   },
@@ -25,66 +25,39 @@
       "id": "seguridad",
       "nombre": "Seguridad",
       "icono": "shield",
-      "peso": 0.2,
-      "score": 56.5,
-      "score_anterior": 47.0,
-      "variacion": 9.5,
+      "peso": 0.3,
+      "score": 72.9,
+      "score_anterior": 77.4,
+      "variacion": -4.5,
       "color": "#C1272D",
       "calidad_dato": "preliminar",
       "cobertura": 100,
       "indicadores": [
         {
-          "nombre": "Homicidios (trimestral)",
+          "nombre": "Homicidios en polígono (trimestral)",
           "valor": 36,
           "unidad": "casos",
           "tendencia": "alza",
-          "fuente": "Policía Nacional / SIEDCO",
+          "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
           "oficial": true,
           "nota_real": "2023=117 · 2024=85 · 2025=85"
         },
         {
-          "nombre": "Hurtos reportados (trimestral)",
+          "nombre": "Hurtos en polígono (trimestral)",
           "valor": 260,
           "unidad": "casos",
           "tendencia": "baja",
-          "fuente": "Policía Nacional / SIEDCO",
+          "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
           "oficial": true,
           "nota_real": "Pico 434 (2023-T1) → 260 (2025-T4) — reducción 40%"
         },
         {
-          "nombre": "Violencia Intrafamiliar (trimestral)",
-          "valor": 105,
-          "unidad": "casos",
-          "tendencia": "baja",
-          "fuente": "Policía Nacional / SIEDCO",
-          "oficial": true,
-          "nota_real": "ALERTA: 2023=457 · 2024=483 · 2025=562 — incremento +23%"
-        },
-        {
-          "nombre": "VBG reportadas (anual)",
-          "valor": 98,
+          "nombre": "Riñas / conflictividad (trimestral)",
+          "valor": 74,
           "unidad": "casos",
           "tendencia": "estable",
-          "fuente": "Policía Nacional / SIEDCO",
-          "oficial": true,
-          "nota_real": "CComuna 13=58 · CComuna 14=37 · CComuna 15=2 — solo período 2025"
-        },
-        {
-          "nombre": "Percepción de seguridad",
-          "valor": 38,
-          "unidad": "%",
-          "tendencia": "estable",
-          "fuente": "Encuesta ITT (estimado)",
+          "fuente": "Observatorio de Seguridad y Justicia",
           "oficial": false
-        },
-        {
-          "nombre": "Presencia institucional",
-          "valor": 3,
-          "unidad": "CAI activos",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Seguridad / MECAL · verificado GIS",
-          "oficial": true,
-          "nota_real": "Cai Charco Azul + Cai Pondaje + Cai Bonilla Aragon"
         }
       ],
       "hurtos_series": {
@@ -144,203 +117,170 @@
       }
     },
     {
-      "id": "entorno_urbano",
-      "nombre": "Entorno Urbano",
-      "icono": "city",
-      "peso": 0.3,
-      "score": 38.7,
-      "score_anterior": 38.7,
-      "variacion": 0.0,
-      "color": "#1565C0",
-      "calidad_dato": "oficial",
-      "cobertura": 100,
-      "indicadores": [
-        {
-          "nombre": "Espacio público recuperado",
-          "valor": 4.2,
-          "unidad": "ha",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Vivienda",
-          "oficial": true
-        },
-        {
-          "nombre": "Obras de infraestructura activas",
-          "valor": 5,
-          "unidad": "frentes",
-          "tendencia": "estable",
-          "fuente": "UP Secretarías",
-          "oficial": true
-        },
-        {
-          "nombre": "Luminarias instaladas",
-          "valor": 210,
-          "unidad": "unidades",
-          "tendencia": "estable",
-          "fuente": "Emcali / Alumbrado",
-          "oficial": true
-        },
-        {
-          "nombre": "Parques y zonas verdes intervenidos",
-          "valor": 6,
-          "unidad": "equipamientos",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Deporte",
-          "oficial": true
-        },
-        {
-          "nombre": "Polígonos en legalización urbanística (AHDI)",
-          "valor": 6,
-          "unidad": "polígonos / ha",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Vivienda AHDI · verificado GIS",
-          "oficial": true,
-          "nota_real": "6 polígonos priorizados LU 2024-2027 · 11.71 ha urbanizadas (89.1% prom.) · Barrios: Sector Laguna del Pondaje, Alfonso Bonilla Aragón, Mojica, El Poblado II"
-        },
-        {
-          "nombre": "Viviendas en mejoramiento (2025-2026)",
-          "valor": 157,
-          "unidad": "viviendas",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Vivienda / Convenio Ministerio · verificado GIS",
-          "oficial": true,
-          "nota_real": "8 sectores · 157 viviendas · Los Lagos=78, Mojica=24, José Manuel Marroquín II=14 · 0 ejecutado, 3 en ejecución, 5 asignados"
-        }
-      ]
-    },
-    {
       "id": "movilidad",
       "nombre": "Movilidad",
       "icono": "route",
-      "peso": 0.2,
-      "score": 40.2,
-      "score_anterior": 40.2,
+      "peso": 0.25,
+      "score": 55.7,
+      "score_anterior": 55.7,
       "variacion": 0.0,
       "color": "#00796B",
       "calidad_dato": "preliminar",
       "cobertura": 100,
       "indicadores": [
         {
-          "nombre": "Tramos viales mejorados",
-          "valor": 3.21,
-          "unidad": "km",
+          "nombre": "Siniestralidad vial (accidentes)",
+          "valor": 118,
+          "unidad": "eventos",
           "tendencia": "estable",
-          "fuente": "Infraestructura Vial · verificado GIS",
-          "oficial": true
-        },
-        {
-          "nombre": "Accesibilidad a MIO (500m)",
-          "valor": 72,
-          "unidad": "%",
-          "tendencia": "estable",
-          "fuente": "MIO / Metrocali",
-          "oficial": true
-        },
-        {
-          "nombre": "Tiempo promedio de desplazamiento",
-          "valor": 38,
-          "unidad": "min",
-          "tendencia": "estable",
-          "fuente": "Encuesta estimada",
+          "fuente": "Secretaría de Movilidad",
           "oficial": false
         },
         {
-          "nombre": "Ciclorutas activas en el área",
-          "valor": 1.2,
-          "unidad": "km",
+          "nombre": "Accidentes con lesionados",
+          "valor": 83,
+          "unidad": "eventos",
           "tendencia": "estable",
           "fuente": "Secretaría de Movilidad",
-          "oficial": true
+          "oficial": false
+        },
+        {
+          "nombre": "Muertes en vía",
+          "valor": 11,
+          "unidad": "casos",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Movilidad",
+          "oficial": false
+        },
+        {
+          "nombre": "Velocidad promedio del corredor",
+          "valor": 18.5,
+          "unidad": "km/h",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Movilidad (gestionando sensores)",
+          "oficial": false
         }
       ]
     },
     {
-      "id": "desarrollo_social",
-      "nombre": "Desarrollo Social",
-      "icono": "people",
-      "peso": 0.15,
-      "score": 47.0,
-      "score_anterior": 47.0,
+      "id": "entorno_urbano",
+      "nombre": "Entorno Urbano",
+      "icono": "city",
+      "peso": 0.2,
+      "score": 43.6,
+      "score_anterior": 43.6,
       "variacion": 0.0,
-      "color": "#6A1B9A",
-      "calidad_dato": "oficial",
-      "cobertura": 100,
-      "indicadores": [
-        {
-          "nombre": "Niños en programas de atención",
-          "valor": 1840,
-          "unidad": "beneficiarios",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Bienestar",
-          "oficial": true
-        },
-        {
-          "nombre": "Sedes educativas oficiales activas",
-          "valor": 68,
-          "unidad": "sedes",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Educación · verificado GIS",
-          "oficial": true
-        },
-        {
-          "nombre": "Acceso a servicios de salud",
-          "valor": 76,
-          "unidad": "%",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Salud",
-          "oficial": true
-        },
-        {
-          "nombre": "Familias en programas de subsidio",
-          "valor": 520,
-          "unidad": "familias",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Bienestar",
-          "oficial": true
-        }
-      ]
-    },
-    {
-      "id": "actividad_economica",
-      "nombre": "Actividad Económica",
-      "icono": "store",
-      "peso": 0.15,
-      "score": 33.5,
-      "score_anterior": 33.5,
-      "variacion": 0.0,
-      "color": "#E65100",
+      "color": "#1565C0",
       "calidad_dato": "preliminar",
       "cobertura": 100,
       "indicadores": [
         {
-          "nombre": "Negocios formalizados en el área",
-          "valor": 87,
-          "unidad": "establecimientos",
+          "nombre": "NDVI / cobertura vegetal",
+          "valor": 0.38,
+          "unidad": "índice",
           "tendencia": "estable",
-          "fuente": "Cámara de Comercio (estimado)",
+          "fuente": "Copernicus / Sentinel-2",
           "oficial": false
         },
         {
-          "nombre": "Empleos generados por obras",
-          "valor": 340,
-          "unidad": "empleos",
+          "nombre": "Área verde neta",
+          "valor": 148000,
+          "unidad": "m²",
           "tendencia": "estable",
-          "fuente": "UP Secretarías",
+          "fuente": "Copernicus / Sentinel-2",
+          "oficial": false
+        },
+        {
+          "nombre": "Déficit habitacional cualitativo",
+          "valor": 29.0,
+          "unidad": "%",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Vivienda",
+          "oficial": false
+        }
+      ]
+    },
+    {
+      "id": "educacion_desarrollo",
+      "nombre": "Educación y Desarrollo",
+      "icono": "school",
+      "peso": 0.13,
+      "score": 61.0,
+      "score_anterior": 55.8,
+      "variacion": 5.2,
+      "color": "#6A1B9A",
+      "calidad_dato": "preliminar",
+      "cobertura": 100,
+      "indicadores": [
+        {
+          "nombre": "Matrícula escolar (Comunas 13+14)",
+          "valor": 50336,
+          "unidad": "estudiantes",
+          "tendencia": "alza",
+          "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
         {
-          "nombre": "Inversión privada atraída",
-          "valor": 4200,
-          "unidad": "millones COP",
-          "tendencia": "estable",
-          "fuente": "Cámara de Comercio (estimado)",
-          "oficial": false
+          "nombre": "Deserción escolar (Comunas 13+14)",
+          "valor": 4.3,
+          "unidad": "%",
+          "tendencia": "alza",
+          "fuente": "Secretaría de Educación / Indicadores Sectoriales",
+          "oficial": true
         },
         {
-          "nombre": "Iniciativas de emprendimiento apoyadas",
-          "valor": 23,
-          "unidad": "unidades",
+          "nombre": "Repitencia escolar (Comunas 13+14)",
+          "valor": 8.4,
+          "unidad": "%",
+          "tendencia": "alza",
+          "fuente": "Secretaría de Educación / Indicadores Sectoriales",
+          "oficial": true
+        },
+        {
+          "nombre": "Estudiantes por docente (Comunas 13+14)",
+          "valor": 27.1,
+          "unidad": "ratio",
+          "tendencia": "baja",
+          "fuente": "Secretaría de Educación / Indicadores Sectoriales",
+          "oficial": true
+        },
+        {
+          "nombre": "Aforo polideportivo Villa del Lago",
+          "valor": 4200,
+          "unidad": "personas/mes",
           "tendencia": "estable",
-          "fuente": "Secretaría de Desarrollo",
+          "fuente": "Secretaría de Deportes",
+          "oficial": false
+        }
+      ]
+    },
+    {
+      "id": "cohesion_social",
+      "nombre": "Cohesión Social",
+      "icono": "people",
+      "peso": 0.12,
+      "score": 72.6,
+      "score_anterior": 42.6,
+      "variacion": 30.0,
+      "color": "#8E24AA",
+      "calidad_dato": "preliminar",
+      "cobertura": 100,
+      "indicadores": [
+        {
+          "nombre": "Violencia intrafamiliar (VIF) trimestral",
+          "valor": 105,
+          "unidad": "casos",
+          "tendencia": "baja",
+          "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
+          "oficial": true,
+          "nota_real": "ALERTA: 2023=457 · 2024=483 · 2025=562 — incremento +23%"
+        },
+        {
+          "nombre": "Concentración de vulnerabilidad activa",
+          "valor": 78.0,
+          "unidad": "personas por 1.000 hab",
+          "tendencia": "estable",
+          "fuente": "Secretaría de Bienestar Social",
           "oficial": false
         }
       ]
@@ -349,21 +289,21 @@
   "serie_temporal": [
     {
       "periodo": "2025-T3",
-      "itt": 41.1,
-      "seguridad": 47.0,
-      "entorno_urbano": 38.7,
-      "movilidad": 40.2,
-      "desarrollo_social": 47.0,
-      "actividad_economica": 33.5
+      "itt": 58.2,
+      "seguridad": 77.4,
+      "movilidad": 55.7,
+      "entorno_urbano": 43.6,
+      "educacion_desarrollo": 55.8,
+      "cohesion_social": 42.6
     },
     {
       "periodo": "2025-T4",
-      "itt": 43.0,
-      "seguridad": 56.5,
-      "entorno_urbano": 38.7,
-      "movilidad": 40.2,
-      "desarrollo_social": 47.0,
-      "actividad_economica": 33.5
+      "itt": 61.2,
+      "seguridad": 72.9,
+      "movilidad": 55.7,
+      "entorno_urbano": 43.6,
+      "educacion_desarrollo": 61.0,
+      "cohesion_social": 72.6
     }
   ],
   "barrios": [

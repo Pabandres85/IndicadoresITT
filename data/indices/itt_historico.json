@@ -2,95 +2,81 @@
   "periodos": [
     {
       "periodo": "2025-T3",
-      "itt_score": 41.1,
+      "itt_score": 58.2,
       "dimensiones_scores": {
-        "seguridad": 47.0,
-        "entorno_urbano": 38.7,
-        "movilidad": 40.2,
-        "desarrollo_social": 47.0,
-        "actividad_economica": 33.5
+        "seguridad": 77.4,
+        "movilidad": 55.7,
+        "entorno_urbano": 43.6,
+        "educacion_desarrollo": 55.8,
+        "cohesion_social": 42.6
       },
       "valores_crudos": {
         "seguridad": {
           "homicidios": 9,
           "hurtos": 290,
-          "vif": 189,
-          "vbg": 98,
-          "percepcion_seguridad": 38,
-          "presencia_institucional": 3
-        },
-        "entorno_urbano": {
-          "espacio_publico": 4.2,
-          "frentes_obra": 5,
-          "luminarias": 210,
-          "parques": 6,
-          "poligonos_ahdi": 6,
-          "viviendas_mejoramiento": 157
+          "rinas_conflictividad": 74
         },
         "movilidad": {
-          "tramos_viales": 3.21,
-          "accesibilidad_mio": 72,
-          "tiempo_desplazamiento": 38,
-          "ciclorutas": 1.2
+          "siniestralidad_vial": 118,
+          "accidentes_lesionados": 83,
+          "muertes_via": 11,
+          "velocidad_corredor": 18.5
         },
-        "desarrollo_social": {
-          "ninos_programas": 1840,
-          "sedes_educativas": 68,
-          "acceso_salud": 76,
-          "familias_subsidio": 520
+        "entorno_urbano": {
+          "ndvi_cobertura_vegetal": 0.38,
+          "area_verde_neta": 148000,
+          "deficit_habitacional_cualitativo": 29.0
         },
-        "actividad_economica": {
-          "negocios_formalizados": 87,
-          "empleos_obra": 340,
-          "inversion_privada": 4200,
-          "emprendimientos": 23
+        "educacion_desarrollo": {
+          "matricula_escolar": 12350,
+          "desercion_escolar": 3.8,
+          "repitencia_escolar": 4.7,
+          "estudiantes_por_docente": 29.0,
+          "aforo_villa_lago": 4200
+        },
+        "cohesion_social": {
+          "vif": 189,
+          "concentracion_vulnerabilidad_activa": 78.0
         }
       }
     },
     {
       "periodo": "2025-T4",
-      "itt_score": 43.0,
+      "itt_score": 61.2,
       "dimensiones_scores": {
-        "seguridad": 56.5,
-        "entorno_urbano": 38.7,
-        "movilidad": 40.2,
-        "desarrollo_social": 47.0,
-        "actividad_economica": 33.5
+        "seguridad": 72.9,
+        "movilidad": 55.7,
+        "entorno_urbano": 43.6,
+        "educacion_desarrollo": 61.0,
+        "cohesion_social": 72.6
       },
       "valores_crudos": {
         "seguridad": {
           "homicidios": 36,
           "hurtos": 260,
-          "vif": 105,
-          "vbg": 98,
-          "percepcion_seguridad": 38,
-          "presencia_institucional": 3
-        },
-        "entorno_urbano": {
-          "espacio_publico": 4.2,
-          "frentes_obra": 5,
-          "luminarias": 210,
-          "parques": 6,
-          "poligonos_ahdi": 6,
-          "viviendas_mejoramiento": 157
+          "rinas_conflictividad": 74
         },
         "movilidad": {
-          "tramos_viales": 3.21,
-          "accesibilidad_mio": 72,
-          "tiempo_desplazamiento": 38,
-          "ciclorutas": 1.2
+          "siniestralidad_vial": 118,
+          "accidentes_lesionados": 83,
+          "muertes_via": 11,
+          "velocidad_corredor": 18.5
         },
-        "desarrollo_social": {
-          "ninos_programas": 1840,
-          "sedes_educativas": 68,
-          "acceso_salud": 76,
-          "familias_subsidio": 520
+        "entorno_urbano": {
+          "ndvi_cobertura_vegetal": 0.38,
+          "area_verde_neta": 148000,
+          "deficit_habitacional_cualitativo": 29.0
         },
-        "actividad_economica": {
-          "negocios_formalizados": 87,
-          "empleos_obra": 340,
-          "inversion_privada": 4200,
-          "emprendimientos": 23
+        "educacion_desarrollo": {
+          "matricula_escolar": 50336,
+          "desercion_escolar": 4.3,
+          "repitencia_escolar": 8.4,
+          "estudiantes_por_docente": 27.1,
+          "aforo_villa_lago": 4200
+        },
+        "cohesion_social": {
+          "vif": 105,
+          "concentracion_vulnerabilidad_activa": 78.0
         }
       }
     }

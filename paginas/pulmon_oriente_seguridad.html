@@ -11,6 +11,27 @@
     .hero { background: #fff; }
     .hero-inner { padding: 56px 60px 44px; align-items: start; }
     .security-shell { max-width: 1200px; margin: 0 auto; padding: 0 40px 40px; }
+    .dimension-switcher {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 18px 0 14px;
+    }
+    .dimension-tab {
+      border: 1px solid rgba(0,48,135,0.12);
+      background: #fff;
+      color: #003087;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font: 600 12px/1 'Inter', sans-serif;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .dimension-tab.active {
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    }
     .security-switcher {
       display: flex;
       flex-wrap: wrap;
@@ -154,13 +175,13 @@
 <header class="hero">
   <div class="hero-bg-art"></div>
   <div class="hero-inner" style="grid-template-columns:1fr">
-    <div class="hero-tag">Dimensión Seguridad · Datos Reales SIEDCO</div>
+    <div class="hero-tag">Dimensiones ITT · Pulmón de Oriente</div>
     <div class="hero-brand">
       <img class="hero-logo" src="../imag/logo_alcaldia.png" alt="Escudo Alcaldía de Santiago de Cali">
       <div class="hero-brand-text">
-        <h1>Seguridad<br><span>Pulmón de Oriente</span></h1>
-        <p class="hero-sub">Panel dinámico por delito. Hurtos, homicidios, violencia intrafamiliar y VBG en una sola vista adaptable.</p>
-        <p class="hero-date">// FUENTE: POLICÍA NACIONAL / SIEDCO · CORTE 2025</p>
+        <h1>Panel por<br><span>Dimensiones</span></h1>
+        <p class="hero-sub">Selecciona la dimensión principal para ver evolución, calidad de datos e indicadores clave. En Seguridad se mantiene además el subpanel por delito.</p>
+        <p class="hero-date">// FUENTE: ITT + SIEDCO + SECRETARÍAS · CORTE 2025-T4</p>
       </div>
     </div>
   </div>
@@ -168,9 +189,10 @@
 
 <section class="section">
   <div class="security-shell">
-    <div class="section-header"><span class="section-num">01 —</span><h2>Panel Dinámico de Seguridad</h2></div>
+    <div class="section-header"><span class="section-num">01 —</span><h2>Panel Dinámico por Dimensión</h2></div>
     <div class="divider"></div>
 
+    <div class="dimension-switcher" id="dimension-switcher"></div>
     <div class="security-switcher" id="security-switcher"></div>
 
     <div class="module-intro">
@@ -629,6 +651,7 @@ const MODULES = {
   }
 };
 
+const dimensionSwitcher = document.getElementById('dimension-switcher');
 const switcher = document.getElementById('security-switcher');
 const highlight = document.getElementById('module-highlight');
 const note = document.getElementById('module-note');
@@ -640,20 +663,131 @@ const chartBottomTitle = document.getElementById('chart-bottom-title');
 const rankTitle = document.getElementById('rank-title');
 const rankList = document.getElementById('rank-list');
 
+let ittData;
+let currentDimension = 'seguridad';
 let currentModule = 'hurtos';
 let mainChart;
 let sideChart;
 let bottomChart;
 
-Object.entries(MODULES).forEach(([key, mod]) => {
-  const btn = document.createElement('button');
-  btn.className = 'security-tab' + (key === currentModule ? ' active' : '');
-  btn.dataset.key = key;
-  btn.textContent = mod.label;
-  if (key === currentModule) btn.style.background = mod.color;
-  btn.addEventListener('click', () => renderModule(key));
-  switcher.appendChild(btn);
-});
+const FALLBACK_DIMS = [
+  { id: 'seguridad', nombre: 'Seguridad', color: '#C1272D' },
+  { id: 'movilidad', nombre: 'Movilidad', color: '#00796B' },
+  { id: 'entorno_urbano', nombre: 'Entorno Urbano', color: '#1565C0' },
+  { id: 'educacion_desarrollo', nombre: 'Educación y Desarrollo', color: '#6A1B9A' },
+  { id: 'cohesion_social', nombre: 'Cohesión Social', color: '#8E24AA' }
+];
+
+// Mapeo de dimensiones objetivo (nuevo contexto) usando datos hoy disponibles.
+const DIMENSION_MODEL = [
+  { id: 'seguridad',            label: 'Seguridad',              sourceId: 'seguridad',         targetPeso: 0.30 },
+  { id: 'movilidad',            label: 'Movilidad',              sourceId: 'movilidad',         targetPeso: 0.25 },
+  { id: 'entorno_urbano',       label: 'Entorno Urbano',         sourceId: 'entorno_urbano',    targetPeso: 0.20 },
+  { id: 'educacion_desarrollo', label: 'Educación y Desarrollo', sourceId: 'educacion_desarrollo', targetPeso: 0.13 },
+  { id: 'cohesion_social',      label: 'Cohesión Social',        sourceId: 'cohesion_social',   targetPeso: 0.12, color: '#8E24AA' }
+];
+
+function colorAlpha(hex, alpha) {
+  const clean = hex.replace('#', '');
+  const full = clean.length === 3
+    ? clean.split('').map(c => c + c).join('')
+    : clean;
+  const n = parseInt(full, 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+function fmtValue(v, unit = '') {
+  if (v === null || v === undefined || v === '') return '—';
+  if (typeof v === 'number') {
+    if (Math.abs(v) >= 1000) return `${v.toLocaleString('es-CO')} ${unit}`.trim();
+    if (Number.isInteger(v)) return `${v} ${unit}`.trim();
+    return `${v.toFixed(2)} ${unit}`.trim();
+  }
+  return `${v} ${unit}`.trim();
+}
+
+function numValue(v) {
+  if (typeof v === 'number') return v;
+  const n = Number(String(v).replace(/[^\d.-]/g, ''));
+  return Number.isFinite(n) ? n : 0;
+}
+
+function getBaseDim(sourceId) {
+  return ittData?.dimensiones?.find(d => d.id === sourceId) || null;
+}
+
+function resolveDimensionContext(dimId) {
+  const model = DIMENSION_MODEL.find(m => m.id === dimId);
+  if (!model) return null;
+
+  const base = getBaseDim(model.sourceId);
+  if (!base) return null;
+  const dim = {
+    ...base,
+    id: model.id,
+    nombre: model.label,
+    peso: model.targetPeso,
+    color: model.color || base.color
+  };
+  return { model, dim, sourceId: model.sourceId };
+}
+
+function buildSeriesForContext(ctx) {
+  const rows = ittData?.serie_temporal || [];
+  return rows
+    .filter(p => typeof p[ctx.sourceId] === 'number')
+    .map(p => ({ periodo: p.periodo, val: p[ctx.sourceId] }));
+}
+
+function buildDimensionTabs() {
+  const dims = ittData
+    ? DIMENSION_MODEL
+        .map(m => {
+          const ctx = resolveDimensionContext(m.id);
+          if (!ctx) return null;
+          return { id: m.id, nombre: ctx.dim.nombre, color: ctx.dim.color || '#003087' };
+        })
+        .filter(Boolean)
+    : FALLBACK_DIMS;
+
+  dimensionSwitcher.innerHTML = '';
+  dims.forEach(dim => {
+    const btn = document.createElement('button');
+    btn.className = 'dimension-tab' + (dim.id === currentDimension ? ' active' : '');
+    btn.dataset.id = dim.id;
+    btn.dataset.color = dim.color;
+    btn.textContent = dim.nombre;
+    if (dim.id === currentDimension) btn.style.background = dim.color;
+    btn.addEventListener('click', () => renderDimension(dim.id));
+    dimensionSwitcher.appendChild(btn);
+  });
+}
+
+function updateDimensionTabStyles(activeId) {
+  dimensionSwitcher.querySelectorAll('.dimension-tab').forEach(btn => {
+    const color = btn.dataset.color || '#003087';
+    const active = btn.dataset.id === activeId;
+    btn.classList.toggle('active', active);
+    btn.style.background = active ? color : '#fff';
+    btn.style.borderColor = active ? color : 'rgba(0,48,135,0.12)';
+  });
+}
+
+function buildSecuritySubTabs() {
+  switcher.innerHTML = '';
+  Object.entries(MODULES).forEach(([key, mod]) => {
+    const btn = document.createElement('button');
+    btn.className = 'security-tab' + (key === currentModule ? ' active' : '');
+    btn.dataset.key = key;
+    btn.textContent = mod.label;
+    if (key === currentModule) btn.style.background = mod.color;
+    btn.addEventListener('click', () => renderSecurityModule(key));
+    switcher.appendChild(btn);
+  });
+}
 
 function updateTabStyles(activeKey) {
   switcher.querySelectorAll('.security-tab').forEach(btn => {
@@ -684,10 +818,13 @@ function renderKPIs(module) {
 function renderRanking(module) {
   rankTitle.textContent = module.rankingTitle;
   rankList.innerHTML = '';
-  const max = module.ranking[0]?.value || 1;
+  const values = module.ranking.map(r => numValue(r.value));
+  const max = Math.max(...values, 1);
   module.ranking.forEach((item, idx) => {
     const row = document.createElement('div');
-    const pct = (item.value / max) * 100;
+    const val = numValue(item.value);
+    const pct = max > 0 ? Math.max(8, (val / max) * 100) : 8;
+    const valueLabel = item.valueLabel || item.value;
     row.className = 'rank-item';
     row.innerHTML = `
       <div class="rank-num">${String(idx + 1).padStart(2, '0')}</div>
@@ -695,7 +832,7 @@ function renderRanking(module) {
         <div class="rank-name">${item.name}</div>
         <div class="rank-bar"><span style="width:${pct}%;background:${module.color}"></span></div>
       </div>
-      <div class="rank-val" style="color:${module.color}">${item.value}</div>
+      <div class="rank-val" style="color:${module.color}">${valueLabel}</div>
     `;
     rankList.appendChild(row);
   });
@@ -706,15 +843,11 @@ function mountChart(chartRef, canvasId, config) {
   return new Chart(document.getElementById(canvasId), {
     type: config.type,
     data: config.data,
-    options: config.options
+    options: config.options || {}
   });
 }
 
-function renderModule(key) {
-  currentModule = key;
-  const module = MODULES[key];
-  updateTabStyles(key);
-
+function renderGenericModule(module) {
   highlight.style.background = module.highlightBg;
   highlight.innerHTML = `
     <div class="alerta-titulo">${module.highlightTitle}</div>
@@ -740,7 +873,165 @@ function renderModule(key) {
   renderRanking(module);
 }
 
-renderModule(currentModule);
+function renderSecurityModule(key) {
+  currentModule = key;
+  const module = MODULES[key];
+  updateTabStyles(key);
+  renderGenericModule(module);
+}
+
+function buildDimensionModule(dimId) {
+  const ctx = resolveDimensionContext(dimId);
+  if (!ctx) return null;
+  const { dim } = ctx;
+  const serie = buildSeriesForContext(ctx);
+
+  const oficiales = dim.indicadores.filter(i => i.oficial).length;
+  const estimados = dim.indicadores.length - oficiales;
+  const tendenciaCount = dim.indicadores.reduce((acc, ind) => {
+    const t = ind.tendencia || 'sin_dato';
+    acc[t] = (acc[t] || 0) + 1;
+    return acc;
+  }, { alza: 0, baja: 0, estable: 0, sin_dato: 0 });
+
+  const ordenIndicadores = [...dim.indicadores].sort((a, b) => numValue(b.valor) - numValue(a.valor));
+  const ranking = ordenIndicadores.slice(0, 8).map(ind => ({
+    name: ind.nombre,
+    value: numValue(ind.valor),
+    valueLabel: fmtValue(ind.valor, ind.unidad)
+  }));
+
+  const variacionSign = dim.variacion >= 0 ? '+' : '';
+  const lineColor = dim.color || '#003087';
+  const fillColor = colorAlpha(lineColor, 0.12);
+  const isSynthetic = !!ctx.model.synthetic;
+
+  return {
+    label: dim.nombre,
+    color: lineColor,
+    highlightBg: `linear-gradient(135deg, ${lineColor} 0%, #003087 100%)`,
+    highlightTitle: `${dim.nombre} · Score ${dim.score.toFixed(1)}/100`,
+    highlightText: `Variación ${variacionSign}${dim.variacion.toFixed(1)} pts vs periodo anterior · Cobertura ${dim.cobertura}% · Periodo ${ittData.meta?.periodo || 'N/A'}.`,
+    noteTitle: 'Lectura metodológica',
+    noteText: isSynthetic
+      ? `Peso objetivo en ITT: ${(dim.peso * 100).toFixed(0)}%. Vista provisional construida con datos disponibles (VIF + percepción + programas sociales) mientras llegan fuentes completas de cohesión social.`
+      : `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. Calidad de dato: ${dim.calidad_dato}. Fuentes principales: ${dim.indicadores.slice(0, 2).map(i => i.fuente).join(' · ')}.`,
+    summary: isSynthetic
+      ? `Dimensión <strong>${dim.nombre}</strong> en modo provisional con ${dim.indicadores.length} indicadores disponibles. Se visualiza con datos existentes para mantener lectura del nuevo marco dimensional.`
+      : `Dimensión <strong>${dim.nombre}</strong> con ${dim.indicadores.length} indicadores (${oficiales} oficiales, ${estimados} estimados). Esta vista permite seguimiento directo por dimensión sin salir de la página de seguridad.`,
+    kpis: [
+      { value: dim.score.toFixed(1), label: 'Score dimensión', sub: '/100', color: lineColor },
+      { value: `${variacionSign}${dim.variacion.toFixed(1)} pts`, label: 'Variación', sub: `vs ${ittData.itt_global?.periodo_comparacion || 'anterior'}`, color: dim.variacion >= 0 ? '#2E7D32' : '#C1272D' },
+      { value: `${oficiales}/${dim.indicadores.length}`, label: 'Indicadores oficiales', sub: `${Math.round((oficiales / (dim.indicadores.length || 1)) * 100)}%`, color: '#1565C0' },
+      { value: `${(dim.peso * 100).toFixed(0)}%`, label: 'Peso en ITT', sub: `${dim.cobertura}% cobertura`, color: '#003087' }
+    ],
+    mainChart: {
+      title: `Evolución temporal de ${dim.nombre}`,
+      type: 'line',
+      data: {
+        labels: serie.map(s => s.periodo),
+        datasets: [{
+          label: dim.nombre,
+          data: serie.map(s => s.val),
+          borderColor: lineColor,
+          backgroundColor: fillColor,
+          borderWidth: 2.5,
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        scales: {
+          x: { grid: { display: false } },
+          y: { min: 0, max: 100, grid: { color: 'rgba(0,0,0,0.06)' } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    },
+    sideChart: {
+      title: 'Composición de calidad del dato',
+      type: 'doughnut',
+      data: {
+        labels: ['Oficial', 'Estimado'],
+        datasets: [{
+          data: [oficiales, estimados],
+          backgroundColor: ['#2E7D32', '#F57F17'],
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      },
+      options: {
+        cutout: '62%',
+        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+      }
+    },
+    bottomChart: {
+      title: 'Estado de tendencia de indicadores',
+      type: 'bar',
+      data: {
+        labels: ['Alza', 'Baja', 'Estable', 'Sin dato'],
+        datasets: [{
+          label: 'Indicadores',
+          data: [
+            tendenciaCount.alza || 0,
+            tendenciaCount.baja || 0,
+            tendenciaCount.estable || 0,
+            tendenciaCount.sin_dato || 0
+          ],
+          backgroundColor: ['#C1272D', '#2E7D32', '#1565C0', '#90A4AE'],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        scales: {
+          x: { grid: { display: false } },
+          y: { beginAtZero: true, precision: 0, grid: { color: 'rgba(0,0,0,0.06)' } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    },
+    rankingTitle: 'Indicadores reportados',
+    ranking
+  };
+}
+
+function renderDimension(dimId) {
+  currentDimension = dimId;
+  updateDimensionTabStyles(dimId);
+  const isSecurity = dimId === 'seguridad';
+  switcher.style.display = isSecurity ? 'flex' : 'none';
+
+  if (isSecurity) {
+    renderSecurityModule(currentModule);
+    return;
+  }
+
+  const dimModule = buildDimensionModule(dimId);
+  if (!dimModule) {
+    summary.innerHTML = 'No se encontraron datos de esta dimensión para el periodo actual.';
+    return;
+  }
+  renderGenericModule(dimModule);
+}
+
+async function init() {
+  try {
+    const res = await fetch('../data/indices/itt_pulmon.json');
+    ittData = await res.json();
+  } catch (e) {
+    console.warn('No se pudo cargar itt_pulmon.json:', e);
+  }
+
+  buildDimensionTabs();
+  buildSecuritySubTabs();
+  if (!dimensionSwitcher.querySelector(`[data-id="${currentDimension}"]`)) {
+    currentDimension = dimensionSwitcher.querySelector('.dimension-tab')?.dataset.id || 'seguridad';
+  }
+  renderDimension(currentDimension);
+}
+
+init();
 </script>
 </body>
 </html>
