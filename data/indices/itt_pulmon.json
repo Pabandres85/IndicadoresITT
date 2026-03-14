@@ -10,9 +10,9 @@
     "nota": "ITT preliminar. Fuentes GIS verificadas: 7 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 61.2,
+    "score": 61.1,
     "score_anterior": 58.2,
-    "variacion": 3.0,
+    "variacion": 2.9,
     "clasificacion": "Nivel 3 · Avance",
     "rango": [
       60,
@@ -26,11 +26,11 @@
       "nombre": "Seguridad",
       "icono": "shield",
       "peso": 0.3,
-      "score": 72.9,
+      "score": 72.8,
       "score_anterior": 77.4,
-      "variacion": -4.5,
+      "variacion": -4.6,
       "color": "#C1272D",
-      "calidad_dato": "preliminar",
+      "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
@@ -50,14 +50,6 @@
           "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
           "oficial": true,
           "nota_real": "Pico 434 (2023-T1) → 260 (2025-T4) — reducción 40%"
-        },
-        {
-          "nombre": "Riñas / conflictividad (trimestral)",
-          "valor": 74,
-          "unidad": "casos",
-          "tendencia": "estable",
-          "fuente": "Observatorio de Seguridad y Justicia",
-          "oficial": false
         }
       ],
       "hurtos_series": {
@@ -213,7 +205,7 @@
       "cobertura": 100,
       "indicadores": [
         {
-          "nombre": "Matrícula escolar (Comunas 13+14)",
+          "nombre": "Matrícula escolar · Territorio Pulmón",
           "valor": 50336,
           "unidad": "estudiantes",
           "tendencia": "alza",
@@ -221,7 +213,7 @@
           "oficial": true
         },
         {
-          "nombre": "Deserción escolar (Comunas 13+14)",
+          "nombre": "Deserción escolar · Territorio Pulmón",
           "valor": 4.3,
           "unidad": "%",
           "tendencia": "alza",
@@ -229,7 +221,7 @@
           "oficial": true
         },
         {
-          "nombre": "Repitencia escolar (Comunas 13+14)",
+          "nombre": "Repitencia escolar · Territorio Pulmón",
           "valor": 8.4,
           "unidad": "%",
           "tendencia": "alza",
@@ -237,7 +229,7 @@
           "oficial": true
         },
         {
-          "nombre": "Estudiantes por docente (Comunas 13+14)",
+          "nombre": "Estudiantes por docente · Territorio Pulmón",
           "valor": 27.1,
           "unidad": "ratio",
           "tendencia": "baja",
@@ -259,9 +251,9 @@
       "nombre": "Cohesión Social",
       "icono": "people",
       "peso": 0.12,
-      "score": 72.6,
+      "score": 72.7,
       "score_anterior": 42.6,
-      "variacion": 30.0,
+      "variacion": 30.1,
       "color": "#8E24AA",
       "calidad_dato": "preliminar",
       "cobertura": 100,
@@ -274,6 +266,14 @@
           "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
           "oficial": true,
           "nota_real": "ALERTA: 2023=457 · 2024=483 · 2025=562 — incremento +23%"
+        },
+        {
+          "nombre": "Riñas / conflictividad (trimestral)",
+          "valor": 74,
+          "unidad": "casos",
+          "tendencia": "estable",
+          "fuente": "Observatorio de Seguridad y Justicia",
+          "oficial": false
         },
         {
           "nombre": "Concentración de vulnerabilidad activa",

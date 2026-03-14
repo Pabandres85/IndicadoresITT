@@ -73,13 +73,6 @@ DIMENSIONES = {
                 "gis_dir": "seguridad/hurtos", "gis_tipo": "conteo_periodo",
                 "gis_campo_fecha": "FECHA_HECH",
             },
-            {
-                "id": "rinas_conflictividad", "oficial": False, "inverso": True,
-                "nombre": "Riñas / conflictividad (trimestral)",
-                "unidad": "casos",
-                "fuente": "Observatorio de Seguridad y Justicia",
-                "ref_min": 20, "ref_max": 220,
-            },
         ],
     },
     "movilidad": {
@@ -155,7 +148,7 @@ DIMENSIONES = {
         "indicadores": [
             {
                 "id": "matricula_escolar", "oficial": True, "inverso": False,
-                "nombre": "Matrícula escolar (Comunas 13+14)",
+                "nombre": "Matrícula escolar · Territorio Pulmón",
                 "unidad": "estudiantes",
                 "fuente": "Secretaría de Educación / Indicadores Sectoriales",
                 "ref_min": 5000, "ref_max": 60000,
@@ -164,7 +157,7 @@ DIMENSIONES = {
             },
             {
                 "id": "desercion_escolar", "oficial": True, "inverso": True,
-                "nombre": "Deserción escolar (Comunas 13+14)",
+                "nombre": "Deserción escolar · Territorio Pulmón",
                 "unidad": "%",
                 "fuente": "Secretaría de Educación / Indicadores Sectoriales",
                 "ref_min": 1.0, "ref_max": 10.0,
@@ -172,7 +165,7 @@ DIMENSIONES = {
             },
             {
                 "id": "repitencia_escolar", "oficial": True, "inverso": True,
-                "nombre": "Repitencia escolar (Comunas 13+14)",
+                "nombre": "Repitencia escolar · Territorio Pulmón",
                 "unidad": "%",
                 "fuente": "Secretaría de Educación / Indicadores Sectoriales",
                 "ref_min": 1.0, "ref_max": 15.0,
@@ -180,7 +173,7 @@ DIMENSIONES = {
             },
             {
                 "id": "estudiantes_por_docente", "oficial": True, "inverso": True,
-                "nombre": "Estudiantes por docente (Comunas 13+14)",
+                "nombre": "Estudiantes por docente · Territorio Pulmón",
                 "unidad": "ratio",
                 "fuente": "Secretaría de Educación / Indicadores Sectoriales",
                 "ref_min": 18.0, "ref_max": 40.0,
@@ -211,6 +204,13 @@ DIMENSIONES = {
                 "gis_dir": "seguridad/violencia", "gis_tipo": "conteo_periodo",
                 "gis_campo_fecha": "FECHA_HECH",
                 "gis_patron": "VIOLENCIA_INTRAFAMILIAR",
+            },
+            {
+                "id": "rinas_conflictividad", "oficial": False, "inverso": True,
+                "nombre": "Riñas / conflictividad (trimestral)",
+                "unidad": "casos",
+                "fuente": "Observatorio de Seguridad y Justicia",
+                "ref_min": 20, "ref_max": 220,
             },
             {
                 "id": "concentracion_vulnerabilidad_activa", "oficial": False, "inverso": True,

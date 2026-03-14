@@ -1,9 +1,7 @@
 {
   "_nota": "Valores manuales para indicadores sin fuente GeoJSON directa. Actualizar cada trimestre antes de ejecutar calcular_itt.py. Bloque 'default' se usa si no existe el bloque del período específico.",
   "default": {
-    "seguridad": {
-      "rinas_conflictividad": 74
-    },
+    "seguridad": {},
     "movilidad": {
       "siniestralidad_vial": 118,
       "accidentes_lesionados": 83,
@@ -23,6 +21,7 @@
       "aforo_villa_lago": 4200
     },
     "cohesion_social": {
+      "rinas_conflictividad": 74,
       "concentracion_vulnerabilidad_activa": 78.0
     },
     "_barrios": [

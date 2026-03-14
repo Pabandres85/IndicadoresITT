@@ -42,19 +42,18 @@
     },
     {
       "periodo": "2025-T4",
-      "itt_score": 61.2,
+      "itt_score": 61.1,
       "dimensiones_scores": {
-        "seguridad": 72.9,
+        "seguridad": 72.8,
         "movilidad": 55.7,
         "entorno_urbano": 43.6,
         "educacion_desarrollo": 61.0,
-        "cohesion_social": 72.6
+        "cohesion_social": 72.7
       },
       "valores_crudos": {
         "seguridad": {
           "homicidios": 36,
-          "hurtos": 260,
-          "rinas_conflictividad": 74
+          "hurtos": 260
         },
         "movilidad": {
           "siniestralidad_vial": 118,
@@ -76,6 +75,7 @@
         },
         "cohesion_social": {
           "vif": 105,
+          "rinas_conflictividad": 74,
           "concentracion_vulnerabilidad_activa": 78.0
         }
       }
