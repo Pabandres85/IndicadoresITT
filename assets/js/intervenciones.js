@@ -646,8 +646,8 @@ function fmtCorte(iso) {
 async function initData() {
   try {
     const [resData, resMeta] = await Promise.all([
-      fetch('../data/intervenciones.json'),
-      fetch('../data/intervenciones_meta.json').catch(() => null)
+      fetch('../data/intervenciones/intervenciones.json'),
+      fetch('../data/intervenciones/intervenciones_meta.json').catch(() => null)
     ]);
     if (!resData.ok) throw new Error(`HTTP ${resData.status}: no se pudo cargar intervenciones.json`);
     _allData = await resData.json();

@@ -62,6 +62,15 @@ html, body { height:100%; font-family:'Inter', sans-serif; background:#EEF0EB; o
 }
 #btn-reset:hover { background:var(--azul); color:#fff; }
 
+/* ── TOOLTIP COMUNAS ── */
+.comuna-tooltip {
+  background: rgba(0,48,135,0.82); color: #FFC300;
+  border: none; border-radius: 6px;
+  font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700;
+  padding: 3px 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+}
+.comuna-tooltip::before { display: none; }
+
 /* ── CONTENEDOR DEL MAPA ── */
 #map { position:fixed; top:104px; left:0; right:0; bottom:0; z-index: 100;}
 

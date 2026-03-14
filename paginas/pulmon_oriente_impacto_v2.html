@@ -1,1 +1,393 @@
-<H1>EN CONSTRUCCION</H1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITT · Pulmón de Oriente · Cali 2024–2027</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/informe.css">
+  <link rel="stylesheet" href="../assets/css/itt.css">
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg-art"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Índice de Transformación Territorial</div>
+      <div class="hero-brand">
+        <img class="hero-logo" src="../imag/logo_alcaldia.png" alt="Escudo Alcaldía de Santiago de Cali">
+        <div class="hero-brand-text">
+          <h1>ITT · Pulmón de<br><span>Oriente</span></h1>
+          <p class="hero-sub">Medición integral de transformación territorial. 5 dimensiones · 20 indicadores.</p>
+          <p class="hero-date">// PERIODO: 2025-T4 · SECRETARÍAS DISTRITALES + ENTIDADES</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="itt-score-block">
+        <div class="itt-score-label">ITT Global · Pulmón de Oriente</div>
+        <div>
+          <span class="itt-score-num" id="hero-itt-num">—</span>
+          <span class="itt-score-denom">/100</span>
+        </div>
+        <div class="itt-score-clasif" id="hero-clasif">Cargando...</div>
+        <div class="itt-score-var" id="hero-var">↑ — pts</div>
+        <div><span class="badge-prelim" id="hero-badge">⚠ Dato Preliminar</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- 01 RESUMEN DIMENSIONAL -->
+<section class="section">
+  <div class="container">
+    <div class="section-header"><span class="section-num">01 —</span><h2>Resumen por Dimensión</h2></div>
+    <div class="divider"></div>
+    <div class="charts-itt">
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Gauge ITT Global</div></div>
+        <div class="chart-body">
+          <div class="gauge-wrap">
+            <canvas id="chartGauge"></canvas>
+            <div class="gauge-center-label">
+              <div class="gauge-center-val" id="gauge-val">—</div>
+              <div class="gauge-center-sub">ITT</div>
+            </div>
+          </div>
+          <div class="chart-insight" id="insight-gauge">Cargando...</div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Radar de Dimensiones · 2025-T4 vs 2025-T3</div></div>
+        <div class="chart-body">
+          <div class="chart-wrap-radar"><canvas id="chartRadar"></canvas></div>
+        </div>
+      </div>
+    </div>
+    <div class="dim-grid" id="dim-grid"></div>
+  </div>
+</section>
+
+<!-- 02 EVOLUCIÓN -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">02 —</span><h2>Evolución Temporal</h2></div>
+    <div class="divider"></div>
+    <div class="chart-card">
+      <div class="chart-card-header"><div class="chart-card-title">ITT Global y por Dimensión · Últimos 4 Periodos</div></div>
+      <div class="chart-body">
+        <div class="chart-wrap" style="height:300px"><canvas id="chartEvolucion"></canvas></div>
+        <div class="chart-insight" id="insight-evolucion"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 INDICADORES -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">03 —</span><h2>Indicadores por Dimensión</h2></div>
+    <div class="divider"></div>
+    <div class="dim-tabs" id="dim-tabs"></div>
+    <div id="dim-contents"></div>
+  </div>
+</section>
+
+<!-- 04 BARRIOS -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">04 —</span><h2>Ranking de Barrios · ITT Estimado</h2></div>
+    <div class="divider"></div>
+    <div class="chart-card" style="margin-bottom:20px">
+      <div class="chart-card-header"><div class="chart-card-title">ITT por Barrio</div></div>
+      <div class="chart-body">
+        <div class="chart-wrap" style="height:260px"><canvas id="chartBarrios"></canvas></div>
+      </div>
+    </div>
+    <div class="barrios-grid" id="barrios-grid"></div>
+  </div>
+</section>
+
+<!-- 05 CALIDAD -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">05 —</span><h2>Calidad y Madurez del Dato</h2></div>
+    <div class="divider"></div>
+    <div class="calidad-grid" id="calidad-grid"></div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="page-switcher" aria-label="Navegación">
+  <a class="switcher-home" href="../index.html" title="Inicio">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </a>
+  <div class="switcher-divider"></div>
+  <a class="switcher-btn active" href="pulmon_oriente_impacto_v2.html" aria-current="page">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19h16v2H4zM6 10h3v7H6zm5-4h3v11h-3zm5 2h3v9h-3z"/></svg>
+    ITT
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_seguridad.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+    Seguridad
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_informe-v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
+    Informe
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_mapa_v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+    Mapa
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <div class="footer-title">ITT · Pulmón de Oriente</div>
+      <p class="footer-text">Índice de Transformación Territorial. 5 dimensiones, 20 indicadores. Plan de Desarrollo 2024–2027.</p>
+      <div class="footer-meta">Fuente: Secretarías Distritales · Entidades Nacionales</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-title">Secciones</div>
+      <ul class="footer-links">
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="pulmon_oriente_informe-v2.html">Informe de Inversión</a></li>
+        <li><a href="pulmon_oriente_mapa_v2.html">Mapa Interactivo</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-title">Notas</div>
+      <p class="footer-text">ITT preliminar. El ITT oficial se publicará cuando se complete el 100% de fuentes validadas.</p>
+      <div class="footer-badge">2024–2027 · Actualización trimestral</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© Municipio de Santiago de Cali</span>
+    <span class="footer-sep">•</span>
+    <span>Equipo Gobierno de Datos</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+(async () => {
+  let D;
+  try {
+    const res = await fetch('../data/indices/itt_pulmon.json');
+    D = await res.json();
+  } catch(e) {
+    document.body.innerHTML = '<div style="padding:60px;text-align:center;font-family:sans-serif"><h2>Error cargando datos ITT</h2><p>' + e.message + '</p></div>';
+    return;
+  }
+
+  const ICONS = { seguridad:'🛡️', entorno_urbano:'🏙️', movilidad:'🚦', desarrollo_social:'👥', actividad_economica:'🏪' };
+
+  // HERO
+  const g = D.itt_global;
+  document.getElementById('hero-itt-num').textContent = g.score.toFixed(1);
+  document.getElementById('hero-clasif').textContent  = g.clasificacion;
+  document.getElementById('hero-var').textContent     = `↑ +${g.variacion.toFixed(1)} pts vs ${g.periodo_comparacion}`;
+  if (D.meta.version !== 'preliminar') document.getElementById('hero-badge').textContent = '✓ ITT Oficial';
+
+  // GAUGE
+  document.getElementById('gauge-val').textContent = g.score.toFixed(1);
+  new Chart(document.getElementById('chartGauge'), {
+    type: 'doughnut',
+    data: { datasets: [{ data:[g.score, 100-g.score], backgroundColor:['#003087','#F0F5FF'], borderWidth:0, circumference:180, rotation:270 }] },
+    options: { cutout:'75%', plugins:{ legend:{display:false}, tooltip:{enabled:false} } }
+  });
+  document.getElementById('insight-gauge').innerHTML =
+    `<span class="ci-label">Clasificación:</span> ${g.clasificacion} ·
+     Variación: <strong>+${g.variacion.toFixed(1)} pts</strong> ·
+     Cobertura de datos: <strong>${D.meta.cobertura_datos}%</strong> (${D.meta.fuentes_activas}/${D.meta.fuentes_total} fuentes)`;
+
+  // RADAR
+  new Chart(document.getElementById('chartRadar'), {
+    type: 'radar',
+    data: {
+      labels: D.dimensiones.map(d => d.nombre),
+      datasets: [
+        { label:'2025-T4', data:D.dimensiones.map(d=>d.score), backgroundColor:'rgba(0,48,135,0.15)', borderColor:'#003087', borderWidth:2.5, pointBackgroundColor:D.dimensiones.map(d=>d.color), pointRadius:5 },
+        { label:'2025-T3', data:D.dimensiones.map(d=>d.score_anterior), backgroundColor:'rgba(255,195,0,0.10)', borderColor:'rgba(255,195,0,0.65)', borderWidth:1.5, pointRadius:3, borderDash:[4,4] }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      scales:{ r:{ min:0, max:100, ticks:{stepSize:25,font:{size:10},color:'#90A4AE'}, grid:{color:'rgba(0,0,0,0.07)'}, pointLabels:{font:{size:11,weight:'600'},color:'#003087'} } },
+      plugins:{ legend:{position:'bottom',labels:{font:{size:11}}} }
+    }
+  });
+
+  // DIM CARDS
+  const dimGrid = document.getElementById('dim-grid');
+  D.dimensiones.forEach(dim => {
+    const vc = dim.variacion >= 0 ? 'var-up' : 'var-down';
+    const va = dim.variacion >= 0 ? '↑' : '↓';
+    const vs = dim.variacion >= 0 ? '+' : '';
+    const cc = dim.calidad_dato === 'oficial' ? 'cal-oficial' : 'cal-preliminar';
+    const cl = dim.calidad_dato === 'oficial' ? '✓ Oficial' : '⚠ Preliminar';
+    const card = document.createElement('div');
+    card.className = 'dim-card';
+    card.style.borderTopColor = dim.color;
+    card.innerHTML = `
+      <div class="dim-icon">${ICONS[dim.id]||'📊'}</div>
+      <div class="dim-nombre">${dim.nombre}</div>
+      <div><span class="dim-score-num" style="color:${dim.color}">${dim.score.toFixed(1)}</span><span class="dim-score-max">/100</span></div>
+      <div class="dim-peso">Peso: ${(dim.peso*100).toFixed(0)}%</div>
+      <div class="dim-var ${vc}">${va} ${vs}${dim.variacion.toFixed(1)} pts</div>
+      <div class="dim-bar-track"><div class="dim-bar-fill" style="width:${dim.score}%;background:${dim.color}"></div></div>
+      <span class="dim-calidad ${cc}">${cl}</span>`;
+    dimGrid.appendChild(card);
+  });
+
+  // EVOLUCIÓN
+  new Chart(document.getElementById('chartEvolucion'), {
+    type: 'line',
+    data: {
+      labels: D.serie_temporal.map(p => p.periodo),
+      datasets: [
+        { label:'ITT Global', data:D.serie_temporal.map(p=>p.itt), borderColor:'#003087', backgroundColor:'rgba(0,48,135,0.10)', borderWidth:3, pointRadius:5, fill:true, tension:0.3 },
+        ...D.dimensiones.map(d => ({ label:d.nombre, data:D.serie_temporal.map(p=>p[d.id]), borderColor:d.color, backgroundColor:'transparent', borderWidth:1.5, pointRadius:3, fill:false, tension:0.3, borderDash:[5,3] }))
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      scales:{ y:{min:0,max:100,ticks:{stepSize:20},grid:{color:'rgba(0,0,0,0.06)'}}, x:{grid:{display:false}} },
+      plugins:{ legend:{position:'bottom',labels:{font:{size:11},boxWidth:16}}, tooltip:{mode:'index',intersect:false} }
+    }
+  });
+  const p0 = D.serie_temporal[0], pN = D.serie_temporal[D.serie_temporal.length-1];
+  document.getElementById('insight-evolucion').innerHTML =
+    `<span class="ci-label">Tendencia:</span> El ITT global avanzó <strong>+${(pN.itt-p0.itt).toFixed(1)} pts</strong> desde ${p0.periodo} hasta ${pN.periodo}.
+     Mayor crecimiento: <strong>Entorno Urbano (+${D.dimensiones.find(d=>d.id==='entorno_urbano').variacion.toFixed(1)} pts)</strong>.`;
+
+  // TABS INDICADORES
+  const tabsEl = document.getElementById('dim-tabs');
+  const ctsEl  = document.getElementById('dim-contents');
+  D.dimensiones.forEach((dim, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'dim-tab' + (idx===0?' active':'');
+    btn.style.background  = idx===0 ? dim.color : '';
+    btn.style.borderColor = idx===0 ? dim.color : '';
+    btn.style.color       = idx===0 ? '#fff' : '';
+    btn.textContent = (ICONS[dim.id]||'') + ' ' + dim.nombre;
+    btn.dataset.idx = idx;
+    tabsEl.appendChild(btn);
+
+    const panel = document.createElement('div');
+    panel.className = 'dim-content' + (idx===0?' active':'');
+    panel.dataset.idx = idx;
+    panel.innerHTML = `
+      <div style="margin-bottom:12px;font-size:13px;color:#37474F">
+        Score: <strong style="color:${dim.color}">${dim.score.toFixed(1)}/100</strong> ·
+        Peso: ${(dim.peso*100).toFixed(0)}% ·
+        Cobertura: ${dim.cobertura}%
+      </div>
+      <div class="ind-grid">
+        ${dim.indicadores.map(ind => {
+          const tc = ind.tendencia==='alza'?'tend-alza':ind.tendencia==='baja'?'tend-baja':'tend-estable';
+          const ta = ind.tendencia==='alza'?'↑':ind.tendencia==='baja'?'↓':'→';
+          const oc = ind.oficial?'ind-of-si':'ind-of-no';
+          const ol = ind.oficial?'Oficial':'Estimado';
+          const v  = (typeof ind.valor==='number'&&ind.valor>999) ? ind.valor.toLocaleString('es-CO') : ind.valor;
+          return `<div class="ind-card" style="border-left-color:${dim.color}">
+            <div class="ind-nombre">${ind.nombre}</div>
+            <div><span class="ind-val">${v}</span><span class="ind-unidad">${ind.unidad}</span></div>
+            <div class="ind-meta">
+              <span class="ind-fuente">${ind.fuente}</span>
+              <div style="display:flex;gap:6px;align-items:center">
+                <span class="ind-tend ${tc}">${ta} ${ind.tendencia}</span>
+                <span class="ind-oficial ${oc}">${ol}</span>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    ctsEl.appendChild(panel);
+  });
+
+  tabsEl.addEventListener('click', e => {
+    const btn = e.target.closest('.dim-tab');
+    if (!btn) return;
+    const idx = parseInt(btn.dataset.idx);
+    tabsEl.querySelectorAll('.dim-tab').forEach((b, i) => {
+      b.classList.toggle('active', i===idx);
+      b.style.background  = i===idx ? D.dimensiones[i].color : '';
+      b.style.borderColor = i===idx ? D.dimensiones[i].color : '#ddd';
+      b.style.color       = i===idx ? '#fff' : '';
+    });
+    ctsEl.querySelectorAll('.dim-content').forEach((p, i) => p.classList.toggle('active', i===idx));
+  });
+
+  // BARRIOS
+  const bs = [...D.barrios].sort((a,b) => b.itt - a.itt);
+  new Chart(document.getElementById('chartBarrios'), {
+    type:'bar',
+    data:{
+      labels: bs.map(b=>b.nombre),
+      datasets:[{ label:'ITT Estimado', data:bs.map(b=>b.itt),
+        backgroundColor: bs.map(b => b.itt>=62?'#003087':b.itt>=55?'#1565C0':'#90A4AE'),
+        borderRadius:6, borderSkipped:false }]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, indexAxis:'y',
+      scales:{ x:{min:0,max:100,grid:{color:'rgba(0,0,0,0.06)'}}, y:{grid:{display:false}} },
+      plugins:{ legend:{display:false} }
+    }
+  });
+
+  const barriosGrid = document.getElementById('barrios-grid');
+  bs.forEach((b,i) => {
+    const color = b.itt>=62?'#003087':b.itt>=55?'#1565C0':'#90A4AE';
+    const div = document.createElement('div');
+    div.className = 'barrio-item';
+    div.innerHTML = `
+      <div class="barrio-top">
+        <div class="barrio-nombre">#${i+1} ${b.nombre}</div>
+        <div class="barrio-score" style="color:${color}">${b.itt.toFixed(1)}</div>
+      </div>
+      <div class="barrio-meta">
+        <span>👥 ${b.poblacion.toLocaleString('es-CO')} hab.</span>
+        <span>🔨 ${b.proyectos} proyectos</span>
+      </div>
+      <div class="barrio-bar-track"><div class="barrio-bar-fill" style="width:${b.itt}%"></div></div>`;
+    barriosGrid.appendChild(div);
+  });
+
+  // CALIDAD
+  const allInd   = D.dimensiones.flatMap(d=>d.indicadores);
+  const oficiales = allInd.filter(i=>i.oficial).length;
+  const calidadGrid = document.getElementById('calidad-grid');
+  [
+    { titulo:'Cobertura de Fuentes',    pct:D.meta.cobertura_datos,                         sub:`${D.meta.fuentes_activas} de ${D.meta.fuentes_total} fuentes activas` },
+    { titulo:'Indicadores Oficiales',   pct:Math.round(oficiales/allInd.length*100),         sub:`${oficiales} de ${allInd.length} indicadores con fuente oficial` },
+    { titulo:'Madurez del ITT',         pct:D.meta.version==='preliminar'?68:100,            sub:D.meta.version==='preliminar'?'Preliminar · en proceso de validación':'ITT Oficial validado' }
+  ].forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'cal-card';
+    div.innerHTML = `
+      <div class="cal-titulo">${item.titulo}</div>
+      <div class="cal-progress-outer"><div class="cal-progress-fill" style="width:${item.pct}%"></div></div>
+      <div class="cal-pct">${item.pct}%</div>
+      <div class="cal-sub">${item.sub}</div>`;
+    calidadGrid.appendChild(div);
+  });
+
+  const legDiv = document.createElement('div');
+  legDiv.className = 'cal-card';
+  legDiv.innerHTML = `
+    <div class="cal-titulo">Leyenda de Calidad</div>
+    <div class="cal-legend">
+      <div class="cal-leg-item"><div class="cal-leg-dot" style="background:#2E7D32"></div><span><strong>Oficial</strong> — Fuente institucional validada</span></div>
+      <div class="cal-leg-item"><div class="cal-leg-dot" style="background:#F57F17"></div><span><strong>Estimado</strong> — Fuente no validada aún</span></div>
+      <div class="cal-leg-item"><div class="cal-leg-dot" style="background:#90A4AE"></div><span><strong>Sin dato</strong> — Pendiente de recolección</span></div>
+    </div>`;
+  calidadGrid.appendChild(legDiv);
+
+})();
+</script>
+</body>
+</html>

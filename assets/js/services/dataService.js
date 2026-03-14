@@ -31,7 +31,7 @@ const DataService = (() => {
   //      Formato guardado: { etag: string|null, data: { pts, poly, tramos } }
   //      Se invalida automáticamente si el ETag del servidor cambia (datos nuevos)
   //      Para forzar re-descarga manual: cambiar el sufijo de CACHE_KEY (ej: v2 → v3)
-  const CACHE_KEY = 'pulmon_data_v2';  // v2: incluye etag en el objeto guardado
+  const CACHE_KEY = 'pulmon_data_v3';  // v3: rutas reorganizadas por carpetas
   let _cache = null;
 
   // ── NORMALIZACIÓN DE SECRETARÍA ─────────────────────────────────────────
@@ -99,7 +99,7 @@ const DataService = (() => {
     // Nivel 2: verificar ETag del servidor antes de usar sessionStorage
     let currentEtag = null;
     try {
-      const headRes = await fetch(basePath + 'Total_secretarias.geojson', { method: 'HEAD' });
+      const headRes = await fetch(basePath + 'infraestructura/Total_secretarias.geojson', { method: 'HEAD' });
       // Preferimos ETag; si no existe usamos Last-Modified como alternativa
       currentEtag = headRes.headers.get('etag') || headRes.headers.get('last-modified');
     } catch (_) {
@@ -126,9 +126,9 @@ const DataService = (() => {
 
     // Nivel 3: fetch completo (primera carga o datos actualizados)
     const [ptsRes, polyRes, tramosRes] = await Promise.all([
-      fetch(basePath + 'Total_secretarias.geojson'),
-      fetch(basePath + 'poligonos.geojson'),
-      fetch(basePath + 'tramos_oriente.geojson')
+      fetch(basePath + 'infraestructura/Total_secretarias.geojson'),
+      fetch(basePath + 'infraestructura/poligonos.geojson'),
+      fetch(basePath + 'infraestructura/tramos_oriente.geojson')
     ]);
     _cache = {
       pts:    await ptsRes.json(),

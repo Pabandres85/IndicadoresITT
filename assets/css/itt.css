@@ -1,0 +1,228 @@
+/*
+ * itt.css — Estilos compartidos para el módulo ITT
+ * Pulmón de Oriente · Cali 2024–2027
+ * Depende de: informe.css (variables :root, hero, nav, footer, etc.)
+ */
+
+/* ── VARIABLES PROPIAS ITT ── */
+:root {
+  --dim-seg:  #C1272D;
+  --dim-ent:  #1565C0;
+  --dim-mov:  #00796B;
+  --dim-soc:  #6A1B9A;
+  --dim-eco:  #E65100;
+}
+
+/* ── HERO ITT ── */
+.hero { background: #fff; }
+.hero-inner { padding: 56px 60px 44px; align-items: start; }
+
+/* SCORE BLOCK */
+.itt-score-block {
+  background: linear-gradient(135deg, var(--verde-bosque) 0%, var(--verde-esmeralda) 100%);
+  border-radius: 20px;
+  padding: 28px 32px;
+  color: #fff;
+  min-width: 280px;
+  box-shadow: 0 16px 40px rgba(0,48,135,0.30);
+  position: relative;
+  overflow: hidden;
+}
+.itt-score-block::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 80% 20%, rgba(255,195,0,0.20) 0%, transparent 70%);
+}
+.itt-score-block > * { position: relative; z-index: 1; }
+
+.itt-score-label  { font-size: 10px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; opacity: .7; margin-bottom: 4px; }
+.itt-score-num    { font-family: 'Montserrat', sans-serif; font-size: 72px; font-weight: 800; line-height: 1; color: var(--verde-claro); }
+.itt-score-denom  { font-size: 24px; opacity: .6; }
+.itt-score-clasif { font-size: 14px; font-weight: 600; opacity: .9; margin-top: 8px; }
+.itt-score-var    {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,195,0,0.20); border: 1px solid rgba(255,195,0,0.35);
+  border-radius: 100px; padding: 3px 12px;
+  font-size: 12px; font-weight: 600; color: var(--verde-claro); margin-top: 10px;
+}
+.badge-prelim {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(230,81,0,0.15); border: 1px solid rgba(230,81,0,0.30);
+  border-radius: 100px; padding: 4px 12px;
+  font-size: 11px; font-weight: 700; color: #E65100;
+  letter-spacing: .5px; text-transform: uppercase; margin-top: 12px;
+}
+.badge-oficial {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(46,125,50,0.15); border: 1px solid rgba(46,125,50,0.30);
+  border-radius: 100px; padding: 4px 12px;
+  font-size: 11px; font-weight: 700; color: #2E7D32;
+  letter-spacing: .5px; text-transform: uppercase; margin-top: 12px;
+}
+
+/* ── GAUGE ── */
+.gauge-wrap { position: relative; width: 200px; height: 110px; margin: 0 auto 12px; }
+.gauge-wrap canvas { width: 200px !important; height: 110px !important; }
+.gauge-center-label { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); text-align: center; }
+.gauge-center-val   { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 700; color: var(--verde-bosque); }
+.gauge-center-sub   { font-size: 10px; color: var(--gris-light); text-transform: uppercase; letter-spacing: 1px; }
+
+/* ── DIMENSIONES GRID ── */
+.dim-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 28px; }
+.dim-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  border-top: 4px solid #ddd;
+  transition: transform .2s, box-shadow .2s;
+}
+.dim-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.10); }
+.dim-icon      { font-size: 22px; margin-bottom: 10px; }
+.dim-nombre    { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--gris-text); margin-bottom: 8px; }
+.dim-score-num { font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 800; line-height: 1; }
+.dim-score-max { font-size: 13px; color: var(--gris-light); }
+.dim-peso      { font-size: 10px; color: var(--gris-light); margin-top: 4px; }
+.dim-var       { font-size: 11px; font-weight: 600; margin-top: 6px; }
+.var-up        { color: #2E7D32; }
+.var-down      { color: #C62828; }
+.dim-bar-track { height: 6px; background: var(--verde-hielo); border-radius: 100px; margin-top: 10px; overflow: hidden; }
+.dim-bar-fill  { height: 100%; border-radius: 100px; }
+.dim-calidad   {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 9px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 100px; margin-top: 8px;
+}
+.cal-oficial    { background: #E8F5E9; color: #2E7D32; }
+.cal-preliminar { background: #FFF8E1; color: #F57F17; }
+
+/* ── CHARTS ITT ── */
+.charts-itt { display: grid; grid-template-columns: 1fr 1.6fr; gap: 28px; margin-top: 28px; }
+.chart-wrap-radar { position: relative; height: 300px; max-width: 300px; margin: 0 auto; width: 100%; }
+
+/* ── BARRIOS ── */
+.barrios-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+.barrio-item {
+  background: #fff; border-radius: 12px; padding: 16px 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.barrio-top    { display: flex; justify-content: space-between; align-items: center; }
+.barrio-nombre { font-size: 14px; font-weight: 600; color: var(--verde-bosque); }
+.barrio-score  { font-family: 'Montserrat', sans-serif; font-size: 18px; font-weight: 700; }
+.barrio-meta   { display: flex; gap: 16px; font-size: 11px; color: var(--gris-light); }
+.barrio-bar-track { height: 8px; background: var(--verde-hielo); border-radius: 100px; overflow: hidden; }
+.barrio-bar-fill  {
+  height: 100%; border-radius: 100px;
+  background: linear-gradient(to right, var(--verde-bosque), var(--verde-claro));
+}
+
+/* ── INDICADORES ── */
+.ind-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+.ind-card {
+  background: #fff; border-radius: 12px; padding: 16px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 4px solid #ddd;
+}
+.ind-nombre  { font-size: 12px; font-weight: 600; color: var(--gris-text); margin-bottom: 6px; line-height: 1.4; }
+.ind-val     { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 600; color: var(--verde-bosque); }
+.ind-unidad  { font-size: 11px; color: var(--gris-light); margin-left: 4px; }
+.ind-meta    { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; }
+.ind-fuente  { font-size: 10px; color: var(--gris-light); }
+.ind-tend    { font-size: 10px; font-weight: 600; }
+.tend-alza   { color: #2E7D32; }
+.tend-baja   { color: #C62828; }
+.tend-estable{ color: var(--azul-agua); }
+.ind-oficial { font-size: 9px; padding: 2px 7px; border-radius: 100px; font-weight: 700; }
+.ind-of-si   { background: #E8F5E9; color: #2E7D32; }
+.ind-of-no   { background: #FFF8E1; color: #F57F17; }
+
+/* ── TABS DIMENSIÓN ── */
+.dim-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.dim-tab  {
+  padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  border: 2px solid #ddd; background: #fff; cursor: pointer;
+  transition: all .2s; color: var(--gris-text);
+}
+.dim-tab.active  { border-color: transparent; color: #fff; }
+.dim-content     { display: none; }
+.dim-content.active { display: block; }
+
+/* ── CALIDAD ── */
+.calidad-grid   { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px; }
+.cal-card       { background: #fff; border-radius: 14px; padding: 22px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+.cal-titulo     { font-size: 12px; font-weight: 700; color: var(--gris-text); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; }
+.cal-progress-outer { background: var(--verde-hielo); border-radius: 100px; height: 12px; overflow: hidden; margin-bottom: 8px; }
+.cal-progress-fill  { height: 100%; border-radius: 100px; background: linear-gradient(to right, var(--verde-bosque), var(--verde-claro)); }
+.cal-pct        { font-family: 'Montserrat', sans-serif; font-size: 28px; font-weight: 700; color: var(--verde-bosque); }
+.cal-sub        { font-size: 11px; color: var(--gris-light); margin-top: 2px; }
+.cal-legend     { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.cal-leg-item   { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--gris-text); }
+.cal-leg-dot    { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── METODOLOGÍA ── */
+.metod-formula {
+  background: var(--verde-bosque); color: #fff; border-radius: 16px;
+  padding: 32px 40px; margin: 24px 0; text-align: center;
+}
+.metod-formula-title { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; opacity: .7; margin-bottom: 16px; }
+.metod-formula-eq    {
+  font-family: 'JetBrains Mono', monospace; font-size: clamp(14px, 2.5vw, 22px);
+  font-weight: 600; color: var(--verde-claro); line-height: 1.8;
+}
+.metod-formula-note  { font-size: 12px; opacity: .65; margin-top: 16px; line-height: 1.7; }
+
+.metod-dim-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 28px; }
+.metod-dim-card {
+  background: #fff; border-radius: 16px; padding: 24px 18px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06); border-top: 5px solid #ddd;
+}
+.metod-dim-peso {
+  font-family: 'Montserrat', sans-serif; font-size: 36px; font-weight: 800; line-height: 1;
+}
+.metod-dim-peso-lbl { font-size: 11px; color: var(--gris-light); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 16px; margin-top: 2px; }
+.metod-dim-nombre   { font-size: 13px; font-weight: 700; color: var(--verde-bosque); margin-bottom: 14px; }
+.metod-ind-list     { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.metod-ind-list li  { font-size: 11px; color: var(--gris-text); line-height: 1.4; display: flex; align-items: flex-start; gap: 6px; }
+.metod-ind-list li::before { content: '–'; color: var(--gris-light); flex-shrink: 0; }
+
+.metod-table-wrap { background: #fff; border-radius: 16px; overflow: auto; box-shadow: 0 4px 24px rgba(0,0,0,0.06); }
+.metod-table      { width: 100%; border-collapse: collapse; font-size: 13px; }
+.metod-table th   { background: var(--verde-bosque); color: #fff; padding: 12px 16px; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; text-align: left; position: sticky; top: 0; }
+.metod-table td   { padding: 11px 16px; border-bottom: 1px solid rgba(0,0,0,0.04); color: var(--gris-text); vertical-align: top; }
+.metod-table tr:nth-child(even) td { background: var(--verde-hielo); }
+.metod-norm-box   {
+  background: var(--verde-hielo); border: 1px solid rgba(0,48,135,0.12);
+  border-radius: 12px; padding: 20px 24px;
+}
+.metod-norm-eq    { font-family: 'JetBrains Mono', monospace; font-size: 15px; color: var(--verde-bosque); font-weight: 600; margin: 8px 0; }
+.metod-norm-desc  { font-size: 12px; color: var(--gris-text); line-height: 1.6; margin-top: 10px; }
+
+.clasif-grid   { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 20px; }
+.clasif-card   {
+  border-radius: 12px; padding: 18px 16px; text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.clasif-rango  { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.clasif-label  { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+.clasif-desc   { font-size: 11px; opacity: .8; line-height: 1.4; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  .dim-grid, .metod-dim-grid { grid-template-columns: repeat(3, 1fr); }
+  .charts-itt    { grid-template-columns: 1fr; }
+  .barrios-grid  { grid-template-columns: 1fr; }
+  .calidad-grid  { grid-template-columns: 1fr; }
+  .clasif-grid   { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .hero-inner { padding: 28px 16px 24px; grid-template-columns: 1fr; }
+  .itt-score-block { min-width: 0; width: 100%; }
+  .dim-grid, .metod-dim-grid { grid-template-columns: 1fr 1fr; }
+  .ind-grid  { grid-template-columns: 1fr; }
+  .metod-formula { padding: 24px 20px; }
+}
+@media (max-width: 400px) {
+  .dim-grid, .metod-dim-grid { grid-template-columns: 1fr; }
+  .clasif-grid { grid-template-columns: 1fr; }
+}

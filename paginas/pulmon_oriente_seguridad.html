@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seguridad · Pulmón de Oriente · Cali 2023–2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/informe.css">
+  <link rel="stylesheet" href="../assets/css/itt.css">
+  <style>
+    /* Hero override */
+    .hero { background: #fff; }
+    .hero-inner { padding: 56px 60px 44px; align-items: start; }
+
+    /* KPI HERO especiales */
+    .seg-kpi-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; margin-top: 28px; }
+    .seg-kpi {
+      background: #fff; border-radius: 14px; padding: 20px 18px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 5px solid #ddd;
+    }
+    .seg-kpi-val { font-family: 'Montserrat', sans-serif; font-size: 30px; font-weight: 800; line-height: 1; }
+    .seg-kpi-lbl { font-size: 11px; color: #90A4AE; text-transform: uppercase; letter-spacing: .5px; margin-top: 5px; }
+    .seg-kpi-sub { font-size: 11px; font-weight: 600; margin-top: 6px; }
+    .badge-real {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #E8F5E9; border: 1px solid rgba(46,125,50,.3);
+      border-radius: 100px; padding: 3px 10px;
+      font-size: 10px; font-weight: 700; color: #2E7D32;
+      text-transform: uppercase; letter-spacing: .5px; margin-top: 8px;
+    }
+    .var-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 100px;
+      font-size: 11px; font-weight: 700; margin-top: 8px;
+    }
+    .var-baja  { background: #E8F5E9; color: #2E7D32; }
+    .var-alza  { background: #FFEBEE; color: #C62828; }
+
+    /* HORA CHART */
+    .hora-wrap { height: 200px; position: relative; }
+
+    /* TABLA BARRIOS */
+    .barrio-rank { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+    .barrio-rank-item {
+      display: grid; grid-template-columns: 20px 1fr auto;
+      align-items: center; gap: 10px;
+    }
+    .rank-num  { font-family:'JetBrains Mono',monospace; font-size:12px; color:#90A4AE; font-weight:600; }
+    .rank-name { font-size:13px; font-weight:600; color:#003087; }
+    .rank-n    { font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:700; }
+    .rank-bar-outer { height:5px; background:#F0F5FF; border-radius:100px; margin-top:4px; overflow:hidden; }
+    .rank-bar-inner { height:100%; border-radius:100px; }
+
+    /* ALERTA CARD */
+    .alerta-card {
+      background: linear-gradient(135deg, #C1272D 0%, #8B0000 100%);
+      border-radius: 16px; padding: 24px 28px; color: #fff;
+      display: flex; gap: 20px; align-items: flex-start;
+      box-shadow: 0 8px 24px rgba(193,39,45,0.30);
+    }
+    .alerta-icon { font-size: 36px; flex-shrink: 0; }
+    .alerta-titulo { font-family:'Montserrat',sans-serif; font-size:16px; font-weight:700; margin-bottom: 6px; }
+    .alerta-texto  { font-size: 13px; opacity: .9; line-height: 1.6; }
+
+    /* REDUCCION CARD */
+    .logro-card {
+      background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+      border-radius: 16px; padding: 24px 28px; color: #fff;
+      display: flex; gap: 20px; align-items: flex-start;
+      box-shadow: 0 8px 24px rgba(46,125,50,0.30);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 960px) {
+      .seg-kpi-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 640px) {
+      .hero-inner { padding: 28px 16px 24px; grid-template-columns: 1fr; }
+      .seg-kpi-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg-art"></div>
+  <div class="hero-inner" style="grid-template-columns:1fr">
+    <div class="hero-tag">Dimensión Seguridad · Datos Reales SIEDCO</div>
+    <div class="hero-brand">
+      <img class="hero-logo" src="../imag/logo_alcaldia.png" alt="Escudo Alcaldía de Santiago de Cali">
+      <div class="hero-brand-text">
+        <h1>Seguridad<br><span>Pulmón de Oriente</span></h1>
+        <p class="hero-sub">Análisis de hurtos 2023–2025. 3.990 registros geolocalizados.</p>
+        <p class="hero-date">// FUENTE: POLICÍA NACIONAL / SIEDCO · COMUNAS 13, 14 Y ÁREA DE INFLUENCIA</p>
+      </div>
+    </div>
+
+    <!-- KPI cards -->
+    <div class="seg-kpi-grid">
+      <div class="seg-kpi" style="border-left-color:#C1272D">
+        <div class="seg-kpi-val" style="color:#C1272D">3.990</div>
+        <div class="seg-kpi-lbl">Total Hurtos · 2023–2025</div>
+        <div class="badge-real">✓ Dato Oficial</div>
+      </div>
+      <div class="seg-kpi" style="border-left-color:#2E7D32">
+        <div class="seg-kpi-val" style="color:#2E7D32">−40.1%</div>
+        <div class="seg-kpi-lbl">Reducción 2023-T1 → 2025-T4</div>
+        <div class="seg-kpi-sub" style="color:#2E7D32">434 → 260 casos/trimestre</div>
+      </div>
+      <div class="seg-kpi" style="border-left-color:#E65100">
+        <div class="seg-kpi-val" style="color:#E65100">Atraco</div>
+        <div class="seg-kpi-lbl">Modalidad Principal</div>
+        <div class="seg-kpi-sub" style="color:#37474F">2.258 casos · 56.6%</div>
+      </div>
+      <div class="seg-kpi" style="border-left-color:#003087">
+        <div class="seg-kpi-val" style="color:#003087; font-size:20px">Alfonso Bonilla</div>
+        <div class="seg-kpi-lbl">Barrio más afectado</div>
+        <div class="seg-kpi-sub" style="color:#37474F">511 casos registrados</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ALERTAS Y LOGROS -->
+<section class="section">
+  <div class="container">
+    <div class="section-header"><span class="section-num">00 —</span><h2>Contexto General</h2></div>
+    <div class="divider"></div>
+    <div class="charts-grid">
+      <div class="alerta-card">
+        <div class="alerta-icon">⚠️</div>
+        <div>
+          <div class="alerta-titulo">Hurto a Personas: el desafío principal</div>
+          <div class="alerta-texto">El 52.6% de los hurtos (2.097 casos) corresponden a hurto a personas, con atraco como modalidad dominante (56.6%). Comunas 13 y 14 concentran el 87% del total. La vía pública y las madrugadas (0:00–1:00 y 5:00) son los momentos de mayor riesgo.</div>
+        </div>
+      </div>
+      <div class="logro-card">
+        <div class="alerta-icon">📉</div>
+        <div>
+          <div class="alerta-titulo">Tendencia positiva sostenida</div>
+          <div class="alerta-texto">Los hurtos trimestrales pasaron de 434 (2023-T1) a 260 (2025-T4), una reducción del <strong>40.1%</strong> en dos años. La tendencia anual es consistente: 1.444 (2023) → 1.404 (2024) → 1.142 (2025). La inversión territorial está mostrando resultados en seguridad.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 01 EVOLUCIÓN TRIMESTRAL -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">01 —</span><h2>Evolución Trimestral de Hurtos</h2></div>
+    <div class="divider"></div>
+    <div class="chart-card">
+      <div class="chart-card-header"><div class="chart-card-title">Hurtos por Trimestre · 2023-T1 a 2025-T4</div></div>
+      <div class="chart-body">
+        <div class="chart-wrap" style="height:300px"><canvas id="chartTrimestral"></canvas></div>
+        <div class="chart-insight">
+          <span class="ci-label">Tendencia:</span>
+          Reducción sostenida del <strong>40.1%</strong> entre 2023-T1 (434 casos) y 2025-T4 (260 casos).
+          El mejor trimestre fue 2023-T4 (259) y 2025-T4 (260), mostrando que el Pulmón de Oriente mantiene bajos niveles en el cierre de año.
+          Los primeros trimestres concentran más eventos, posiblemente por regreso de vacaciones.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 TIPOS POR AÑO -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">02 —</span><h2>Tipos de Hurto por Año</h2></div>
+    <div class="divider"></div>
+    <div class="charts-grid wide">
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Comparativo Anual por Tipo</div></div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartTipoAnio"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Distribución Total 2023–2025</div></div>
+        <div class="chart-body">
+          <div class="chart-wrap-donut"><canvas id="chartTipoDonut"></canvas></div>
+          <div class="chart-insight" style="margin-top:12px">
+            <span class="ci-label">Dominante:</span> Hurto a Personas (52.6%) seguido de Motocicletas (15.5%) y Celulares (15.0%).
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 MODALIDADES Y SITIOS -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">03 —</span><h2>Modalidades y Sitios</h2></div>
+    <div class="divider"></div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Modalidades de Hurto</div></div>
+        <div class="chart-body">
+          <div class="chart-wrap-donut"><canvas id="chartModal"></canvas></div>
+          <div class="chart-insight" style="margin-top:12px">
+            <span class="ci-label">Principal:</span> El atraco (56.6%) es la modalidad más frecuente, seguido de factor de oportunidad (15.2%) y halado (9.5%).
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Sitios de Ocurrencia (con información)</div></div>
+        <div class="chart-body">
+          <div class="chart-wrap"><canvas id="chartSitios"></canvas></div>
+          <div class="chart-insight" style="margin-top:12px">
+            <span class="ci-label">Alerta:</span> La vía pública concentra el 45.7% de todos los hurtos (1.823 casos). El 38.8% restante no tiene sitio registrado.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 BARRIOS -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">04 —</span><h2>Barrios más Afectados</h2></div>
+    <div class="divider"></div>
+    <div class="charts-grid wide">
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Top 12 Barrios · Total 2023–2025</div></div>
+        <div class="chart-body">
+          <div class="chart-wrap chart-wrap-tall"><canvas id="chartBarrios"></canvas></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Ranking Detallado</div></div>
+        <div class="chart-body">
+          <div class="barrio-rank" id="barrio-rank"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 DISTRIBUCIÓN HORARIA -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">05 —</span><h2>Distribución por Hora del Día</h2></div>
+    <div class="divider"></div>
+    <div class="chart-card">
+      <div class="chart-card-header"><div class="chart-card-title">Hurtos por Hora · 0:00 a 23:00</div></div>
+      <div class="chart-body">
+        <div class="hora-wrap"><canvas id="chartHoras"></canvas></div>
+        <div class="chart-insight" style="margin-top:12px">
+          <span class="ci-label">Picos críticos:</span>
+          Medianoche (0:00: 287 casos) y las 5:00 am (234 casos) concentran los mayores eventos.
+          Los picos nocturnos de 19:00–20:00 (198–201 casos) son los de mayor riesgo en horario vespertino.
+          El horario de menor incidencia es 17:00 (111 casos).
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 HOMICIDIOS -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">06 —</span><h2>Homicidios 2023–2025</h2></div>
+    <div class="divider"></div>
+
+    <!-- alerta tendencia -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+      <div class="logro-card">
+        <div class="alerta-icon">📉</div>
+        <div>
+          <div class="alerta-titulo">Reducción del 27%</div>
+          <div class="alerta-texto">Los homicidios pasaron de <strong>117</strong> en 2023 a <strong>85</strong> en 2024 y <strong>85</strong> en 2025. Tendencia sostenida a la baja.</div>
+        </div>
+      </div>
+      <div class="alerta-card" style="background:linear-gradient(135deg,#5D4037,#8D6E63);">
+        <div class="alerta-icon">⚠️</div>
+        <div>
+          <div class="alerta-titulo">Pico en 2025-T4</div>
+          <div class="alerta-texto">El último trimestre registró <strong>36 homicidios</strong>, el valor más alto del período 2024-2025. Comunas 13 y 14 concentran el <strong>94%</strong> de los casos.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KPIs homicidios -->
+    <div class="seg-kpi-grid" style="margin-bottom:24px;">
+      <div class="seg-kpi" style="border-left-color:#C1272D;">
+        <div class="seg-kpi-val" style="color:#C1272D;">287</div>
+        <div class="seg-kpi-lbl">Total 2023–2025</div>
+        <div class="var-badge var-baja">↓ −27% vs 2023</div>
+      </div>
+      <div class="seg-kpi" style="border-left-color:#E67E22;">
+        <div class="seg-kpi-val" style="color:#E67E22;">85</div>
+        <div class="seg-kpi-lbl">Año 2025 (total)</div>
+        <div class="seg-kpi-sub" style="color:#2E7D32;">= 2024 · estable</div>
+      </div>
+      <div class="seg-kpi" style="border-left-color:#607D8B;">
+        <div class="seg-kpi-val" style="color:#607D8B;">72%</div>
+        <div class="seg-kpi-lbl">Tipo Delincuencia</div>
+        <div class="seg-kpi-sub">208 de 287 casos</div>
+      </div>
+      <div class="seg-kpi" style="border-left-color:#003087;">
+        <div class="seg-kpi-val" style="color:#003087;">94%</div>
+        <div class="seg-kpi-lbl">Comunas 13 + 14</div>
+        <div class="seg-kpi-sub">C13: 149 · C14: 120</div>
+      </div>
+    </div>
+
+    <div class="charts-itt">
+      <div class="chart-card" style="flex:2 1 420px;">
+        <div class="chart-card-header"><div class="chart-card-title">Evolución Trimestral de Homicidios</div></div>
+        <canvas id="hom-trim" height="200"></canvas>
+      </div>
+      <div class="chart-card" style="flex:1 1 220px;">
+        <div class="chart-card-header"><div class="chart-card-title">Tipo de Violencia</div></div>
+        <canvas id="hom-tipo" height="200"></canvas>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;" class="charts-itt">
+      <div class="chart-card" style="flex:1 1 100%;">
+        <div class="chart-card-header"><div class="chart-card-title">Top 8 Barrios por Homicidios</div></div>
+        <canvas id="hom-barrios" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 VIOLENCIA INTRAFAMILIAR -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">07 —</span><h2>Violencia Intrafamiliar 2023–2025</h2></div>
+    <div class="divider"></div>
+
+    <!-- ALERTA: VIF está subiendo -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+      <div class="alerta-card">
+        <div class="alerta-icon">🚨</div>
+        <div>
+          <div class="alerta-titulo">Alerta: Tendencia en Aumento</div>
+          <div class="alerta-texto">La VIF aumentó <strong>+23%</strong> entre 2023 y 2025: de <strong>457</strong> a <strong>562</strong> casos anuales. Contrario al descenso de hurtos y homicidios.</div>
+        </div>
+      </div>
+      <div class="alerta-card" style="background:linear-gradient(135deg,#4A148C,#7B1FA2);">
+        <div class="alerta-icon">🏠</div>
+        <div>
+          <div class="alerta-titulo">Ocurre Principalmente en el Hogar</div>
+          <div class="alerta-texto"><strong>529 casos (35%)</strong> registrados en domicilio. Alfonso Bonilla Aragón concentra el <strong>20%</strong> de todos los casos del área.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="seg-kpi-grid" style="margin-bottom:24px;">
+      <div class="seg-kpi" style="border-left-color:#C1272D;">
+        <div class="seg-kpi-val" style="color:#C1272D;">1.502</div>
+        <div class="seg-kpi-lbl">Total 2023–2025</div>
+        <div class="var-badge var-alza">↑ +23% vs 2023</div>
+      </div>
+      <div class="seg-kpi" style="border-left-color:#E65100;">
+        <div class="seg-kpi-val" style="color:#E65100;">562</div>
+        <div class="seg-kpi-lbl">Casos 2025</div>
+        <div class="var-badge var-alza">↑ Máximo del período</div>
+      </div>
+      <div class="seg-kpi" style="border-left-color:#6A1B9A;">
+        <div class="seg-kpi-val" style="color:#6A1B9A;">35%</div>
+        <div class="seg-kpi-lbl">En Domicilio</div>
+        <div class="seg-kpi-sub">529 de 1.502 casos</div>
+      </div>
+      <div class="seg-kpi" style="border-left-color:#003087;">
+        <div class="seg-kpi-val" style="color:#003087;">307</div>
+        <div class="seg-kpi-lbl">Alfonso Bonilla Aragón</div>
+        <div class="seg-kpi-sub">Barrio más afectado</div>
+      </div>
+    </div>
+
+    <div class="charts-itt">
+      <div class="chart-card" style="flex:2 1 420px;">
+        <div class="chart-card-header"><div class="chart-card-title">Evolución Trimestral VIF (Tendencia ↑)</div></div>
+        <canvas id="vif-trim" height="200"></canvas>
+      </div>
+      <div class="chart-card" style="flex:1 1 220px;">
+        <div class="chart-card-header"><div class="chart-card-title">Sitio del Hecho</div></div>
+        <canvas id="vif-sitio" height="200"></canvas>
+      </div>
+    </div>
+
+    <div style="margin-top:24px;" class="charts-itt">
+      <div class="chart-card" style="flex:1 1 100%;">
+        <div class="chart-card-header"><div class="chart-card-title">Top 8 Barrios por VIF</div></div>
+        <canvas id="vif-barrios" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 08 VBG -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">08 —</span><h2>Violencia Basada en Género · 2025</h2></div>
+    <div class="divider"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+      <div class="alerta-card" style="background:linear-gradient(135deg,#880E4F,#C2185B);">
+        <div class="alerta-icon">🔴</div>
+        <div>
+          <div class="alerta-titulo">98 Casos Reportados · 2025</div>
+          <div class="alerta-texto">Solo se cuenta con datos del año 2025. <strong>59%</strong> en la Comuna 13 y <strong>38%</strong> en la Comuna 14. Un solo barrio (Alfonso Bonilla Aragón) concentra el <strong>22%</strong> de los casos.</div>
+        </div>
+      </div>
+      <div style="background:#FFF8E1;border-radius:16px;padding:24px 28px;border:2px solid #FFD600;">
+        <div style="font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#E65100;margin-bottom:10px;">⚠ Nota Metodológica</div>
+        <div style="font-size:13px;color:#5D4037;line-height:1.7;">Los datos VBG corresponden únicamente al año 2025, lo que impide hacer comparación temporal. La cifra real puede ser mayor dada la subnotificación histórica de este delito.</div>
+      </div>
+    </div>
+
+    <div class="charts-itt">
+      <div class="chart-card" style="flex:1 1 280px;">
+        <div class="chart-card-header">
+          <div class="chart-card-title">Distribución por Comuna</div>
+        </div>
+        <canvas id="vbg-comunas" height="220"></canvas>
+      </div>
+      <div class="chart-card" style="flex:2 1 380px;">
+        <div class="chart-card-header"><div class="chart-card-title">Top 8 Barrios por VBG</div></div>
+        <canvas id="vbg-barrios" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="page-switcher" aria-label="Navegación">
+  <a class="switcher-home" href="../index.html" title="Inicio">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </a>
+  <div class="switcher-divider"></div>
+  <a class="switcher-btn" href="pulmon_oriente_impacto_v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19h16v2H4zM6 10h3v7H6zm5-4h3v11h-3zm5 2h3v9h-3z"/></svg>
+    ITT
+  </a>
+  <a class="switcher-btn active" href="pulmon_oriente_seguridad.html" aria-current="page">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+    Seguridad
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_metodologia.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+    Metodología
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_informe-v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
+    Informe
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_mapa_v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+    Mapa
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <div class="footer-title">Seguridad · Pulmón de Oriente</div>
+      <p class="footer-text">Análisis de hurtos 2023–2025 con datos reales de la Policía Nacional / SIEDCO. 3.990 registros geolocalizados.</p>
+      <div class="footer-meta">Fuente: Policía Nacional · SIEDCO · Comunas 13 y 14</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-title">Secciones</div>
+      <ul class="footer-links">
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="pulmon_oriente_impacto_v2.html">Dashboard ITT</a></li>
+        <li><a href="pulmon_oriente_mapa_v2.html">Mapa con Heatmap</a></li>
+        <li><a href="pulmon_oriente_metodologia.html">Metodología</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-title">Notas</div>
+      <p class="footer-text">Los datos incluyen el área de influencia del Pulmón de Oriente y comunas adyacentes. Fecha de corte: diciembre 2025.</p>
+      <div class="footer-badge">2023–2025 · Dato Oficial</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© Municipio de Santiago de Cali</span>
+    <span class="footer-sep">•</span>
+    <span>Equipo Gobierno de Datos</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+// ── DATOS REALES PREPROCESADOS ────────────────────────────────────────────
+const TRIM = {
+  labels: ['2023-T1','2023-T2','2023-T3','2023-T4','2024-T1','2024-T2','2024-T3','2024-T4','2025-T1','2025-T2','2025-T3','2025-T4'],
+  data:   [434, 373, 378, 259, 377, 352, 349, 326, 287, 305, 290, 260]
+};
+
+const TIPOS = {
+  labels: ['Hurto a Personas','Hurto de Motocicletas','Hurto a Celulares','Hurto a Establecimientos','Hurto a Residencia','Hurto de Vehículos','Hurto de Autopartes','Hurto de Bicicletas'],
+  anios:  {
+    '2023': [674, 223, 281, 108, 74, 34, 41, 8],
+    '2024': [788, 210, 174,  64, 62, 46, 48, 10],
+    '2025': [635, 185, 144,  77, 34, 31, 27,  9]
+  },
+  total: [2097, 618, 599, 249, 170, 111, 116, 27]
+};
+
+const MODAL = {
+  labels: ['Atraco','Factor de Oportunidad','Halado','Raponazo','Cosquilleo','Violación de Cerradura','Engaño','Ventosa'],
+  data:   [2258, 605, 381, 285, 176, 133, 69, 27]
+};
+
+const SITIOS = {
+  labels: ['Vía Pública','Domicilio','Est. Comercial','Transporte Masivo','Otro','Transporte Público','Estación TM','Est. Público'],
+  data:   [1823, 231, 73, 66, 62, 22, 16, 14]
+};
+
+const BARRIOS = [
+  { nombre: 'Alfonso Bonilla Aragón', n: 511 },
+  { nombre: 'Los Lagos',              n: 216 },
+  { nombre: 'J.M. Marroquín I',       n: 210 },
+  { nombre: 'J.M. Marroquín II',      n: 188 },
+  { nombre: 'Ulpiano Lloreda',        n: 162 },
+  { nombre: 'Los Comuneros II',       n: 150 },
+  { nombre: 'El Poblado II',          n: 122 },
+  { nombre: 'Alirio Mora Beltrán',    n: 122 },
+  { nombre: 'El Pondaje',             n: 120 },
+  { nombre: 'Villa del Lago',         n: 116 },
+  { nombre: 'Omar Torrijos',          n:  89 },
+  { nombre: 'Siete de Agosto',        n:  86 }
+];
+
+const HORAS = [287,145,149,150,148,234,171,164,192,157,183,170,135,156,135,152,148,111,159,198,201,159,149,137];
+
+const TIPO_COLORS = ['#C1272D','#1565C0','#E65100','#6A1B9A','#00796B','#F57F17','#37474F','#0277BD'];
+const MODAL_COLORS = ['#C1272D','#E65100','#1565C0','#00796B','#6A1B9A','#37474F','#F57F17','#0277BD'];
+
+// ── 01 EVOLUCIÓN TRIMESTRAL ───────────────────────────────────────────────
+new Chart(document.getElementById('chartTrimestral'), {
+  type: 'line',
+  data: {
+    labels: TRIM.labels,
+    datasets: [{
+      label: 'Hurtos por trimestre',
+      data: TRIM.data,
+      borderColor: '#C1272D',
+      backgroundColor: ctx => {
+        const g = ctx.chart.ctx.createLinearGradient(0,0,0,300);
+        g.addColorStop(0, 'rgba(193,39,45,0.25)');
+        g.addColorStop(1, 'rgba(193,39,45,0.02)');
+        return g;
+      },
+      borderWidth: 2.5, pointRadius: 5,
+      pointBackgroundColor: TRIM.data.map(v => v === Math.min(...TRIM.data) ? '#2E7D32' : v === Math.max(...TRIM.data) ? '#C1272D' : '#003087'),
+      fill: true, tension: 0.35
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      y: { min: 200, max: 460, grid: { color: 'rgba(0,0,0,0.06)' },
+           ticks: { callback: v => v + ' casos' } },
+      x: { grid: { display: false } }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} hurtos` } }
+    }
+  }
+});
+
+// ── 02 TIPOS POR AÑO ─────────────────────────────────────────────────────
+new Chart(document.getElementById('chartTipoAnio'), {
+  type: 'bar',
+  data: {
+    labels: TIPOS.labels.map(l => l.replace('Hurto a ', '').replace('Hurto de ', '')),
+    datasets: [
+      { label: '2023', data: TIPOS.anios['2023'], backgroundColor: 'rgba(0,48,135,0.75)', borderRadius: 4 },
+      { label: '2024', data: TIPOS.anios['2024'], backgroundColor: 'rgba(255,195,0,0.85)', borderRadius: 4 },
+      { label: '2025', data: TIPOS.anios['2025'], backgroundColor: 'rgba(193,39,45,0.75)', borderRadius: 4 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(0,0,0,0.06)' } } },
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+  }
+});
+
+new Chart(document.getElementById('chartTipoDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: TIPOS.labels.map(l => l.replace('Hurto a ', '').replace('Hurto de ', '')),
+    datasets: [{ data: TIPOS.total, backgroundColor: TIPO_COLORS, borderWidth: 2, borderColor: '#fff' }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '62%',
+    plugins: { legend: { position: 'right', labels: { font: { size: 10 }, boxWidth: 12 } } }
+  }
+});
+
+// ── 03 MODALIDADES ────────────────────────────────────────────────────────
+new Chart(document.getElementById('chartModal'), {
+  type: 'doughnut',
+  data: {
+    labels: MODAL.labels,
+    datasets: [{ data: MODAL.data, backgroundColor: MODAL_COLORS, borderWidth: 2, borderColor: '#fff' }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    cutout: '60%',
+    plugins: { legend: { position: 'right', labels: { font: { size: 10 }, boxWidth: 12 } } }
+  }
+});
+
+new Chart(document.getElementById('chartSitios'), {
+  type: 'bar',
+  data: {
+    labels: SITIOS.labels,
+    datasets: [{ label: 'Casos', data: SITIOS.data,
+      backgroundColor: ['#C1272D','#1565C0','#E65100','#00796B','#90A4AE','#6A1B9A','#F57F17','#37474F'],
+      borderRadius: 5, borderSkipped: false }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+    scales: { x: { grid: { color: 'rgba(0,0,0,0.06)' } }, y: { grid: { display: false }, ticks: { font: { size: 11 } } } },
+    plugins: { legend: { display: false } }
+  }
+});
+
+// ── 04 BARRIOS ────────────────────────────────────────────────────────────
+new Chart(document.getElementById('chartBarrios'), {
+  type: 'bar',
+  data: {
+    labels: BARRIOS.map(b => b.nombre),
+    datasets: [{ label: 'Hurtos', data: BARRIOS.map(b => b.n),
+      backgroundColor: BARRIOS.map((b,i) => i===0?'#C1272D':i<3?'#E65100':i<6?'#1565C0':'#90A4AE'),
+      borderRadius: 5, borderSkipped: false }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+    scales: { x: { grid: { color: 'rgba(0,0,0,0.06)' } }, y: { grid: { display: false }, ticks: { font: { size: 11 } } } },
+    plugins: { legend: { display: false } }
+  }
+});
+
+const rankEl = document.getElementById('barrio-rank');
+const maxN = BARRIOS[0].n;
+BARRIOS.forEach((b, i) => {
+  const color = i===0?'#C1272D':i<3?'#E65100':i<6?'#1565C0':'#90A4AE';
+  const pct   = (b.n/maxN*100).toFixed(0);
+  const div   = document.createElement('div');
+  div.innerHTML = `
+    <div class="barrio-rank-item">
+      <span class="rank-num">${String(i+1).padStart(2,'0')}</span>
+      <div>
+        <div class="rank-name">${b.nombre}</div>
+        <div class="rank-bar-outer"><div class="rank-bar-inner" style="width:${pct}%;background:${color}"></div></div>
+      </div>
+      <span class="rank-n" style="color:${color}">${b.n}</span>
+    </div>`;
+  rankEl.appendChild(div);
+});
+
+// ── 05 HORAS ──────────────────────────────────────────────────────────────
+const horaLabels = Array.from({length:24},(_,i)=>`${String(i).padStart(2,'0')}:00`);
+new Chart(document.getElementById('chartHoras'), {
+  type: 'bar',
+  data: {
+    labels: horaLabels,
+    datasets: [{
+      label: 'Hurtos',
+      data: HORAS,
+      backgroundColor: HORAS.map(v => v >= 250 ? '#C1272D' : v >= 190 ? '#E65100' : v >= 160 ? '#FFC300' : 'rgba(0,48,135,0.45)'),
+      borderRadius: 3
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 9 }, maxRotation: 0 } },
+      y: { grid: { color: 'rgba(0,0,0,0.06)' } }
+    },
+    plugins: { legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} hurtos a las ${horaLabels[ctx.dataIndex]}` } }
+    }
+  }
+});
+</script>
+</body>
+</html>

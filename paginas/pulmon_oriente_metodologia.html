@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Metodología ITT · Pulmón de Oriente · Cali 2024–2027</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Montserrat:wght@600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/informe.css">
+  <link rel="stylesheet" href="../assets/css/itt.css">
+</head>
+<body>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-bg-art"></div>
+  <div class="hero-inner" style="grid-template-columns:1fr auto">
+    <div>
+      <div class="hero-tag">Documento metodológico · v1.0</div>
+      <div class="hero-brand">
+        <img class="hero-logo" src="../imag/logo_alcaldia.png" alt="Escudo Alcaldía de Santiago de Cali">
+        <div class="hero-brand-text">
+          <h1>Metodología<br><span>ITT</span></h1>
+          <p class="hero-sub">Índice de Transformación Territorial · Pulmón de Oriente<br>Marco conceptual, fórmula de cálculo y fuentes de datos.</p>
+          <p class="hero-date">// PLAN DE DESARROLLO 2024–2027 · VERSIÓN METODOLÓGICA 1.0</p>
+        </div>
+      </div>
+    </div>
+    <div class="hero-kpi-grid">
+      <div class="hero-kpi accent">
+        <div class="hero-kpi-val">5</div>
+        <div class="hero-kpi-lbl">Dimensiones</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-val">20</div>
+        <div class="hero-kpi-lbl">Indicadores</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-val">0–100</div>
+        <div class="hero-kpi-lbl">Escala ITT</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-val">Trim.</div>
+        <div class="hero-kpi-lbl">Frecuencia</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- 01 QUÉ ES EL ITT -->
+<section class="section">
+  <div class="container">
+    <div class="section-header"><span class="section-num">01 —</span><h2>¿Qué es el ITT?</h2></div>
+    <div class="divider"></div>
+    <div class="charts-grid wide">
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Definición</div></div>
+        <div class="chart-body" style="font-size:14px;color:#37474F;line-height:1.8">
+          <p style="margin-bottom:14px">El <strong>Índice de Transformación Territorial (ITT)</strong> es una medición compuesta que cuantifica el grado de transformación positiva que experimenta un territorio como resultado de la inversión pública y las intervenciones institucionales.</p>
+          <p style="margin-bottom:14px">Para el <strong>Pulmón de Oriente</strong> —área de aproximadamente 5.4 km² en el Distrito de Aguablanca, Cali— el ITT integra cinco dimensiones que capturan cambios en seguridad, infraestructura urbana, movilidad, desarrollo social y actividad económica.</p>
+          <p>El índice opera en una <strong>escala de 0 a 100</strong>, donde valores más altos indican mayor nivel de transformación territorial. No mide solamente inversión ejecutada, sino resultados e impacto en condiciones de vida.</p>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Principios de Diseño</div></div>
+        <div class="chart-body">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:36px;height:36px;border-radius:10px;background:#FFF8D6;border:1px solid rgba(230,168,0,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">🎯</div>
+              <div><div style="font-size:13px;font-weight:700;color:#003087;margin-bottom:3px">Multidimensional</div><div style="font-size:12px;color:#37474F;line-height:1.5">No se limita a inversión ejecutada. Mide resultados en 5 dimensiones de vida.</div></div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:36px;height:36px;border-radius:10px;background:#FFF8D6;border:1px solid rgba(230,168,0,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">📊</div>
+              <div><div style="font-size:13px;font-weight:700;color:#003087;margin-bottom:3px">Comparable</div><div style="font-size:12px;color:#37474F;line-height:1.5">Normalización min-max permite comparar periodos y barrios en la misma escala.</div></div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:36px;height:36px;border-radius:10px;background:#FFF8D6;border:1px solid rgba(230,168,0,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">🔍</div>
+              <div><div style="font-size:13px;font-weight:700;color:#003087;margin-bottom:3px">Trazable</div><div style="font-size:12px;color:#37474F;line-height:1.5">Cada valor del ITT es descomponible hasta el indicador fuente con su origen y fecha.</div></div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:36px;height:36px;border-radius:10px;background:#FFF8D6;border:1px solid rgba(230,168,0,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px">📅</div>
+              <div><div style="font-size:13px;font-weight:700;color:#003087;margin-bottom:3px">Incremental</div><div style="font-size:12px;color:#37474F;line-height:1.5">Se publica en dos estados: preliminar (datos parciales) y oficial (fuentes validadas).</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 02 FÓRMULA -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">02 —</span><h2>Fórmula de Cálculo</h2></div>
+    <div class="divider"></div>
+
+    <div class="metod-formula">
+      <div class="metod-formula-title">Fórmula General del ITT</div>
+      <div class="metod-formula-eq">
+        ITT = Σ (Score<sub>i</sub> × Peso<sub>i</sub>)<br>
+        <span style="font-size:.75em;opacity:.8">i ∈ {Seguridad, Entorno Urbano, Movilidad, Desarrollo Social, Actividad Económica}</span>
+      </div>
+      <div class="metod-formula-note">
+        Donde Score<sub>i</sub> es el puntaje normalizado [0–100] de la dimensión i,<br>
+        y Peso<sub>i</sub> es la ponderación asignada (suma de pesos = 1.0)
+      </div>
+    </div>
+
+    <div class="charts-grid" style="margin-top:28px">
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Normalización de Indicadores (Min-Max)</div></div>
+        <div class="chart-body">
+          <div class="metod-norm-box">
+            <div style="font-size:12px;color:#37474F;margin-bottom:8px">Para indicadores donde mayor valor = mejor resultado:</div>
+            <div class="metod-norm-eq">Score = (X − X<sub>min</sub>) / (X<sub>max</sub> − X<sub>min</sub>) × 100</div>
+            <div style="font-size:12px;color:#37474F;margin-top:12px;margin-bottom:8px">Para indicadores donde menor valor = mejor resultado (ej. tasas de criminalidad):</div>
+            <div class="metod-norm-eq">Score = (X<sub>max</sub> − X) / (X<sub>max</sub> − X<sub>min</sub>) × 100</div>
+            <div class="metod-norm-desc">
+              X = valor observado del indicador<br>
+              X<sub>min</sub> = valor mínimo de referencia (línea base 2024-T4 o umbral sectorial)<br>
+              X<sub>max</sub> = valor meta al 2027 según Plan de Desarrollo
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Clasificación del ITT</div></div>
+        <div class="chart-body">
+          <div class="clasif-grid" style="grid-template-columns:1fr 1fr;gap:10px">
+            <div class="clasif-card" style="background:#FFEBEE">
+              <div class="clasif-rango" style="color:#C62828">0–39</div>
+              <div class="clasif-label" style="color:#C62828">Crítico</div>
+              <div class="clasif-desc" style="color:#37474F">Transformación incipiente. Requiere intervención prioritaria.</div>
+            </div>
+            <div class="clasif-card" style="background:#FFF8E1">
+              <div class="clasif-rango" style="color:#F57F17">40–59</div>
+              <div class="clasif-label" style="color:#F57F17">Moderado</div>
+              <div class="clasif-desc" style="color:#37474F">Transformación en curso. Avances visibles pero incompletos.</div>
+            </div>
+            <div class="clasif-card" style="background:#E8F5E9">
+              <div class="clasif-rango" style="color:#2E7D32">60–79</div>
+              <div class="clasif-label" style="color:#2E7D32">Avanzado</div>
+              <div class="clasif-desc" style="color:#37474F">Transformación consolidada. Resultados sostenibles.</div>
+            </div>
+            <div class="clasif-card" style="background:#E3F2FD">
+              <div class="clasif-rango" style="color:#0277BD">80–100</div>
+              <div class="clasif-label" style="color:#0277BD">Pleno</div>
+              <div class="clasif-desc" style="color:#37474F">Transformación plena. Territorio modelo de intervención.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 DIMENSIONES -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">03 —</span><h2>Dimensiones y Ponderaciones</h2></div>
+    <div class="divider"></div>
+    <div class="metod-dim-grid" id="metod-dim-grid"></div>
+  </div>
+</section>
+
+<!-- 04 FUENTES -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">04 —</span><h2>Fuentes de Datos</h2></div>
+    <div class="divider"></div>
+    <div class="metod-table-wrap">
+      <table class="metod-table">
+        <thead>
+          <tr>
+            <th>Indicador</th>
+            <th>Dimensión</th>
+            <th>Fuente</th>
+            <th>Tipo</th>
+            <th>Frecuencia</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody id="fuentes-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 05 CALIDAD -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">05 —</span><h2>Calidad y Ciclo de Publicación</h2></div>
+    <div class="divider"></div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Estados del ITT</div></div>
+        <div class="chart-body" style="display:flex;flex-direction:column;gap:16px">
+          <div style="background:#FFF8E1;border:1px solid rgba(245,127,23,.3);border-radius:12px;padding:18px 20px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <span style="font-size:18px">⚠</span>
+              <span style="font-size:13px;font-weight:700;color:#F57F17">ITT Preliminar</span>
+            </div>
+            <div style="font-size:12px;color:#37474F;line-height:1.6">Se publica cuando la cobertura de fuentes supera el <strong>50%</strong>. Algunos indicadores pueden ser estimados o extrapolados. Útil para seguimiento interno y alertas tempranas.</div>
+          </div>
+          <div style="background:#E8F5E9;border:1px solid rgba(46,125,50,.3);border-radius:12px;padding:18px 20px">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <span style="font-size:18px">✓</span>
+              <span style="font-size:13px;font-weight:700;color:#2E7D32">ITT Oficial</span>
+            </div>
+            <div style="font-size:12px;color:#37474F;line-height:1.6">Se publica cuando el <strong>100% de las fuentes</strong> están validadas por la entidad responsable. Es el valor para reporte oficial y rendición de cuentas al Plan de Desarrollo.</div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Ciclo Trimestral de Actualización</div></div>
+        <div class="chart-body">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:28px;height:28px;border-radius:50%;background:#003087;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">1</div>
+              <div><div style="font-size:12px;font-weight:700;color:#003087;margin-bottom:2px">Recolección (Mes 1)</div><div style="font-size:11px;color:#37474F;line-height:1.5">Cada secretaría y entidad reporta sus indicadores al equipo de Gobierno de Datos en los primeros 10 días del mes.</div></div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:28px;height:28px;border-radius:50%;background:#1565C0;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">2</div>
+              <div><div style="font-size:12px;font-weight:700;color:#003087;margin-bottom:2px">Validación (Mes 1–2)</div><div style="font-size:11px;color:#37474F;line-height:1.5">Se verifican consistencia, unidades y fuente. Los indicadores sin validar se marcan como estimados.</div></div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:28px;height:28px;border-radius:50%;background:#FFC300;color:#003087;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">3</div>
+              <div><div style="font-size:12px;font-weight:700;color:#003087;margin-bottom:2px">Cálculo (Mes 2)</div><div style="font-size:11px;color:#37474F;line-height:1.5">Script <code style="background:#F0F5FF;padding:1px 5px;border-radius:4px;font-size:10px">calcular_itt.py</code> normaliza y agrega el índice. Se genera <code style="background:#F0F5FF;padding:1px 5px;border-radius:4px;font-size:10px">itt_pulmon.json</code>.</div></div>
+            </div>
+            <div style="display:flex;gap:14px;align-items:flex-start">
+              <div style="width:28px;height:28px;border-radius:50%;background:#C1272D;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">4</div>
+              <div><div style="font-size:12px;font-weight:700;color:#003087;margin-bottom:2px">Publicación (Mes 3)</div><div style="font-size:11px;color:#37474F;line-height:1.5">Dashboard actualizado. ITT preliminar inmediato; ITT oficial al cierre del trimestre con fuentes completas.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NAV -->
+<nav class="page-switcher" aria-label="Navegación">
+  <a class="switcher-home" href="../index.html" title="Inicio">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+  </a>
+  <div class="switcher-divider"></div>
+  <a class="switcher-btn" href="pulmon_oriente_impacto_v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19h16v2H4zM6 10h3v7H6zm5-4h3v11h-3zm5 2h3v9h-3z"/></svg>
+    ITT
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_seguridad.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+    Seguridad
+  </a>
+  <a class="switcher-btn active" href="pulmon_oriente_metodologia.html" aria-current="page">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+    Metodología
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_informe-v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
+    Informe
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_mapa_v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
+    Mapa
+  </a>
+</nav>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-col">
+      <div class="footer-title">Metodología ITT</div>
+      <p class="footer-text">Marco conceptual y técnico del Índice de Transformación Territorial para el Pulmón de Oriente.</p>
+      <div class="footer-meta">Plan de Desarrollo Distrital 2024–2027</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-title">Secciones</div>
+      <ul class="footer-links">
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="pulmon_oriente_impacto_v2.html">Dashboard ITT</a></li>
+        <li><a href="pulmon_oriente_informe-v2.html">Informe de Inversión</a></li>
+        <li><a href="pulmon_oriente_mapa_v2.html">Mapa Interactivo</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <div class="footer-title">Versión</div>
+      <p class="footer-text">Metodología v1.0. Sujeta a revisión y validación por las secretarías responsables.</p>
+      <div class="footer-badge">2024–2027 · Gobierno de Datos</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© Municipio de Santiago de Cali</span>
+    <span class="footer-sep">•</span>
+    <span>Equipo Gobierno de Datos</span>
+  </div>
+</footer>
+
+<script>
+const DIMS = [
+  {
+    id:'seguridad', nombre:'Seguridad', icono:'🛡️', color:'#C1272D', peso:0.25,
+    desc:'Mide la reducción de hechos violentos y la percepción ciudadana de seguridad en el territorio.',
+    indicadores:['Tasa de homicidios (x 100k hab.)','Hurtos reportados','Percepción de seguridad ciudadana','Presencia institucional (CAI activos)']
+  },
+  {
+    id:'entorno_urbano', nombre:'Entorno Urbano', icono:'🏙️', color:'#1565C0', peso:0.25,
+    desc:'Mide la recuperación y mejora del espacio público, infraestructura y equipamientos.',
+    indicadores:['Espacio público recuperado (ha)','Frentes de obra activos','Luminarias instaladas','Parques y zonas verdes intervenidos']
+  },
+  {
+    id:'movilidad', nombre:'Movilidad', icono:'🚦', color:'#00796B', peso:0.20,
+    desc:'Evalúa la conectividad, accesibilidad al transporte público y mejora vial en el área.',
+    indicadores:['Tramos viales mejorados (km)','Accesibilidad a MIO (radio 500m)','Tiempo promedio de desplazamiento','Ciclorutas activas en el área']
+  },
+  {
+    id:'desarrollo_social', nombre:'Desarrollo Social', icono:'👥', color:'#6A1B9A', peso:0.20,
+    desc:'Mide el acceso a servicios sociales, cobertura educativa y programas de atención.',
+    indicadores:['Niños en programas de atención','Cobertura educativa preescolar-media','Acceso a servicios de salud','Familias en programas de subsidio']
+  },
+  {
+    id:'actividad_economica', nombre:'Actividad Económica', icono:'🏪', color:'#E65100', peso:0.10,
+    desc:'Captura la dinámica económica local: formalización, empleo y atracción de inversión.',
+    indicadores:['Negocios formalizados en el área','Empleos generados por obras','Inversión privada atraída','Iniciativas de emprendimiento apoyadas']
+  }
+];
+
+// Tarjetas dimensión
+const grid = document.getElementById('metod-dim-grid');
+DIMS.forEach(dim => {
+  const card = document.createElement('div');
+  card.className = 'metod-dim-card';
+  card.style.borderTopColor = dim.color;
+  card.innerHTML = `
+    <div style="font-size:26px;margin-bottom:8px">${dim.icono}</div>
+    <div class="metod-dim-peso" style="color:${dim.color}">${(dim.peso*100).toFixed(0)}%</div>
+    <div class="metod-dim-peso-lbl">Ponderación</div>
+    <div class="metod-dim-nombre">${dim.nombre}</div>
+    <div style="font-size:11px;color:#37474F;line-height:1.5;margin-bottom:14px">${dim.desc}</div>
+    <ul class="metod-ind-list">
+      ${dim.indicadores.map(i=>`<li>${i}</li>`).join('')}
+    </ul>`;
+  grid.appendChild(card);
+});
+
+// Tabla fuentes
+const FUENTES = [
+  { ind:'Tasa de homicidios',           dim:'Seguridad',           fuente:'Policía Nacional / SIEDCO',    tipo:'Administrativo', freq:'Mensual',    estado:'Oficial'   },
+  { ind:'Hurtos reportados',            dim:'Seguridad',           fuente:'SIEDCO',                       tipo:'Administrativo', freq:'Mensual',    estado:'Oficial'   },
+  { ind:'Percepción de seguridad',      dim:'Seguridad',           fuente:'Encuesta ITT',                 tipo:'Encuesta',       freq:'Semestral',  estado:'Estimado'  },
+  { ind:'Presencia institucional',      dim:'Seguridad',           fuente:'Secretaría de Seguridad',      tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
+  { ind:'Espacio público recuperado',   dim:'Entorno Urbano',      fuente:'Secretaría de Vivienda',       tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
+  { ind:'Frentes de obra activos',      dim:'Entorno Urbano',      fuente:'UP Secretarías Distritales',   tipo:'Administrativo', freq:'Mensual',    estado:'Oficial'   },
+  { ind:'Luminarias instaladas',        dim:'Entorno Urbano',      fuente:'Emcali / Alumbrado Público',   tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
+  { ind:'Parques intervenidos',         dim:'Entorno Urbano',      fuente:'Secretaría de Deporte',        tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
+  { ind:'Tramos viales mejorados',      dim:'Movilidad',           fuente:'Infraestructura Vial',         tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
+  { ind:'Accesibilidad a MIO',          dim:'Movilidad',           fuente:'Metrocali',                    tipo:'Geoespacial',    freq:'Semestral',  estado:'Oficial'   },
+  { ind:'Tiempo de desplazamiento',     dim:'Movilidad',           fuente:'Encuesta ITT',                 tipo:'Encuesta',       freq:'Semestral',  estado:'Estimado'  },
+  { ind:'Ciclorutas activas',           dim:'Movilidad',           fuente:'Secretaría de Movilidad',      tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
+  { ind:'Niños en programas',           dim:'Desarrollo Social',   fuente:'Secretaría de Bienestar',      tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
+  { ind:'Cobertura educativa',          dim:'Desarrollo Social',   fuente:'Secretaría de Educación',      tipo:'Administrativo', freq:'Anual',      estado:'Oficial'   },
+  { ind:'Acceso a salud',               dim:'Desarrollo Social',   fuente:'Secretaría de Salud',          tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
+  { ind:'Familias con subsidio',        dim:'Desarrollo Social',   fuente:'Secretaría de Bienestar',      tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
+  { ind:'Negocios formalizados',        dim:'Act. Económica',      fuente:'Cámara de Comercio',           tipo:'Administrativo', freq:'Semestral',  estado:'Estimado'  },
+  { ind:'Empleos generados',            dim:'Act. Económica',      fuente:'UP Secretarías',               tipo:'Administrativo', freq:'Trimestral', estado:'Oficial'   },
+  { ind:'Inversión privada',            dim:'Act. Económica',      fuente:'Cámara de Comercio',           tipo:'Administrativo', freq:'Semestral',  estado:'Estimado'  },
+  { ind:'Emprendimientos apoyados',     dim:'Act. Económica',      fuente:'Sec. Desarrollo Económico',    tipo:'Administrativo', freq:'Trimestral', estado:'Estimado'  }
+];
+
+const DIM_COLORS = { 'Seguridad':'#C1272D','Entorno Urbano':'#1565C0','Movilidad':'#00796B','Desarrollo Social':'#6A1B9A','Act. Económica':'#E65100' };
+const tbody = document.getElementById('fuentes-tbody');
+FUENTES.forEach(f => {
+  const col  = DIM_COLORS[f.dim] || '#90A4AE';
+  const esBg = f.estado==='Oficial' ? '#E8F5E9' : '#FFF8E1';
+  const esCl = f.estado==='Oficial' ? '#2E7D32'  : '#F57F17';
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${f.ind}</td>
+    <td><span style="color:${col};font-weight:600;font-size:12px">${f.dim}</span></td>
+    <td>${f.fuente}</td>
+    <td>${f.tipo}</td>
+    <td>${f.freq}</td>
+    <td><span style="background:${esBg};color:${esCl};padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700">${f.estado}</span></td>`;
+  tbody.appendChild(tr);
+});
+</script>
+
+</body>
+</html>

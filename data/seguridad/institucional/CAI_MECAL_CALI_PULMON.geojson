@@ -1,0 +1,10 @@
+{
+"type": "FeatureCollection",
+"name": "CAI_MECAL_CALI_PULMON",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "FID_": 0, "DISTRITO": "D4", "UNIDAD": "CAI CHARCO AZUL", "SIGLA": "E13", "TIPO": "CAI", "LATITUD": 3.440472, "LONGITUD": -76.485057 }, "geometry": { "type": "Point", "coordinates": [ -76.48505699968058, 3.44047199988313 ] } },
+{ "type": "Feature", "properties": { "FID_": 0, "DISTRITO": "D4", "UNIDAD": "CAI PONDAJE", "SIGLA": "E13", "TIPO": "CAI", "LATITUD": 3.42816, "LONGITUD": -76.497061 }, "geometry": { "type": "Point", "coordinates": [ -76.497061000164877, 3.42815999958458 ] } },
+{ "type": "Feature", "properties": { "FID_": 0, "DISTRITO": "D4", "UNIDAD": "CAI BONILLA ARAGON", "SIGLA": "E14", "TIPO": "CAI", "LATITUD": 3.414635, "LONGITUD": -76.479522 }, "geometry": { "type": "Point", "coordinates": [ -76.479521999840244, 3.414635000005433 ] } }
+]
+}

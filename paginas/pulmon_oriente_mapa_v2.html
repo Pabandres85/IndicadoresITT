@@ -23,29 +23,25 @@
   <div class="kpis">
     <div class="kpi"><div class="kpi-num" id="kpi-frentes">...</div><div class="kpi-lab" id="kpi-frentes-lbl">Frentes de Obra</div></div>
     <div class="kpi-div"></div>
-    <div class="kpi"><div class="kpi-num" id="kpi-inversion">...</div><div class="kpi-lab">Inversión COP</div></div>
+    <div class="kpi"><div class="kpi-num" id="kpi-inversion">...</div><div class="kpi-lab" id="kpi-inv-lbl">Inversión COP</div></div>
   </div>
 </div>
 
 <div id="filter-bar">
-  <div class="filter-group" id="filter-sec"></div>
-
+  <div class="filter-group" id="filter-data-mode">
+    <span class="filter-label">Vista:</span>
+    <button class="filter-btn active" data-datamode="infraestructura">🏗 Infraestructura</button>
+    <button class="filter-btn" data-datamode="seguridad">🛡 Seguridad</button>
+    <button class="filter-btn" data-datamode="equipamientos">🏫 Equipamientos</button>
+    <button class="filter-btn" data-datamode="ambiente">🌿 Ambiente</button>
+  </div>
   <div class="filter-sep"></div>
-
-  <span class="filter-label">Estado:</span>
-  <div class="filter-group" id="filter-estado">
-    <button class="filter-btn active" data-estado="all">Todos</button>
-    <button class="filter-btn" data-estado="En ejecución">En ejecución</button>
-    <button class="filter-btn" data-estado="En alistamiento">Alistamiento</button>
-    <button class="filter-btn" data-estado="Terminado">Terminado</button>
-  </div>
-
-  <div class="filter-group" id="filter-modo">
-    <span class="filter-label">Modo de Vista:</span>
-    <button class="filter-btn active" data-modo="ups">Frentes de Obra (UPS)</button>
-    <button class="filter-btn" data-modo="contratos">Todos los Contratos</button>
-  </div>
+  <div id="filter-dynamic" style="display:contents;"></div>
   <button id="btn-reset">↺ Limpiar</button>
+  <div class="filter-sep"></div>
+  <button class="filter-btn" id="btn-heatmap" onclick="toggleHeatmap()" title="3.990 hurtos 2023–2025">
+    🔥 Calor Hurtos
+  </button>
 </div>
 
 <div id="map"></div>
@@ -71,6 +67,14 @@
     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
   </a>
   <div class="switcher-divider"></div>
+  <a class="switcher-btn" href="pulmon_oriente_impacto_v2.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19h16v2H4zM6 10h3v7H6zm5-4h3v11h-3zm5 2h3v9h-3z"/></svg>
+    ITT
+  </a>
+  <a class="switcher-btn" href="pulmon_oriente_metodologia.html">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+    Metodología
+  </a>
   <a class="switcher-btn" href="pulmon_oriente_informe-v2.html">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4zm2.5 2.1H4.5V5h15v14.1zm0-16.1h-15C3.6 3 3 3.6 3 4.5v15C3 20.4 3.6 21 4.5 21h15c.9 0 1.5-.6 1.5-1.5v-15C21 3.6 20.4 3 19.5 3z"/></svg>
     Informe
@@ -79,13 +83,10 @@
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3l-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z"/></svg>
     Mapa
   </a>
-  <a class="switcher-btn" href="intervenciones_v1.html">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M4 19h16v2H4zM6 10h3v7H6zm5-4h3v11h-3zm5 2h3v9h-3z"/></svg>
-    Intervenciones
-  </a>
 </nav>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 <script src="../assets/js/services/dataService.js"></script>
