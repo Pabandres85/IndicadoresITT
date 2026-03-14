@@ -8,12 +8,12 @@
     "cobertura_datos": 100,
     "fuentes_activas": 17,
     "fuentes_total": 17,
-    "nota": "ITT preliminar. Fuentes GIS verificadas: 13 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
+    "nota": "ITT preliminar. Fuentes GIS verificadas: 15 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 70.5,
+    "score": 72.1,
     "score_anterior": 58.4,
-    "variacion": 12.1,
+    "variacion": 13.7,
     "clasificacion": "Nivel 3 · Avance",
     "rango": [
       60,
@@ -114,11 +114,11 @@
       "nombre": "Movilidad",
       "icono": "route",
       "peso": 0.25,
-      "score": 73.1,
+      "score": 83.4,
       "score_anterior": 55.7,
-      "variacion": 17.4,
+      "variacion": 27.7,
       "color": "#00796B",
-      "calidad_dato": "preliminar",
+      "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
@@ -147,11 +147,11 @@
         },
         {
           "nombre": "Velocidad promedio del corredor",
-          "valor": 18.5,
+          "valor": 26.8,
           "unidad": "km/h",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Movilidad (gestionando sensores)",
-          "oficial": false
+          "tendencia": "alza",
+          "fuente": "Secretaría de Movilidad / Waze for Cities 2025",
+          "oficial": true
         }
       ]
     },
@@ -253,9 +253,9 @@
       "nombre": "Cohesión Social",
       "icono": "people",
       "peso": 0.12,
-      "score": 64.3,
+      "score": 56.5,
       "score_anterior": 69.0,
-      "variacion": -4.7,
+      "variacion": -12.5,
       "color": "#8E24AA",
       "calidad_dato": "preliminar",
       "cobertura": 100,
@@ -271,11 +271,11 @@
         },
         {
           "nombre": "Riñas / conflictividad (trimestral)",
-          "valor": 74,
+          "valor": 483,
           "unidad": "casos",
-          "tendencia": "estable",
-          "fuente": "Observatorio de Seguridad y Justicia",
-          "oficial": false
+          "tendencia": "alza",
+          "fuente": "Observatorio de Seguridad y Justicia / Comparendos",
+          "oficial": true
         },
         {
           "nombre": "Concentración de vulnerabilidad activa",
@@ -309,9 +309,9 @@
     },
     {
       "periodo": "2025",
-      "itt": 66.1,
+      "itt": 70.5,
       "seguridad": 75.2,
-      "movilidad": 55.7,
+      "movilidad": 73.1,
       "entorno_urbano": 70.0,
       "educacion_desarrollo": 61.0,
       "cohesion_social": 64.3

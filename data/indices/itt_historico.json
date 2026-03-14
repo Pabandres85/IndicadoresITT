@@ -122,13 +122,13 @@
     },
     {
       "periodo": "2025",
-      "itt_score": 70.5,
+      "itt_score": 72.1,
       "dimensiones_scores": {
         "seguridad": 75.2,
-        "movilidad": 73.1,
+        "movilidad": 83.4,
         "entorno_urbano": 70.0,
         "educacion_desarrollo": 61.0,
-        "cohesion_social": 64.3
+        "cohesion_social": 56.5
       },
       "valores_crudos": {
         "seguridad": {
@@ -139,7 +139,7 @@
           "siniestralidad_vial": 230,
           "accidentes_lesionados": 198,
           "muertes_via": 19,
-          "velocidad_corredor": 18.5
+          "velocidad_corredor": 26.8
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -155,7 +155,7 @@
         },
         "cohesion_social": {
           "vif": 562,
-          "rinas_conflictividad": 74,
+          "rinas_conflictividad": 483,
           "concentracion_vulnerabilidad_activa": 78.0
         }
       }
@@ -202,13 +202,13 @@
     },
     {
       "periodo": "2025-S2",
-      "itt_score": 70.4,
+      "itt_score": 71.8,
       "dimensiones_scores": {
         "seguridad": 76.2,
-        "movilidad": 72.5,
+        "movilidad": 82.9,
         "entorno_urbano": 70.0,
         "educacion_desarrollo": 61.0,
-        "cohesion_social": 62.7
+        "cohesion_social": 52.5
       },
       "valores_crudos": {
         "seguridad": {
@@ -219,7 +219,7 @@
           "siniestralidad_vial": 120,
           "accidentes_lesionados": 106,
           "muertes_via": 9,
-          "velocidad_corredor": 18.5
+          "velocidad_corredor": 26.8
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -235,20 +235,20 @@
         },
         "cohesion_social": {
           "vif": 294,
-          "rinas_conflictividad": 74,
+          "rinas_conflictividad": 271,
           "concentracion_vulnerabilidad_activa": 78.0
         }
       }
     },
     {
       "periodo": "2025-T4",
-      "itt_score": 70.2,
+      "itt_score": 72.5,
       "dimensiones_scores": {
         "seguridad": 72.8,
-        "movilidad": 70.8,
+        "movilidad": 81.2,
         "entorno_urbano": 70.0,
         "educacion_desarrollo": 61.0,
-        "cohesion_social": 72.7
+        "cohesion_social": 70.0
       },
       "valores_crudos": {
         "seguridad": {
@@ -259,7 +259,7 @@
           "siniestralidad_vial": 63,
           "accidentes_lesionados": 53,
           "muertes_via": 6,
-          "velocidad_corredor": 18.5
+          "velocidad_corredor": 26.8
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -275,8 +275,8 @@
         },
         "cohesion_social": {
           "vif": 105,
-          "rinas_conflictividad": 74,
-          "concentracion_vulnerabilidad_activa": 78.0
+          "rinas_conflictividad": 127,
+          "concentracion_vulnerabilidad_activa": 54.1
         }
       }
     }

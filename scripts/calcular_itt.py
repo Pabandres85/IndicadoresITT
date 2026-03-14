@@ -111,10 +111,10 @@ DIMENSIONES = {
                 "gis_filtro": {"Tipo_Confi": "Mortal"},
             },
             {
-                "id": "velocidad_corredor", "oficial": False, "inverso": False,
+                "id": "velocidad_corredor", "oficial": True, "inverso": False,
                 "nombre": "Velocidad promedio del corredor",
                 "unidad": "km/h",
-                "fuente": "Secretaría de Movilidad (gestionando sensores)",
+                "fuente": "Secretaría de Movilidad / Waze for Cities 2025",
                 "ref_min": 12.0, "ref_max": 32.0,
             },
         ],
@@ -214,17 +214,20 @@ DIMENSIONES = {
                 "gis_patron": "VIOLENCIA_INTRAFAMILIAR",
             },
             {
-                "id": "rinas_conflictividad", "oficial": False, "inverso": True,
+                "id": "rinas_conflictividad", "oficial": True, "inverso": True,
                 "nombre": "Riñas / conflictividad (trimestral)",
                 "unidad": "casos",
-                "fuente": "Observatorio de Seguridad y Justicia",
+                "fuente": "Observatorio de Seguridad y Justicia / Comparendos",
                 "ref_min": 20, "ref_max": 220,
+                "gis_dir": "seguridad/comparendos", "gis_tipo": "conteo_periodo",
+                "gis_campo_fecha": "fecha_hech",
+                "gis_filtro": {"agrupado": "RIÑAS"},
             },
             {
-                "id": "concentracion_vulnerabilidad_activa", "oficial": False, "inverso": True,
+                "id": "concentracion_vulnerabilidad_activa", "oficial": True, "inverso": True,
                 "nombre": "Concentración de vulnerabilidad activa",
                 "unidad": "personas por 1.000 hab",
-                "fuente": "Secretaría de Bienestar Social",
+                "fuente": "Secretaría de Bienestar Social / Caracterización Sub PyE 2025 · C13-C14",
                 "ref_min": 30.0, "ref_max": 160.0,
             },
         ],
@@ -500,6 +503,110 @@ def leer_deficit_ahdi_excel(year):
 
     except Exception as e:
         print(f"  [WARN] Error leyendo AHDI Excel: {e}")
+        return None
+
+
+def leer_velocidad_excel():
+    """
+    Lee data/excel/movilidad/Velocidades*.xlsx, hoja "Velocidades Jornadas".
+    Devuelve la velocidad promedio general del corredor Pulmon de Oriente (km/h).
+
+    Estructura de la hoja (fila 2 = cabecera real):
+      Etiquetas de fila | am | pm | noche | General | Nota
+    Fila total: la ultima fila con label 'General' en col 0.
+    Dato acumulado 2025-YTD2026 — se aplica como referencia fija para todos los lapsos.
+    Retorna float o None.
+    """
+    xlsx_dir = DATA / "excel" / "movilidad"
+    candidatos = list(xlsx_dir.glob("Velocidades*.xlsx"))
+    if not candidatos:
+        return None
+    xlsx_path = candidatos[0]
+    try:
+        rows = _leer_xlsx_sheet(xlsx_path, "Velocidades Jornadas")
+        if not rows:
+            return None
+
+        # Fila 2 (indice 2) es la cabecera real: Etiquetas de fila | am | pm | noche | General | ...
+        header_row = rows[2] if len(rows) > 2 else rows[0]
+        header = [str(h).strip().upper() for h in header_row]
+        idx_general = next((i for i, h in enumerate(header) if h == "GENERAL"), None)
+        if idx_general is None:
+            return None
+
+        # Buscar fila total 'General' desde el final
+        for fila in reversed(rows):
+            label = str(fila[0]).strip().upper() if fila else ""
+            if label == "GENERAL":
+                try:
+                    vel = round(float(fila[idx_general]), 1)
+                    print(f"  [VEL] Excel leido: velocidad corredor = {vel} km/h")
+                    return vel
+                except (ValueError, IndexError):
+                    continue
+        return None
+
+    except Exception as e:
+        print(f"  [WARN] Error leyendo Excel velocidad: {e}")
+        return None
+
+
+def leer_vulnerabilidad_excel(comunas=None, poblacion=88400):
+    """
+    Lee data/excel/bienestar/Caracterizacion Personas Sub PyE*.xlsx
+    y calcula la concentración de vulnerabilidad activa (personas / 1.000 hab)
+    filtrando por las comunas del Pulmón de Oriente.
+
+    comunas: set de strings con el formato 'Comuna 13', 'Comuna 14', etc.
+             Por defecto {'Comuna 13', 'Comuna 14'} — núcleo del Pulmón.
+    poblacion: población de referencia del territorio (denominador).
+    Retorna float (p/1000 hab) o None.
+    """
+    if comunas is None:
+        comunas = {"Comuna 13", "Comuna 14"}
+
+    xlsx_dir = DATA / "excel" / "bienestar"
+    candidatos = list(xlsx_dir.glob("Caracterizaci*.xlsx"))
+    if not candidatos:
+        return None
+    xlsx_path = candidatos[0]
+
+    import zipfile
+    import xml.etree.ElementTree as ET
+
+    ns = {"s": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    try:
+        with zipfile.ZipFile(xlsx_path) as z:
+            with z.open("xl/sharedStrings.xml") as f:
+                ss = [t.text or "" for t in ET.parse(f).findall(".//s:t", ns)]
+            with z.open("xl/worksheets/sheet1.xml") as f:
+                ws = ET.parse(f)
+
+        def cv(c):
+            v = c.find("s:v", ns)
+            t = c.get("t", "")
+            if v is None:
+                return ""
+            if t == "s":
+                return ss[int(v.text)]
+            return v.text
+
+        rows = ws.findall(".//s:row", ns)
+        total = 0
+        for row in rows[1:]:  # saltar cabecera
+            cells = row.findall("s:c", ns)
+            if len(cells) > 10 and cv(cells[10]) in comunas:
+                total += 1
+
+        rate = round(total / poblacion * 1000, 1)
+        print(
+            f"  [VULN] Bienestar Excel: {total} personas en {sorted(comunas)} "
+            f"=> {rate} p/1000 hab (pob={poblacion})"
+        )
+        return rate
+
+    except Exception as e:
+        print(f"  [WARN] Error leyendo Excel bienestar: {e}")
         return None
 
 
@@ -1144,6 +1251,13 @@ def calcular_itt(periodo_str, version="preliminar"):
     else:
         print("  [NDVI] Usando valores manuales de indicadores_manuales.json")
 
+    # ── Movilidad: velocidad corredor desde Excel ─────────────────────────
+    vel_excel = leer_velocidad_excel()
+    if vel_excel is not None:
+        manuales.setdefault("movilidad", {})["velocidad_corredor"] = vel_excel
+    else:
+        print("  [VEL] Usando velocidad manual de indicadores_manuales.json")
+
     deficit_ahdi = leer_deficit_ahdi_excel(year)
     nota_deficit = None
     if deficit_ahdi is not None:
@@ -1159,6 +1273,17 @@ def calcular_itt(periodo_str, version="preliminar"):
         )
     else:
         print("  [AHDI] Usando déficit manual de indicadores_manuales.json")
+
+    # ── Cohesión Social: concentración vulnerabilidad desde Excel Bienestar ──
+    vuln_excel = leer_vulnerabilidad_excel(
+        comunas={"Comuna 13", "Comuna 14"},
+        poblacion=88400,
+    )
+    if vuln_excel is not None:
+        manuales.setdefault("cohesion_social", {})["concentracion_vulnerabilidad_activa"] = vuln_excel
+    else:
+        print("  [VULN] Usando concentración manual de indicadores_manuales.json")
+
 
     resultado_dims = []
     itt_global     = 0.0

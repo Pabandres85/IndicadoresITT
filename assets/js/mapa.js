@@ -62,6 +62,7 @@ let hurtosData      = null;
 let homicidiosData  = null;
 let vifData         = null;
 let vbgData         = null;
+let comparendosData = null;
 let sedesData       = null;
 let caiData         = null;
 let arbolesData     = null;
@@ -471,8 +472,8 @@ function renderSeguridad() {
   allMarkers = [];
 
   // Sub-selector común
-  const subBtns = ['hurtos','homicidios','vif','vbg'].map(m => {
-    const labels = { hurtos:'Hurtos', homicidios:'Homicidios', vif:'Viol. Intrafamiliar', vbg:'VBG' };
+  const subBtns = ['hurtos','homicidios','vif','vbg','comparendos'].map(m => {
+    const labels = { hurtos:'Hurtos', homicidios:'Homicidios', vif:'Viol. Intrafamiliar', vbg:'VBG', comparendos:'Comparendos' };
     return `<button class="filter-btn${secSubMode === m ? ' active' : ''}" data-subsec="${m}">${labels[m]}</button>`;
   }).join('');
 
@@ -526,11 +527,12 @@ function buildSecFilters(features, getAño, getTipo, getComuna, colorFn) {
           return `<button class="filter-btn ${secTipo===t?'active':''}" data-sec-tipo="${t}" style="border-color:${c};">${capitalize(t)}</button>`;
         }).join('') +
       `</div>` : '') +
+    (secSubMode !== 'comparendos' ?
     `<div class="filter-row">
       <span class="filter-row-label">Comuna</span>
       <button class="filter-btn ${secComuna==='all'?'active':''}" data-sec-comuna="all">Todas</button>` +
       comunas.map(c => `<button class="filter-btn ${secComuna===c?'active':''}" data-sec-comuna="${c}">${c.replace(/COMUNA /i,'C')}</button>`).join('') +
-    `</div>`;
+    `</div>` : '');
 
   sf.querySelectorAll('[data-sec-año]').forEach(b => b.addEventListener('click', e => {
     sf.querySelectorAll('[data-sec-año]').forEach(x => x.classList.remove('active'));
@@ -592,6 +594,27 @@ function renderSecSubMode() {
       total: vbgData?.length || 0,
       kpiLbl: 'Casos VBG',
     },
+    comparendos: {
+      data: comparendosData,
+      getAño:    f => f.properties.fecha_hech?.substring(0,4) || '',
+      getTipo:   f => (f.properties.agrupado || 'OTRO').toUpperCase(),
+      getComuna: f => f.properties.nom_comuna || '',
+      colorFn:   t => {
+        if (t.includes('RIÑAS'))       return '#E53935';
+        if (t.includes('ARMAS'))       return '#E65100';
+        if (t.includes('SUSTANCIAS'))  return '#7B1FA2';
+        if (t.includes('DESACATO'))    return '#0277BD';
+        return '#546E7A';
+      },
+      legend: [
+        ['Riñas (1.002)',              '#E53935'],
+        ['Armas (10.824)',             '#E65100'],
+        ['Sustancias psicoactivas (2.658)', '#7B1FA2'],
+        ['Desacato / irrespeto (9.650)',    '#0277BD'],
+      ],
+      total: comparendosData?.length || 0,
+      kpiLbl: 'Comparendos',
+    },
   };
 
   const cfg = subConfigs[secSubMode];
@@ -641,6 +664,15 @@ function renderSecSubMode() {
         <div class="popup-row"><span class="popup-label">Barrio</span><span class="popup-val">${props.BARRIO||'—'}</span></div>
         <div class="popup-row"><span class="popup-label">Comuna</span><span class="popup-val">${props.COMUNA||'—'}</span></div>
         <div class="popup-row"><span class="popup-label">Dirección</span><span class="popup-val" style="white-space:normal;max-width:140px;">${props.DIRECCION||'—'}</span></div>
+      </div>`,
+    comparendos: (props, color) => `<div style="min-width:220px;">
+        <div class="popup-title" style="color:${color};">${capitalize(props.agrupado||'Comparendo')}</div>
+        <div class="popup-row"><span class="popup-label">Barrio</span><span class="popup-val">${props.nom_bar_01||'—'}</span></div>
+        <div class="popup-row"><span class="popup-label">Sitio</span><span class="popup-val">${capitalize(props.sitio_hech||'—')}</span></div>
+        <div class="popup-row"><span class="popup-label">Dirección</span><span class="popup-val">${props.dire_hecho||'—'}</span></div>
+        <div class="popup-row"><span class="popup-label">Fecha</span><span class="popup-val">${props.fecha_hech||'—'}</span></div>
+        <div class="popup-row"><span class="popup-label">Hora</span><span class="popup-val">${props.hora_hecho||'—'}</span></div>
+        <div class="popup-row"><span class="popup-label">Estrato</span><span class="popup-val">${props.estrato||'—'}</span></div>
       </div>`,
   };
 
@@ -1369,6 +1401,9 @@ async function initDynamicMap() {
 
     fetch('../data/seguridad/violencia/VBG_2025_PULMON.geojson').then(r=>r.json())
       .then(g => { vbgData = g.features; }).catch(e => console.warn('VBG:', e)),
+
+    fetch('../data/seguridad/comparendos/COMPARENDOS_2023_2025_PULMON.geojson').then(r=>r.json())
+      .then(g => { comparendosData = g.features; }).catch(e => console.warn('Comparendos:', e)),
 
     fetch('../data/movilidad/BD_SINIESTROS_2023_2025_COMUNA_BARRIO_PULMON.geojson').then(r=>r.json())
       .then(g => { siniestrosMovData = g.features; }).catch(e => console.warn('Movilidad Siniestros:', e)),
