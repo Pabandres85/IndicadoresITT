@@ -248,7 +248,7 @@
   </a>
   <a class="switcher-btn active" href="pulmon_oriente_seguridad.html" aria-current="page">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-    Seguridad
+    Dimensiones
   </a>
   <a class="switcher-btn" href="pulmon_oriente_metodologia.html">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
@@ -666,6 +666,7 @@ const rankList = document.getElementById('rank-list');
 let ittData;
 let currentDimension = 'seguridad';
 let currentModule = 'hurtos';
+let currentDimIndicator = {};
 let mainChart;
 let sideChart;
 let bottomChart;
@@ -799,6 +800,214 @@ function updateTabStyles(activeKey) {
   });
 }
 
+function compactIndicatorLabel(name = '') {
+  return name
+    .replace(/\s*\([^)]*\)/g, '')
+    .replace(/\s*·\s*Territorio Pulmón/gi, '')
+    .replace(/\s*\/\s*cobertura vegetal/gi, '')
+    .trim();
+}
+
+function buildDonutOptions() {
+  return {
+    cutout: '62%',
+    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
+  };
+}
+
+function buildDimensionSideChart(dim, selectedIdx = -1) {
+  const colorBase = dim.color || '#003087';
+  const labelsAll = dim.indicadores.map(i => compactIndicatorLabel(i.nombre));
+  const valsAll = dim.indicadores.map(i => Math.max(0, numValue(i.valor)));
+  const defaultPalette = ['#1565C0', '#2E7D32', '#E65100', '#8E24AA', '#00796B', '#C1272D', '#546E7A', '#F9A825'];
+
+  if (dim.id === 'movilidad') {
+    const findInd = (...keys) =>
+      dim.indicadores.find(i => keys.some(k => i.nombre.toLowerCase().includes(k.toLowerCase())));
+    const sin = Math.max(0, numValue(findInd('siniestralidad')?.valor));
+    const les = Math.max(0, numValue(findInd('lesionad')?.valor));
+    const mue = Math.max(0, numValue(findInd('muertes')?.valor));
+    const sinSinLes = Math.max(sin - les, 0);
+    const dataMov = [les, sinSinLes, mue];
+    if (dataMov.some(v => v > 0)) {
+      return {
+        title: 'Severidad de siniestros viales',
+        type: 'doughnut',
+        data: {
+          labels: ['Con lesionados', 'Sin lesionados', 'Muertes en vía'],
+          datasets: [{
+            data: dataMov,
+            backgroundColor: ['#E65100', '#00796B', '#C1272D'],
+            borderWidth: 2,
+            borderColor: '#fff'
+          }]
+        },
+        options: buildDonutOptions()
+      };
+    }
+  }
+
+  const maxVal = Math.max(...valsAll, 0);
+  const relVals = maxVal > 0
+    ? valsAll.map(v => Number(((v / maxVal) * 100).toFixed(1)))
+    : valsAll.map(() => 0);
+  const data = relVals.some(v => v > 0) ? relVals : valsAll;
+
+  return {
+    title: 'Composición relativa por indicador',
+    type: 'doughnut',
+    data: {
+      labels: labelsAll,
+      datasets: [{
+        data,
+        backgroundColor: labelsAll.map((_, i) => i === selectedIdx ? colorBase : defaultPalette[i % defaultPalette.length]),
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: buildDonutOptions()
+  };
+}
+
+function buildDimensionIndicatorTabs(dimId) {
+  const ctx = resolveDimensionContext(dimId);
+  if (!ctx) return;
+  const { dim } = ctx;
+
+  if (currentDimIndicator[dimId] === undefined) currentDimIndicator[dimId] = 0;
+  if (currentDimIndicator[dimId] < 0 || currentDimIndicator[dimId] >= dim.indicadores.length) {
+    currentDimIndicator[dimId] = 0;
+  }
+
+  switcher.innerHTML = '';
+  dim.indicadores.forEach((ind, idx) => {
+    const btn = document.createElement('button');
+    const active = idx === currentDimIndicator[dimId];
+    btn.className = 'security-tab' + (active ? ' active' : '');
+    btn.dataset.idx = String(idx);
+    btn.textContent = compactIndicatorLabel(ind.nombre);
+    btn.style.background = active ? (dim.color || '#003087') : '#fff';
+    btn.style.borderColor = active ? (dim.color || '#003087') : 'rgba(0,48,135,0.12)';
+    btn.addEventListener('click', () => {
+      currentDimIndicator[dimId] = idx;
+      renderDimensionIndicatorModule(dimId, idx);
+      buildDimensionIndicatorTabs(dimId);
+    });
+    switcher.appendChild(btn);
+  });
+}
+
+function buildDimensionIndicatorModule(dimId, idx = 0) {
+  const ctx = resolveDimensionContext(dimId);
+  if (!ctx) return null;
+  const { dim } = ctx;
+  const ind = dim.indicadores[idx] || dim.indicadores[0];
+  if (!ind) return null;
+
+  const serie = buildSeriesForContext(ctx);
+  const lineColor = dim.color || '#003087';
+  const fillColor = colorAlpha(lineColor, 0.12);
+  const valueNum = numValue(ind.valor);
+  const valueTxt = fmtValue(ind.valor, ind.unidad);
+  const tendencia = ind.tendencia || 'sin_dato';
+  const tendenciaTxt = tendencia === 'alza' ? 'Alza'
+    : tendencia === 'baja' ? 'Baja'
+    : tendencia === 'estable' ? 'Estable'
+    : 'Sin dato';
+  const tendenciaColor = tendencia === 'alza' ? '#C1272D'
+    : tendencia === 'baja' ? '#2E7D32'
+    : '#1565C0';
+
+  const labels = dim.indicadores.map(i => compactIndicatorLabel(i.nombre));
+  const vals = dim.indicadores.map(i => numValue(i.valor));
+  const selectedIdx = Math.max(0, dim.indicadores.indexOf(ind));
+  const maxVal = Math.max(...vals, 1);
+  const participacion = Math.round((valueNum / maxVal) * 100);
+
+  const ranking = [...dim.indicadores]
+    .sort((a, b) => numValue(b.valor) - numValue(a.valor))
+    .map(i => ({
+      name: compactIndicatorLabel(i.nombre),
+      value: numValue(i.valor),
+      valueLabel: fmtValue(i.valor, i.unidad)
+    }));
+
+  return {
+    label: dim.nombre,
+    color: lineColor,
+    highlightBg: `linear-gradient(135deg, ${lineColor} 0%, #003087 100%)`,
+    highlightTitle: `${dim.nombre} · ${compactIndicatorLabel(ind.nombre)}`,
+    highlightText: `Valor actual: ${valueTxt} · Tendencia: ${tendenciaTxt.toLowerCase()} · Periodo ${ittData.meta?.periodo || 'N/A'}.`,
+    noteTitle: 'Lectura metodológica',
+    noteText: `Fuente: ${ind.fuente}. Calidad: ${ind.oficial ? 'Oficial' : 'Estimada'}. ${ind.nota_real ? ind.nota_real : 'Indicador activo en el modelo de dimensión.'}`,
+    summary: `Indicador <strong>${compactIndicatorLabel(ind.nombre)}</strong> dentro de <strong>${dim.nombre}</strong>. Esta vista permite revisar cada indicador por separado, con su valor actual y contexto metodológico.`,
+    kpis: [
+      { value: valueTxt, label: 'Indicador seleccionado', sub: compactIndicatorLabel(ind.nombre), color: lineColor },
+      { value: tendenciaTxt, label: 'Tendencia', sub: ind.oficial ? 'Dato oficial' : 'Dato estimado', color: tendenciaColor },
+      { value: `${participacion}%`, label: 'Peso interno relativo', sub: 'vs indicador máximo de la dimensión', color: '#E65100' },
+      { value: `${dim.score.toFixed(1)}/100`, label: 'Score de la dimensión', sub: `${(dim.peso * 100).toFixed(0)}% del ITT`, color: '#003087' }
+    ],
+    mainChart: {
+      title: `Comparativo de indicadores · ${dim.nombre}`,
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Valor',
+          data: vals,
+          backgroundColor: vals.map((_, i) => i === selectedIdx ? lineColor : colorAlpha(lineColor, 0.28)),
+          borderColor: vals.map((_, i) => i === selectedIdx ? lineColor : colorAlpha(lineColor, 0.4)),
+          borderWidth: 1.5,
+          borderRadius: 6
+        }]
+      },
+      options: {
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    },
+    sideChart: buildDimensionSideChart(dim, selectedIdx),
+    bottomChart: {
+      title: `Evolución temporal de ${dim.nombre}`,
+      type: 'line',
+      data: {
+        labels: serie.map(s => s.periodo),
+        datasets: [{
+          label: dim.nombre,
+          data: serie.map(s => s.val),
+          borderColor: lineColor,
+          backgroundColor: fillColor,
+          borderWidth: 2.5,
+          fill: true,
+          tension: 0.3,
+          pointRadius: 4
+        }]
+      },
+      options: {
+        scales: {
+          x: { grid: { display: false } },
+          y: { min: 0, max: 100, grid: { color: 'rgba(0,0,0,0.06)' } }
+        },
+        plugins: { legend: { display: false } }
+      }
+    },
+    rankingTitle: 'Indicadores de la dimensión',
+    ranking
+  };
+}
+
+function renderDimensionIndicatorModule(dimId, idx = 0) {
+  const mod = buildDimensionIndicatorModule(dimId, idx);
+  if (!mod) {
+    summary.innerHTML = 'No se encontraron indicadores para esta dimensión en el periodo actual.';
+    return;
+  }
+  renderGenericModule(mod);
+}
+
 function renderKPIs(module) {
   kpis.innerHTML = '';
   module.kpis.forEach(item => {
@@ -905,26 +1114,106 @@ function buildDimensionModule(dimId) {
   const lineColor = dim.color || '#003087';
   const fillColor = colorAlpha(lineColor, 0.12);
   const isSynthetic = !!ctx.model.synthetic;
+  const periodoTxt = ittData.meta?.periodo || 'N/A';
+
+  const findInd = (...keys) =>
+    dim.indicadores.find(i => keys.some(k => i.nombre.toLowerCase().includes(k.toLowerCase())));
+  const kpiVal = ind => {
+    if (!ind || ind.valor === null || ind.valor === undefined) return '—';
+    if (typeof ind.valor === 'number' && Math.abs(ind.valor) >= 1000) return ind.valor.toLocaleString('es-CO');
+    if (typeof ind.valor === 'number' && Number.isInteger(ind.valor)) return String(ind.valor);
+    if (typeof ind.valor === 'number') return ind.valor.toFixed(1);
+    return String(ind.valor);
+  };
+  const kpiSub = ind => ind?.unidad || 'sin dato';
+
+  let highlightTitle = `${dim.nombre} · Score ${dim.score.toFixed(1)}/100`;
+  let highlightText = `Variación ${variacionSign}${dim.variacion.toFixed(1)} pts vs periodo anterior · Cobertura ${dim.cobertura}% · Periodo ${periodoTxt}.`;
+  let noteText = isSynthetic
+    ? `Peso objetivo en ITT: ${(dim.peso * 100).toFixed(0)}%. Vista provisional construida con datos disponibles (VIF + percepción + programas sociales) mientras llegan fuentes completas de cohesión social.`
+    : `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. Calidad de dato: ${dim.calidad_dato}. Fuentes principales: ${dim.indicadores.slice(0, 2).map(i => i.fuente).join(' · ')}.`;
+  let summaryText = isSynthetic
+    ? `Dimensión <strong>${dim.nombre}</strong> en modo provisional con ${dim.indicadores.length} indicadores disponibles. Se visualiza con datos existentes para mantener lectura del nuevo marco dimensional.`
+    : `Dimensión <strong>${dim.nombre}</strong> con ${dim.indicadores.length} indicadores (${oficiales} oficiales, ${estimados} estimados). Esta vista permite seguimiento directo por dimensión sin salir de la página de seguridad.`;
+
+  let kpisOut = [
+    { value: dim.score.toFixed(1), label: 'Score dimensión', sub: '/100', color: lineColor },
+    { value: `${variacionSign}${dim.variacion.toFixed(1)} pts`, label: 'Variación', sub: `vs ${ittData.itt_global?.periodo_comparacion || 'anterior'}`, color: dim.variacion >= 0 ? '#2E7D32' : '#C1272D' },
+    { value: `${oficiales}/${dim.indicadores.length}`, label: 'Indicadores oficiales', sub: `${Math.round((oficiales / (dim.indicadores.length || 1)) * 100)}%`, color: '#1565C0' },
+    { value: `${(dim.peso * 100).toFixed(0)}%`, label: 'Peso en ITT', sub: `${dim.cobertura}% cobertura`, color: '#003087' }
+  ];
+
+  if (dim.id === 'movilidad') {
+    const sin = findInd('siniestralidad');
+    const les = findInd('lesionad');
+    const mue = findInd('muertes');
+    const vel = findInd('velocidad');
+    highlightTitle = 'Movilidad · lectura operativa';
+    highlightText = `En ${periodoTxt} se reportan ${kpiVal(sin)} siniestros, ${kpiVal(les)} con lesionados y ${kpiVal(mue)} muertes en vía.`;
+    noteText = `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. Tres indicadores ya se alimentan con fuente geoespacial de movilidad; velocidad del corredor continúa como dato gestionado.`;
+    summaryText = `Movilidad combina presión vial y severidad: menor siniestralidad y menor mortalidad mejoran el score; velocidad refleja condición operacional del corredor.`;
+    kpisOut = [
+      { value: dim.score.toFixed(1), label: 'Score dimensión', sub: '/100', color: lineColor },
+      { value: kpiVal(sin), label: 'Siniestralidad vial', sub: kpiSub(sin), color: '#E65100' },
+      { value: kpiVal(mue), label: 'Muertes en vía', sub: kpiSub(mue), color: '#C1272D' },
+      { value: kpiVal(vel), label: 'Velocidad corredor', sub: `${kpiSub(vel)} (estimado)`, color: '#00796B' }
+    ];
+  } else if (dim.id === 'entorno_urbano') {
+    const ndvi = findInd('ndvi');
+    const area = findInd('área verde', 'area verde');
+    const defi = findInd('déficit', 'deficit');
+    const areaHa = area?.valor ? `${(numValue(area.valor) / 10000).toFixed(1)} ha` : '—';
+    highlightTitle = 'Entorno Urbano · cobertura y hábitat';
+    highlightText = `NDVI ${kpiVal(ndvi)} y área verde neta ${kpiVal(area)} m² (${areaHa}) para el corte ${periodoTxt}. Déficit habitacional pendiente: ${kpiVal(defi)}%.`;
+    noteText = `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. Dimensión soportada por teledetección (Sentinel-2) y trazabilidad AHDI de Vivienda.`;
+    summaryText = `Entorno Urbano integra evidencia espacial de cobertura vegetal y avance en formalización/regularización del hábitat.`;
+    kpisOut = [
+      { value: dim.score.toFixed(1), label: 'Score dimensión', sub: '/100', color: lineColor },
+      { value: kpiVal(ndvi), label: 'NDVI', sub: kpiSub(ndvi), color: '#2E7D32' },
+      { value: kpiVal(area), label: 'Área verde neta', sub: `${areaHa}`, color: '#1565C0' },
+      { value: kpiVal(defi), label: 'Déficit pendiente', sub: kpiSub(defi), color: '#E65100' }
+    ];
+  } else if (dim.id === 'educacion_desarrollo') {
+    const mat = findInd('matrícula', 'matricula');
+    const des = findInd('deserc');
+    const rep = findInd('repiten');
+    const rad = findInd('docente', 'rad');
+    highlightTitle = 'Educación y Desarrollo · base social';
+    highlightText = `Corte ${periodoTxt}: matrícula ${kpiVal(mat)}, deserción ${kpiVal(des)}%, repitencia ${kpiVal(rep)}% y relación estudiante/docente ${kpiVal(rad)}.`;
+    noteText = `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. Indicadores educativos provienen del consolidado sectorial oficial; aforo deportivo sigue como dato por actualizar.`;
+    summaryText = `La dimensión combina permanencia escolar y capacidad institucional, claves para sostenibilidad de resultados territoriales.`;
+    kpisOut = [
+      { value: dim.score.toFixed(1), label: 'Score dimensión', sub: '/100', color: lineColor },
+      { value: kpiVal(mat), label: 'Matrícula', sub: kpiSub(mat), color: '#6A1B9A' },
+      { value: kpiVal(des), label: 'Deserción', sub: kpiSub(des), color: '#C1272D' },
+      { value: kpiVal(rep), label: 'Repitencia', sub: kpiSub(rep), color: '#1565C0' }
+    ];
+  } else if (dim.id === 'cohesion_social') {
+    const vif = findInd('intrafamiliar', 'vif');
+    const rin = findInd('riñas', 'rinas', 'conflictiv');
+    const vul = findInd('vulnerabilidad');
+    highlightTitle = 'Cohesión Social · conflictividad y riesgo';
+    highlightText = `Para ${periodoTxt}: VIF ${kpiVal(vif)} casos, riñas/conflictividad ${kpiVal(rin)} y vulnerabilidad activa ${kpiVal(vul)}.`;
+    noteText = `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. Combina un indicador oficial de violencia intrafamiliar con indicadores sociales en consolidación de fuente.`;
+    summaryText = `Cohesión Social refleja tensiones de convivencia y exposición social; su lectura es clave para priorizar intervención preventiva.`;
+    kpisOut = [
+      { value: dim.score.toFixed(1), label: 'Score dimensión', sub: '/100', color: lineColor },
+      { value: kpiVal(vif), label: 'VIF', sub: kpiSub(vif), color: '#C1272D' },
+      { value: kpiVal(rin), label: 'Riñas/conflictividad', sub: kpiSub(rin), color: '#E65100' },
+      { value: kpiVal(vul), label: 'Vulnerabilidad activa', sub: kpiSub(vul), color: '#8E24AA' }
+    ];
+  }
 
   return {
     label: dim.nombre,
     color: lineColor,
     highlightBg: `linear-gradient(135deg, ${lineColor} 0%, #003087 100%)`,
-    highlightTitle: `${dim.nombre} · Score ${dim.score.toFixed(1)}/100`,
-    highlightText: `Variación ${variacionSign}${dim.variacion.toFixed(1)} pts vs periodo anterior · Cobertura ${dim.cobertura}% · Periodo ${ittData.meta?.periodo || 'N/A'}.`,
+    highlightTitle,
+    highlightText,
     noteTitle: 'Lectura metodológica',
-    noteText: isSynthetic
-      ? `Peso objetivo en ITT: ${(dim.peso * 100).toFixed(0)}%. Vista provisional construida con datos disponibles (VIF + percepción + programas sociales) mientras llegan fuentes completas de cohesión social.`
-      : `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. Calidad de dato: ${dim.calidad_dato}. Fuentes principales: ${dim.indicadores.slice(0, 2).map(i => i.fuente).join(' · ')}.`,
-    summary: isSynthetic
-      ? `Dimensión <strong>${dim.nombre}</strong> en modo provisional con ${dim.indicadores.length} indicadores disponibles. Se visualiza con datos existentes para mantener lectura del nuevo marco dimensional.`
-      : `Dimensión <strong>${dim.nombre}</strong> con ${dim.indicadores.length} indicadores (${oficiales} oficiales, ${estimados} estimados). Esta vista permite seguimiento directo por dimensión sin salir de la página de seguridad.`,
-    kpis: [
-      { value: dim.score.toFixed(1), label: 'Score dimensión', sub: '/100', color: lineColor },
-      { value: `${variacionSign}${dim.variacion.toFixed(1)} pts`, label: 'Variación', sub: `vs ${ittData.itt_global?.periodo_comparacion || 'anterior'}`, color: dim.variacion >= 0 ? '#2E7D32' : '#C1272D' },
-      { value: `${oficiales}/${dim.indicadores.length}`, label: 'Indicadores oficiales', sub: `${Math.round((oficiales / (dim.indicadores.length || 1)) * 100)}%`, color: '#1565C0' },
-      { value: `${(dim.peso * 100).toFixed(0)}%`, label: 'Peso en ITT', sub: `${dim.cobertura}% cobertura`, color: '#003087' }
-    ],
+    noteText,
+    summary: summaryText,
+    kpis: kpisOut,
     mainChart: {
       title: `Evolución temporal de ${dim.nombre}`,
       type: 'line',
@@ -949,23 +1238,7 @@ function buildDimensionModule(dimId) {
         plugins: { legend: { display: false } }
       }
     },
-    sideChart: {
-      title: 'Composición de calidad del dato',
-      type: 'doughnut',
-      data: {
-        labels: ['Oficial', 'Estimado'],
-        datasets: [{
-          data: [oficiales, estimados],
-          backgroundColor: ['#2E7D32', '#F57F17'],
-          borderWidth: 2,
-          borderColor: '#fff'
-        }]
-      },
-      options: {
-        cutout: '62%',
-        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
-      }
-    },
+    sideChart: buildDimensionSideChart(dim),
     bottomChart: {
       title: 'Estado de tendencia de indicadores',
       type: 'bar',
@@ -1000,19 +1273,15 @@ function renderDimension(dimId) {
   currentDimension = dimId;
   updateDimensionTabStyles(dimId);
   const isSecurity = dimId === 'seguridad';
-  switcher.style.display = isSecurity ? 'flex' : 'none';
+  switcher.style.display = 'flex';
 
   if (isSecurity) {
+    buildSecuritySubTabs();
     renderSecurityModule(currentModule);
     return;
   }
-
-  const dimModule = buildDimensionModule(dimId);
-  if (!dimModule) {
-    summary.innerHTML = 'No se encontraron datos de esta dimensión para el periodo actual.';
-    return;
-  }
-  renderGenericModule(dimModule);
+  buildDimensionIndicatorTabs(dimId);
+  renderDimensionIndicatorModule(dimId, currentDimIndicator[dimId] || 0);
 }
 
 async function init() {
