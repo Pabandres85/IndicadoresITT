@@ -10,11 +10,11 @@
     "nota": "ITT preliminar. Seguridad actualizada con datos reales SIEDCO: 3.990 hurtos + 287 homicidios + 1.502 VIF + 98 VBG. 68 sedes educativas geolocalizadas. Otros indicadores en validación."
   },
   "itt_global": {
-    "score": 58.4,
-    "score_anterior": 54.2,
-    "variacion": 4.2,
-    "clasificacion": "Transformación Moderada",
-    "rango": [40, 70],
+    "score": 58.3,
+    "score_anterior": 51.6,
+    "variacion": 6.7,
+    "clasificacion": "Nivel 2 · Consolidación",
+    "rango": [41, 60],
     "periodo_comparacion": "2025-T3"
   },
   "dimensiones": [
@@ -22,7 +22,7 @@
       "id": "seguridad",
       "nombre": "Seguridad",
       "icono": "shield",
-      "peso": 0.25,
+      "peso": 0.20,
       "score": 44.3,
       "score_anterior": 37.1,
       "variacion": 7.2,
@@ -61,7 +61,7 @@
       "id": "entorno_urbano",
       "nombre": "Entorno Urbano",
       "icono": "city",
-      "peso": 0.25,
+      "peso": 0.30,
       "score": 71.8,
       "score_anterior": 59.4,
       "variacion": 12.4,
@@ -79,7 +79,7 @@
       "id": "movilidad",
       "nombre": "Movilidad",
       "icono": "route",
-      "peso": 0.20,
+      "peso": 0.15,
       "score": 55.2,
       "score_anterior": 53.1,
       "variacion": 2.1,
@@ -115,7 +115,7 @@
       "id": "actividad_economica",
       "nombre": "Actividad Económica",
       "icono": "store",
-      "peso": 0.10,
+      "peso": 0.15,
       "score": 48.7,
       "score_anterior": 47.5,
       "variacion": 1.2,
@@ -131,10 +131,10 @@
     }
   ],
   "serie_temporal": [
-    { "periodo": "2023-T4", "itt": 44.8, "seguridad": 30.2, "entorno_urbano": 44.0, "movilidad": 50.0, "desarrollo_social": 48.0, "actividad_economica": 44.0 },
-    { "periodo": "2024-T2", "itt": 50.8, "seguridad": 33.5, "entorno_urbano": 54.2, "movilidad": 51.8, "desarrollo_social": 53.2, "actividad_economica": 45.9 },
-    { "periodo": "2025-T1", "itt": 54.2, "seguridad": 39.4, "entorno_urbano": 63.1, "movilidad": 53.5, "desarrollo_social": 58.8, "actividad_economica": 47.0 },
-    { "periodo": "2025-T4", "itt": 58.4, "seguridad": 44.3, "entorno_urbano": 71.8, "movilidad": 55.2, "desarrollo_social": 63.5, "actividad_economica": 48.7 }
+    { "periodo": "2023-T4", "itt": 43.0, "seguridad": 30.2, "entorno_urbano": 44.0, "movilidad": 50.0, "desarrollo_social": 48.0, "actividad_economica": 44.0 },
+    { "periodo": "2024-T2", "itt": 48.2, "seguridad": 33.5, "entorno_urbano": 54.2, "movilidad": 51.8, "desarrollo_social": 53.2, "actividad_economica": 45.9 },
+    { "periodo": "2025-T1", "itt": 53.4, "seguridad": 39.4, "entorno_urbano": 63.1, "movilidad": 53.5, "desarrollo_social": 58.8, "actividad_economica": 47.0 },
+    { "periodo": "2025-T4", "itt": 58.3, "seguridad": 44.3, "entorno_urbano": 71.8, "movilidad": 55.2, "desarrollo_social": 63.5, "actividad_economica": 48.7 }
   ],
   "barrios": [
     { "nombre": "Alfonso López",    "itt": 65.2, "poblacion": 18400, "proyectos": 12 },

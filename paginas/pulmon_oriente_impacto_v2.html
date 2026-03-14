@@ -184,6 +184,11 @@
   }
 
   const ICONS = { seguridad:'🛡️', entorno_urbano:'🏙️', movilidad:'🚦', desarrollo_social:'👥', actividad_economica:'🏪' };
+  const allInd = D.dimensiones.flatMap(d => d.indicadores);
+  const oficiales = allInd.filter(i => i.oficial).length;
+  const estimados = allInd.length - oficiales;
+  const pctOficiales = Math.round(oficiales / allInd.length * 100);
+  const pctEstimados = 100 - pctOficiales;
 
   // HERO
   const g = D.itt_global;
@@ -202,7 +207,8 @@
   document.getElementById('insight-gauge').innerHTML =
     `<span class="ci-label">Clasificación:</span> ${g.clasificacion} ·
      Variación: <strong>+${g.variacion.toFixed(1)} pts</strong> ·
-     Cobertura de datos: <strong>${D.meta.cobertura_datos}%</strong> (${D.meta.fuentes_activas}/${D.meta.fuentes_total} fuentes)`;
+     Cobertura de datos: <strong>${D.meta.cobertura_datos}%</strong> (${D.meta.fuentes_activas}/${D.meta.fuentes_total} fuentes) ·
+     Trazabilidad: <strong>${oficiales}</strong> oficiales / <strong>${estimados}</strong> estimados`;
 
   // RADAR
   new Chart(document.getElementById('chartRadar'), {
@@ -280,11 +286,19 @@
     const panel = document.createElement('div');
     panel.className = 'dim-content' + (idx===0?' active':'');
     panel.dataset.idx = idx;
+    const oficialesDim = dim.indicadores.filter(i => i.oficial).length;
+    const estimadosDim = dim.indicadores.length - oficialesDim;
+    const realesConNotaDim = dim.indicadores.filter(i => i.nota_real).length;
     panel.innerHTML = `
       <div style="margin-bottom:12px;font-size:13px;color:#37474F">
         Score: <strong style="color:${dim.color}">${dim.score.toFixed(1)}/100</strong> ·
         Peso: ${(dim.peso*100).toFixed(0)}% ·
         Cobertura: ${dim.cobertura}%
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <span style="background:#E8F5E9;color:#2E7D32;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700">Oficiales: ${oficialesDim}/${dim.indicadores.length}</span>
+        <span style="background:#FFF8E1;color:#F57F17;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700">Estimados: ${estimadosDim}</span>
+        <span style="background:#E3F2FD;color:#1565C0;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:700">Con dato real trazable: ${realesConNotaDim}</span>
       </div>
       <div class="ind-grid">
         ${dim.indicadores.map(ind => {
@@ -303,6 +317,7 @@
                 <span class="ind-oficial ${oc}">${ol}</span>
               </div>
             </div>
+            ${ind.nota_real ? `<div style="margin-top:6px;padding-top:6px;border-top:1px dashed rgba(0,0,0,0.12);font-size:10px;line-height:1.5;color:#455A64"><strong>Dato real:</strong> ${ind.nota_real}</div>` : ''}
           </div>`;
         }).join('')}
       </div>`;
@@ -358,13 +373,12 @@
   });
 
   // CALIDAD
-  const allInd   = D.dimensiones.flatMap(d=>d.indicadores);
-  const oficiales = allInd.filter(i=>i.oficial).length;
   const calidadGrid = document.getElementById('calidad-grid');
   [
     { titulo:'Cobertura de Fuentes',    pct:D.meta.cobertura_datos,                         sub:`${D.meta.fuentes_activas} de ${D.meta.fuentes_total} fuentes activas` },
-    { titulo:'Indicadores Oficiales',   pct:Math.round(oficiales/allInd.length*100),         sub:`${oficiales} de ${allInd.length} indicadores con fuente oficial` },
-    { titulo:'Madurez del ITT',         pct:D.meta.version==='preliminar'?68:100,            sub:D.meta.version==='preliminar'?'Preliminar · en proceso de validación':'ITT Oficial validado' }
+    { titulo:'Indicadores Oficiales',   pct:pctOficiales,                                     sub:`${oficiales} de ${allInd.length} indicadores con fuente oficial` },
+    { titulo:'Indicadores Estimados',   pct:pctEstimados,                                     sub:`${estimados} de ${allInd.length} indicadores con dato estimado` },
+    { titulo:'Madurez del ITT',         pct:D.meta.version==='preliminar'?Math.round((D.meta.cobertura_datos + pctOficiales) / 2):100, sub:D.meta.version==='preliminar'?'Preliminar · cobertura parcial de dimensiones':'ITT Oficial validado' }
   ].forEach(item => {
     const div = document.createElement('div');
     div.className = 'cal-card';

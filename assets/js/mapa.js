@@ -81,6 +81,37 @@ let eqTipo = 'all';   // 'sedes' | 'cai' | 'all'
 let ambEstado = 'all';
 let ambComuna = 'all';
 
+// ── REPROYECCIÓN COMUNAS (ESRI:103599 -> WGS84) ─────────────────────────────
+const ESRI_103599_DEF = '+proj=tmerc +lat_0=4 +lon_0=-73 +k=0.9992 +x_0=5000000 +y_0=2000000 +ellps=GRS80 +units=m +no_defs +type=crs';
+
+function reprojectGeoJSONToWGS84(geojson) {
+  const crsName = geojson?.crs?.properties?.name || '';
+  if (!/103599/.test(crsName)) return geojson;
+  if (typeof proj4 !== 'function') {
+    console.warn('proj4 no disponible; comunas no reproyectadas.');
+    return geojson;
+  }
+
+  proj4.defs('ESRI:103599', ESRI_103599_DEF);
+  const cloned = JSON.parse(JSON.stringify(geojson));
+
+  function mapCoords(coords) {
+    if (!Array.isArray(coords)) return coords;
+    if (coords.length >= 2 && typeof coords[0] === 'number' && typeof coords[1] === 'number') {
+      const [lon, lat] = proj4('ESRI:103599', 'EPSG:4326', [coords[0], coords[1]]);
+      return [lon, lat];
+    }
+    return coords.map(mapCoords);
+  }
+
+  cloned.features = (cloned.features || []).map(f => ({
+    ...f,
+    geometry: f.geometry ? { ...f.geometry, coordinates: mapCoords(f.geometry.coordinates) } : f.geometry,
+  }));
+  delete cloned.crs;
+  return cloned;
+}
+
 // ── PALETAS DE COLORES ───────────────────────────────────────────────────────
 const HURTO_COLORS = {
   'ATRACO': '#C1272D', 'RAPONAZO': '#E65100', 'COSQUILLEO': '#F57F17',
@@ -615,9 +646,10 @@ async function initDynamicMap() {
   // ── Comunas (capa base permanente) ──────────────────────────────────────
   try {
     const comRes  = await fetch('../data/territorio/COMUNAS_PULMON.geojson');
-    const comData = await comRes.json();
+    const comRaw  = await comRes.json();
+    const comData = reprojectGeoJSONToWGS84(comRaw);
     comunasLayer  = L.geoJSON(comData, {
-      style: { color: 'rgba(0,48,135,0.45)', weight: 1.5, fillColor: '#003087', fillOpacity: 0.04 },
+      style: { color: '#003087', weight: 2.2, fillColor: '#64B5F6', fillOpacity: 0.12, opacity: 0.95 },
       onEachFeature: (f, layer) => {
         const name = f.properties.nombre || `Comuna ${f.properties.comuna}`;
         layer.bindTooltip(name, { permanent: false, className: 'comuna-tooltip', direction: 'center' });

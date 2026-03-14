@@ -103,6 +103,9 @@
         Donde Score<sub>i</sub> es el puntaje normalizado [0–100] de la dimensión i,<br>
         y Peso<sub>i</sub> es la ponderación asignada (suma de pesos = 1.0)
       </div>
+      <div class="metod-formula-note" style="margin-top:10px">
+        Perfil Pulmón de Oriente: Seguridad 20% · Entorno Urbano 30% · Movilidad 20% · Desarrollo Social 15% · Actividad Económica 15%
+      </div>
     </div>
 
     <div class="charts-grid" style="margin-top:28px">
@@ -127,24 +130,24 @@
         <div class="chart-body">
           <div class="clasif-grid" style="grid-template-columns:1fr 1fr;gap:10px">
             <div class="clasif-card" style="background:#FFEBEE">
-              <div class="clasif-rango" style="color:#C62828">0–39</div>
-              <div class="clasif-label" style="color:#C62828">Crítico</div>
-              <div class="clasif-desc" style="color:#37474F">Transformación incipiente. Requiere intervención prioritaria.</div>
+              <div class="clasif-rango" style="color:#C62828">0–40</div>
+              <div class="clasif-label" style="color:#C62828">Nivel 1 · Activación</div>
+              <div class="clasif-desc" style="color:#37474F">Etapa inicial de transformación. Requiere intervención intensiva.</div>
             </div>
             <div class="clasif-card" style="background:#FFF8E1">
-              <div class="clasif-rango" style="color:#F57F17">40–59</div>
-              <div class="clasif-label" style="color:#F57F17">Moderado</div>
-              <div class="clasif-desc" style="color:#37474F">Transformación en curso. Avances visibles pero incompletos.</div>
+              <div class="clasif-rango" style="color:#F57F17">41–60</div>
+              <div class="clasif-label" style="color:#F57F17">Nivel 2 · Consolidación</div>
+              <div class="clasif-desc" style="color:#37474F">Avances visibles con resultados parciales en consolidación.</div>
             </div>
             <div class="clasif-card" style="background:#E8F5E9">
-              <div class="clasif-rango" style="color:#2E7D32">60–79</div>
-              <div class="clasif-label" style="color:#2E7D32">Avanzado</div>
-              <div class="clasif-desc" style="color:#37474F">Transformación consolidada. Resultados sostenibles.</div>
+              <div class="clasif-rango" style="color:#2E7D32">61–80</div>
+              <div class="clasif-label" style="color:#2E7D32">Nivel 3 · Transformación</div>
+              <div class="clasif-desc" style="color:#37474F">Mejora territorial consolidada y sostenida.</div>
             </div>
             <div class="clasif-card" style="background:#E3F2FD">
-              <div class="clasif-rango" style="color:#0277BD">80–100</div>
-              <div class="clasif-label" style="color:#0277BD">Pleno</div>
-              <div class="clasif-desc" style="color:#37474F">Transformación plena. Territorio modelo de intervención.</div>
+              <div class="clasif-rango" style="color:#0277BD">81–100</div>
+              <div class="clasif-label" style="color:#0277BD">Nivel 4 · Escala</div>
+              <div class="clasif-desc" style="color:#37474F">Transformación robusta con capacidad de replicarse.</div>
             </div>
           </div>
         </div>
@@ -297,12 +300,12 @@
 <script>
 const DIMS = [
   {
-    id:'seguridad', nombre:'Seguridad', icono:'🛡️', color:'#C1272D', peso:0.25,
+    id:'seguridad', nombre:'Seguridad', icono:'🛡️', color:'#C1272D', peso:0.20,
     desc:'Mide la reducción de hechos violentos y la percepción ciudadana de seguridad en el territorio.',
     indicadores:['Tasa de homicidios (x 100k hab.)','Hurtos reportados','Percepción de seguridad ciudadana','Presencia institucional (CAI activos)']
   },
   {
-    id:'entorno_urbano', nombre:'Entorno Urbano', icono:'🏙️', color:'#1565C0', peso:0.25,
+    id:'entorno_urbano', nombre:'Entorno Urbano', icono:'🏙️', color:'#1565C0', peso:0.30,
     desc:'Mide la recuperación y mejora del espacio público, infraestructura y equipamientos.',
     indicadores:['Espacio público recuperado (ha)','Frentes de obra activos','Luminarias instaladas','Parques y zonas verdes intervenidos']
   },
@@ -312,12 +315,12 @@ const DIMS = [
     indicadores:['Tramos viales mejorados (km)','Accesibilidad a MIO (radio 500m)','Tiempo promedio de desplazamiento','Ciclorutas activas en el área']
   },
   {
-    id:'desarrollo_social', nombre:'Desarrollo Social', icono:'👥', color:'#6A1B9A', peso:0.20,
+    id:'desarrollo_social', nombre:'Desarrollo Social', icono:'👥', color:'#6A1B9A', peso:0.15,
     desc:'Mide el acceso a servicios sociales, cobertura educativa y programas de atención.',
     indicadores:['Niños en programas de atención','Cobertura educativa preescolar-media','Acceso a servicios de salud','Familias en programas de subsidio']
   },
   {
-    id:'actividad_economica', nombre:'Actividad Económica', icono:'🏪', color:'#E65100', peso:0.10,
+    id:'actividad_economica', nombre:'Actividad Económica', icono:'🏪', color:'#E65100', peso:0.15,
     desc:'Captura la dinámica económica local: formalización, empleo y atracción de inversión.',
     indicadores:['Negocios formalizados en el área','Empleos generados por obras','Inversión privada atraída','Iniciativas de emprendimiento apoyadas']
   }

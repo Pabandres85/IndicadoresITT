@@ -38,7 +38,7 @@ DIMENSIONES = {
     "seguridad": {
         "nombre": "Seguridad",
         "icono":  "shield",
-        "peso":   0.25,
+        "peso":   0.20,
         "color":  "#C1272D",
         "indicadores": [
             {
@@ -86,7 +86,7 @@ DIMENSIONES = {
     "entorno_urbano": {
         "nombre": "Entorno Urbano",
         "icono":  "city",
-        "peso":   0.25,
+        "peso":   0.30,
         "color":  "#1565C0",
         "indicadores": [
             {
@@ -134,7 +134,7 @@ DIMENSIONES = {
     "movilidad": {
         "nombre": "Movilidad",
         "icono":  "route",
-        "peso":   0.20,
+        "peso":   0.15,
         "color":  "#00796B",
         "indicadores": [
             {
@@ -230,7 +230,7 @@ DIMENSIONES = {
     "actividad_economica": {
         "nombre": "Actividad Económica",
         "icono":  "store",
-        "peso":   0.10,
+        "peso":   0.15,
         "color":  "#E65100",
         "indicadores": [
             {
