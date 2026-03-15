@@ -15,7 +15,7 @@
   <div class="hero-bg-art"></div>
   <div class="hero-inner" style="grid-template-columns:1fr auto">
     <div>
-      <div class="hero-tag">Documento metodológico · v1.0</div>
+      <div class="hero-tag">Documento metodológico · v7</div>
       <div class="hero-brand">
         <img class="hero-logo" src="../imag/logo_alcaldia.png" alt="Escudo Alcaldía de Santiago de Cali">
         <div class="hero-brand-text">
@@ -94,33 +94,54 @@
     <div class="divider"></div>
 
     <div class="metod-formula">
-      <div class="metod-formula-title">Fórmula General del ITT</div>
-      <div class="metod-formula-eq">
-        ITT = Σ (Score<sub>i</sub> × Peso<sub>i</sub>)<br>
-        <span style="font-size:.75em;opacity:.8">i ∈ {Seguridad, Movilidad, Entorno Urbano, Educación y Desarrollo, Cohesión Social}</span>
+      <div class="metod-formula-title">Proceso de cálculo — 3 pasos</div>
+      <div class="metod-formula-eq" style="font-size:1em;line-height:2">
+        <span style="opacity:.6;font-size:.8em">Paso 1 —</span> Score<sub>ind</sub> = clamp( (X − X<sub>min</sub>) / (X<sub>max</sub> − X<sub>min</sub>) × 100, &nbsp;0, 100 )<br>
+        <span style="opacity:.6;font-size:.8em">Paso 2 —</span> Score<sub>dim</sub> = promedio simple de sus indicadores<br>
+        <span style="opacity:.6;font-size:.8em">Paso 3 —</span> ITT = 0.30 × Seg &nbsp;+&nbsp; 0.25 × Mov &nbsp;+&nbsp; 0.20 × Ent &nbsp;+&nbsp; 0.13 × EyD &nbsp;+&nbsp; 0.12 × Coh
       </div>
-      <div class="metod-formula-note">
-        Donde Score<sub>i</sub> es el puntaje normalizado [0–100] de la dimensión i,<br>
-        y Peso<sub>i</sub> es la ponderación asignada (suma de pesos = 1.0)
-      </div>
-      <div class="metod-formula-note" style="margin-top:10px" id="perfil-pesos-linea">
-        Perfil Pulmón de Oriente: Seguridad 30% · Movilidad 25% · Entorno Urbano 20% · Educación y Desarrollo 13% · Cohesión Social 12%
+      <div class="metod-formula-note" id="perfil-pesos-linea">
+        Perfil Pulmón de Oriente: Seguridad 30% · Movilidad 25% · Entorno Urbano 20% · Educación y Desarrollo 13% · Cohesión Social 12% &nbsp;·&nbsp; Σ pesos = 1.0
       </div>
     </div>
 
     <div class="charts-grid" style="margin-top:28px">
       <div class="chart-card">
-        <div class="chart-card-header"><div class="chart-card-title">Normalización de Indicadores (Min-Max)</div></div>
+        <div class="chart-card-header"><div class="chart-card-title">Paso 1 — Normalización Min-Max por indicador</div></div>
         <div class="chart-body">
           <div class="metod-norm-box">
-            <div style="font-size:12px;color:#37474F;margin-bottom:8px">Para indicadores donde mayor valor = mejor resultado:</div>
+            <div style="font-size:12px;color:#37474F;margin-bottom:8px">Para indicadores donde <strong>mayor valor = mejor resultado</strong> (matrícula, velocidad, área verde…):</div>
             <div class="metod-norm-eq">Score = (X − X<sub>min</sub>) / (X<sub>max</sub> − X<sub>min</sub>) × 100</div>
-            <div style="font-size:12px;color:#37474F;margin-top:12px;margin-bottom:8px">Para indicadores donde menor valor = mejor resultado (ej. tasas de criminalidad):</div>
-            <div class="metod-norm-eq">Score = (X<sub>max</sub> − X) / (X<sub>max</sub> − X<sub>min</sub>) × 100</div>
-            <div class="metod-norm-desc">
-              X = valor observado del indicador<br>
-              X<sub>min</sub> = valor mínimo de referencia (línea base 2024-T4 o umbral sectorial)<br>
-              X<sub>max</sub> = valor meta al 2027 según Plan de Desarrollo
+            <div style="font-size:12px;color:#37474F;margin-top:12px;margin-bottom:8px">Para indicadores donde <strong>menor valor = mejor resultado</strong> (homicidios, deserción, VIF…):</div>
+            <div class="metod-norm-eq">Score = 100 − (X − X<sub>min</sub>) / (X<sub>max</sub> − X<sub>min</sub>) × 100</div>
+            <div style="font-size:12px;color:#37474F;margin-top:12px;margin-bottom:8px"><strong>Acotamiento obligatorio:</strong> el resultado se limita al rango [0, 100] en ambos casos:</div>
+            <div class="metod-norm-eq" style="font-size:.95em">Score = clamp( resultado, 0, 100 )</div>
+            <div class="metod-norm-desc" style="margin-top:12px">
+              X = valor observado del indicador en el período<br>
+              X<sub>min</sub> = umbral inferior (calibrado con serie histórica real 2023-2025 para indicadores GIS; provisional para indicadores sin serie)<br>
+              X<sub>max</sub> = umbral superior (calibrado con serie histórica real 2023-2025 para indicadores GIS; provisional para indicadores sin serie)
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-header"><div class="chart-card-title">Paso 2 — Score de dimensión (promedio simple)</div></div>
+        <div class="chart-body">
+          <div class="metod-norm-box">
+            <div style="font-size:12px;color:#37474F;margin-bottom:8px">Cada dimensión agrega sus indicadores con <strong>igual peso entre ellos</strong>:</div>
+            <div class="metod-norm-eq">Score<sub>dim</sub> = ( Score<sub>ind1</sub> + Score<sub>ind2</sub> + … + Score<sub>indN</sub> ) / N</div>
+            <div class="metod-norm-desc" style="margin-top:12px">
+              Ejemplo — Seguridad (N=2):<br>
+              Score<sub>Seg</sub> = (Score<sub>Homicidios</sub> + Score<sub>Hurtos</sub>) / 2<br><br>
+              Ejemplo — Movilidad (N=4):<br>
+              Score<sub>Mov</sub> = (Score<sub>Siniestralidad</sub> + Score<sub>Lesionados</sub> + Score<sub>Muertes</sub> + Score<sub>Velocidad</sub>) / 4
+            </div>
+          </div>
+          <div style="margin-top:16px" class="metod-norm-box">
+            <div style="font-size:12px;color:#37474F;margin-bottom:8px"><strong>Paso 3 — Índice compuesto ITT</strong> (suma ponderada de dimensiones):</div>
+            <div class="metod-norm-eq" style="font-size:.9em">ITT = 0.30×Seg + 0.25×Mov + 0.20×Ent + 0.13×EyD + 0.12×Coh</div>
+            <div class="metod-norm-desc" style="margin-top:8px">
+              Los pesos reflejan la prioridad estratégica del Plan de Desarrollo 2024-2027 para el Pulmón de Oriente. La dimensión Seguridad tiene el mayor peso (30%) por ser la condición habilitante de las demás transformaciones.
             </div>
           </div>
         </div>
@@ -131,23 +152,23 @@
           <div class="clasif-grid" style="grid-template-columns:1fr 1fr;gap:10px">
             <div class="clasif-card" style="background:#FFEBEE">
               <div class="clasif-rango" style="color:#C62828">0–40</div>
-              <div class="clasif-label" style="color:#C62828">Nivel 1 · Activación</div>
-              <div class="clasif-desc" style="color:#37474F">Etapa inicial de transformación. Requiere intervención intensiva.</div>
+              <div class="clasif-label" style="color:#C62828">Nivel 1 · Emergencia</div>
+              <div class="clasif-desc" style="color:#37474F">Condiciones críticas. Requiere intervención intensiva e inmediata.</div>
             </div>
             <div class="clasif-card" style="background:#FFF8E1">
-              <div class="clasif-rango" style="color:#F57F17">41–60</div>
+              <div class="clasif-rango" style="color:#F57F17">40–60</div>
               <div class="clasif-label" style="color:#F57F17">Nivel 2 · Consolidación</div>
               <div class="clasif-desc" style="color:#37474F">Avances visibles con resultados parciales en consolidación.</div>
             </div>
             <div class="clasif-card" style="background:#E8F5E9">
-              <div class="clasif-rango" style="color:#2E7D32">61–80</div>
-              <div class="clasif-label" style="color:#2E7D32">Nivel 3 · Transformación</div>
-              <div class="clasif-desc" style="color:#37474F">Mejora territorial consolidada y sostenida.</div>
+              <div class="clasif-rango" style="color:#2E7D32">60–80</div>
+              <div class="clasif-label" style="color:#2E7D32">Nivel 3 · Avance</div>
+              <div class="clasif-desc" style="color:#37474F">Mejora territorial consolidada y sostenida en múltiples dimensiones.</div>
             </div>
             <div class="clasif-card" style="background:#E3F2FD">
-              <div class="clasif-rango" style="color:#0277BD">81–100</div>
-              <div class="clasif-label" style="color:#0277BD">Nivel 4 · Escala</div>
-              <div class="clasif-desc" style="color:#37474F">Transformación robusta con capacidad de replicarse.</div>
+              <div class="clasif-rango" style="color:#0277BD">80–100</div>
+              <div class="clasif-label" style="color:#0277BD">Nivel 4 · Transformación</div>
+              <div class="clasif-desc" style="color:#37474F">Transformación territorial robusta con capacidad de sostenerse y replicarse.</div>
             </div>
           </div>
         </div>
@@ -281,7 +302,7 @@
     </div>
     <div class="footer-col">
       <div class="footer-title">Versión</div>
-      <p class="footer-text">Metodología v1.0. Sujeta a revisión y validación por las secretarías responsables.</p>
+      <p class="footer-text">Metodología v7 — calibrada con serie histórica real 2023-2025. Sujeta a revisión y validación por las secretarías responsables.</p>
       <div class="footer-badge">2024–2027 · Gobierno de Datos</div>
     </div>
   </div>
@@ -321,7 +342,7 @@
     },
     cohesion_social: {
       icono: '🤝',
-      desc: 'Mide cohesión social mediante VIF y concentración de vulnerabilidad activa.'
+      desc: 'Mide cohesión social mediante VIF, riñas/conflictividad y concentración de vulnerabilidad activa.'
     }
   };
 
