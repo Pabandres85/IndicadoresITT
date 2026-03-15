@@ -11,8 +11,8 @@
     "nota": "ITT preliminar. Fuentes GIS verificadas: 16 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 56.2,
-    "score_anterior": 58.2,
+    "score": 55.6,
+    "score_anterior": 57.6,
     "variacion": -2.0,
     "clasificacion": "Nivel 2 · Consolidación",
     "rango": [
@@ -199,8 +199,8 @@
       "nombre": "Educación y Desarrollo",
       "icono": "school",
       "peso": 0.13,
-      "score": 61.0,
-      "score_anterior": 61.0,
+      "score": 56.0,
+      "score_anterior": 56.0,
       "variacion": 0.0,
       "color": "#6A1B9A",
       "calidad_dato": "preliminar",
@@ -291,20 +291,20 @@
   "serie_temporal": [
     {
       "periodo": "2025-S1",
-      "itt": 58.2,
+      "itt": 57.6,
       "seguridad": 64.1,
       "movilidad": 55.4,
       "entorno_urbano": 52.7,
-      "educacion_desarrollo": 61.0,
+      "educacion_desarrollo": 56.0,
       "cohesion_social": 55.7
     },
     {
       "periodo": "2025-S2",
-      "itt": 56.2,
+      "itt": 55.6,
       "seguridad": 65.6,
       "movilidad": 50.4,
       "entorno_urbano": 52.7,
-      "educacion_desarrollo": 61.0,
+      "educacion_desarrollo": 56.0,
       "cohesion_social": 45.6
     }
   ],

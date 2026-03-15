@@ -159,7 +159,7 @@ DIMENSIONES = {
                 "nombre": "Matrícula escolar · Territorio Pulmón",
                 "unidad": "estudiantes",
                 "fuente": "Secretaría de Educación / Indicadores Sectoriales",
-                "ref_min": 5000, "ref_max": 60000,
+                "ref_min": 40000, "ref_max": 58000,
                 "gis_tipo": "excel_edu", "edu_campo": "matricula",
                 # edu_sector omitido → usa EDU_SECTOR global ("total")
             },
