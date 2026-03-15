@@ -1,22 +1,25 @@
-# Proyecto ITT - Pulmon de Oriente
+# Proyecto ITT — Pulmón de Oriente
 
-Aplicacion web estatica para visualizacion territorial e indice ITT (Indice de Transformacion Territorial).
-Sin framework ni build step: HTML, CSS y JavaScript vanilla.
+Aplicación web estática para visualización territorial e índice ITT (Índice de Transformación Territorial).
+Sin framework ni build step: HTML, CSS y JavaScript vanilla. Motor de cálculo en Python puro con extracción automática desde fuentes GIS, Excel y GeoTIFF.
 
 ---
 
-## Stack tecnico
+## Stack técnico
 
-| Libreria | Version | Uso |
+| Librería | Versión | Uso |
 |---|---|---|
 | Leaflet.js | 1.9.4 | Renderizado del mapa interactivo |
-| Leaflet.MarkerCluster | 1.5.3 | Agrupacion de puntos en mapa |
-| Leaflet.heat | 0.2.0 | Heatmap de hurtos |
-| Chart.js | 4.4.0 | Graficos ITT, series, radar, gauge |
+| Leaflet.MarkerCluster | 1.5.3 | Agrupación de puntos en mapa |
+| Leaflet.heat | 0.2.0 | Heatmap de incidentes |
+| Chart.js | 4.4.0 | Gráficos ITT, series, radar, gauge |
 | Turf.js | 6 | Operaciones geoespaciales en cliente |
-| proj4.js | 2.11.0 | Reproyeccion CRS en cliente (MAGNA-SIRGAS → WGS84) |
-| Python 3.11+ | — | Calculo ITT (Opcion C: GeoJSON + manuales JSON) |
-| openpyxl | — | Conversion Excel → JSON (`excel_to_json.py`) |
+| proj4.js | 2.11.0 | Reproyección CRS en cliente (MAGNA-SIRGAS → WGS84) |
+| georaster | 1.6.0 | Parseo de GeoTIFF en navegador |
+| georaster-layer-for-leaflet | 3.10.0 | Renderizado de raster sobre Leaflet con máscara de polígono |
+| Python 3.11+ | — | Motor de cálculo ITT |
+| tifffile + numpy | — | Lectura y procesamiento de GeoTIFF (NDVI) |
+| zipfile + xml | stdlib | Lectura directa de `.xlsx` sin dependencias pesadas |
 
 ---
 
@@ -26,102 +29,206 @@ Sin framework ni build step: HTML, CSS y JavaScript vanilla.
 PoryectoITT/
 ├── index.html
 ├── paginas/
-│   ├── pulmon_oriente_impacto_v2.html       # Dashboard ITT
-│   ├── pulmon_oriente_mapa_v2.html           # Mapa interactivo
-│   ├── pulmon_oriente_informe-v2.html        # Informe de inversion
-│   ├── pulmon_oriente_metodologia.html       # Metodologia ITT
-│   └── pulmon_oriente_seguridad.html         # Panel seguridad
+│   ├── pulmon_oriente_impacto_v2.html       # Dashboard ITT principal
+│   ├── pulmon_oriente_mapa_v2.html           # Mapa interactivo multimodo
+│   ├── pulmon_oriente_seguridad.html         # Panel de seguridad y cohesión social
+│   └── pulmon_oriente_metodologia.html       # Metodología y fórmula ITT
 ├── assets/
 │   ├── css/
 │   │   ├── informe.css                       # Variables :root y componentes base
 │   │   ├── mapa.css                          # Estilos mapa, filtros, leyenda
-│   │   └── itt.css                           # Estilos modulo ITT
+│   │   └── itt.css                           # Estilos módulo ITT
 │   └── js/
-│       ├── mapa.js                           # Logica completa del mapa
+│       ├── mapa.js                           # Lógica completa del mapa interactivo
 │       └── services/
-│           └── dataService.js                # Carga y cache de datos
+│           └── dataService.js                # Carga y caché de datos GeoJSON
 ├── data/
 │   ├── indices/
-│   │   └── itt_pulmon.json                   # Fuente de verdad ITT para frontend
-│   ├── vivienda/                             # GeoJSON vivienda (EPSG:6249)
-│   ├── territorio/                           # GeoJSON comunas (ESRI:103599)
-│   ├── seguridad/                            # Puntos SIEDCO (WGS84)
-│   ├── infraestructura/                      # Puntos obras (WGS84)
-│   ├── equipamientos/                        # Puntos equipamientos (WGS84)
-│   └── ambiente/                             # Puntos arboles/zonas verdes (WGS84)
+│   │   ├── itt_pulmon.json                   # Fuente de verdad ITT (último período)
+│   │   ├── itt_pulmon_trimestral.json         # Serie trimestral completa
+│   │   ├── itt_pulmon_semestral.json          # Serie semestral agregada
+│   │   └── indicadores_manuales.json          # Valores manuales (fallback)
+│   ├── NVDI/                                 # GeoTIFF NDVI (Sentinel-2 / Copernicus)
+│   ├── territorio/                           # GeoJSON perímetro y comunas (reproyectados)
+│   ├── seguridad/
+│   │   ├── comparendos/                      # GeoJSON comparendos (SIEDCO)
+│   │   └── siniestros/                       # GeoJSON accidentalidad vial
+│   ├── movilidad/                            # GeoJSON siniestros movilidad
+│   ├── vivienda/                             # GeoJSON AHDI (EPSG:6249)
+│   ├── infraestructura/                      # GeoJSON obras y contratos
+│   ├── equipamientos/                        # GeoJSON equipamientos urbanos
+│   ├── ambiente/                             # GeoJSON árboles y zonas verdes
+│   └── excel/
+│       ├── educacion/                        # Matrícula, deserción, repitencia
+│       ├── movilidad/                        # Velocidades Waze for Cities
+│       ├── vivienda/                         # AHDI intervención por año
+│       └── bienestar/                        # Vulnerabilidad activa por comuna
 ├── scripts/
-│   ├── calcular_itt.py                       # Motor de calculo ITT
-│   └── excel_to_json.py                      # Conversion Excel → JSON
+│   ├── calcular_itt.py                       # Motor de cálculo ITT
+│   └── excel_to_json.py                      # Conversión Excel → JSON (util)
 └── docs/
-    └── CONTEXTO_TECNICO_ITT_PULMON.md        # Referencia tecnica completa
+    └── CONTEXTO_TECNICO_ITT_PULMON.md        # Referencia técnica completa
 ```
 
 ---
 
-## Modulos frontend
+## Modelo ITT
+
+### Fórmula y pesos
+
+```
+ITT = 0.30 × I_Seg  +  0.25 × I_Mov  +  0.20 × I_Ent  +  0.13 × I_EyD  +  0.12 × I_Coh
+```
+
+| Dimensión | Peso | Indicadores |
+|---|---:|---:|
+| Seguridad | 30% | 2 |
+| Movilidad | 25% | 4 |
+| Entorno Urbano | 20% | 3 |
+| Educación y Desarrollo | 13% | 5 |
+| Cohesión Social | 12% | 3 |
+| **Total** | **100%** | **17** |
+
+### Normalización de indicadores
+
+Cada indicador se normaliza a escala 0–100:
+
+```
+score = clamp((valor - ref_min) / (ref_max - ref_min) × 100, 0, 100)
+```
+
+Para indicadores inversos (más es peor), la escala se invierte antes de aplicar la fórmula.
+Los indicadores de conteo por período escalan `ref_min` y `ref_max` proporcionalmente al número de trimestres del lapso (`ref_factor`).
+
+### Clasificación de niveles
+
+| Rango | Nivel |
+|---|---|
+| 0 – 40 | Nivel 1 · Crítico |
+| 40 – 60 | Nivel 2 · En desarrollo |
+| 60 – 80 | Nivel 3 · Avance |
+| 80 – 100 | Nivel 4 · Consolidado |
+
+---
+
+## Motor de cálculo (`calcular_itt.py`)
+
+### Fuentes de datos soportadas
+
+El motor combina tres tipos de extracción automática:
+
+**GeoJSON / GIS (`gis_tipo: conteo_periodo`)**
+- Lee archivos `.geojson` o directorios de features desde `data/`
+- Filtra por campo de fecha dentro del período activo
+- Aplica filtros adicionales por campo (`gis_filtro`) para subcategorías específicas
+- Soporta lapsos trimestral, semestral y anual con escala proporcional de referencias
+
+**Excel nativo (zipfile + xml)**
+- Lectura directa del formato `.xlsx` sin librerías de terceros pesadas
+- `_leer_xlsx_sheet(path, nombre_hoja)`: extrae una hoja por nombre usando el mapeo `workbook.xml → rId → xl/worksheets/sheetN.xml`
+- Shared strings resueltos desde `xl/sharedStrings.xml`
+- Funciones específicas por fuente: velocidad de corredor, matrícula escolar, AHDI vivienda, vulnerabilidad por comuna
+
+**GeoTIFF (`leer_ndvi_tif`)**
+- Lee raster float32 comprimido LZW con `tifffile`
+- Calcula NDVI medio sobre píxeles válidos (filtro `[-1.0, 1.0]`)
+- Calcula área verde en m² contando píxeles con NDVI ≥ 0.20, ajustando área de píxel por latitud (proyección cónica)
+
+### Sistema de lapsos
+
+El script genera tres archivos JSON independientes por lapso:
+
+| Lapso | Archivo | Agrupación |
+|---|---|---|
+| trimestral | `itt_pulmon_trimestral.json` | Por trimestre (T1–T4) |
+| semestral | `itt_pulmon_semestral.json` | Por semestre (S1–S2) |
+| anual | `itt_pulmon_anual.json` (si aplica) | Por año |
+
+La función `_lapso_de_periodo()` determina el lapso desde el string de período y `_periodo_sort_key()` garantiza orden cronológico correcto en la serie temporal.
+
+### Jerarquía de valores
+
+Para cada indicador el motor busca en este orden:
+1. Fuente GIS automática (si `gis_dir` está configurado)
+2. Función de extracción Excel específica
+3. Valor manual desde `data/indices/indicadores_manuales.json`
+4. Valor por defecto del indicador
+
+---
+
+## Módulos frontend
 
 ### `pulmon_oriente_impacto_v2.html` — Dashboard ITT
-Lee `data/indices/itt_pulmon.json` y renderiza todo dinamicamente:
-- KPI strip animado (countUp) con metricas clave
-- Alertas automaticas detectadas desde campo `nota_real` del JSON
+
+Lee `data/indices/itt_pulmon.json` y renderiza todo dinámicamente:
+- KPI strip animado con métricas clave del período
+- Alertas automáticas detectadas desde campo `nota_real` del JSON
 - Gauge ITT global + radar de dimensiones (actual vs anterior)
-- Grafico de contribucion ponderada por dimension (`score × peso`)
-- Grafico de evolucion temporal con toggle por dimension
-- Tabs de indicadores por dimension con serie trimestral de hurtos
-- Ranking de barrios con sort dinamico (ITT / Poblacion / Proyectos)
-- Seccion de calidad y madurez del dato
+- Gráfico de contribución ponderada por dimensión (`score × peso`)
+- Gráfico de evolución temporal con toggle por dimensión
+- Tabs de indicadores por dimensión con estado oficial/estimado
+- Ranking de barrios con sort dinámico (ITT / Población / Proyectos)
+- Sección de calidad y madurez del dato por indicador
 
 ### `pulmon_oriente_mapa_v2.html` — Mapa interactivo
-5 modos de vista activados desde la barra de filtros:
+
+6 modos de vista activados desde la barra de filtros:
 - **Infraestructura** — frentes de obra y contratos
-- **Seguridad** — puntos SIEDCO + heatmap de hurtos
+- **Seguridad** — comparendos SIEDCO con filtros por categoría (sin filtro de comuna)
+- **Movilidad** — siniestros viales con capas de lesionados y muertes
 - **Equipamientos** — colegios, CAI, salud, estaciones MECAL
-- **Ambiente** — arboles y zonas verdes
-- **Vivienda** — poligonos AHDI (legalizacion) y sectores de mejoramiento
+- **Ambiente** — árboles, zonas verdes y capa NDVI Sentinel-2 (recortada al polígono Pulmón)
+- **Vivienda** — polígonos AHDI (legalización) y sectores de mejoramiento
 
-Filtros organizados en filas etiquetadas por modo; panel colapsable.
+La capa NDVI se activa bajo demanda en modo Ambiente: carga el GeoTIFF vía `fetch()`, lo parsea con `parseGeoraster()` y lo renderiza con `GeoRasterLayer` usando el perímetro del Pulmón como máscara.
 
-### `pulmon_oriente_informe-v2.html` — Informe de inversion
-Analitica de proyectos e inversion por secretaria y periodo.
+### `pulmon_oriente_seguridad.html` — Panel seguridad y cohesión social
 
-### `pulmon_oriente_metodologia.html` — Metodologia ITT
-Formula de calculo, pesos por dimension, normalizacion y clasificacion de niveles.
+Series por tipo de evento, comparativo por dimensión ITT, narrativa dinámica por período.
+Todas las dimensiones con fuentes operativas reales: GeoJSON + Excel oficial.
 
-### `pulmon_oriente_seguridad.html` — Panel seguridad
-Series por tipo de delito, comparativo comunas, indicadores SIEDCO.
+### `pulmon_oriente_metodologia.html` — Metodología ITT
+
+Fórmula de cálculo, pesos por dimensión, normalización y clasificación de niveles.
 
 ---
 
 ## Capa de datos
 
-### `assets/js/services/dataService.js`
-- Carga de fuentes base por modo del mapa
-- Cache en memoria y `sessionStorage`
-- Utilidades de filtrado espacial
-- Normalizacion de categorias y colores
+### Reproyección CRS en cliente (`mapa.js`)
 
-### Reproyeccion CRS en cliente (`mapa.js`)
 Los GeoJSON de vivienda y comunas vienen en sistemas proyectados locales.
 `mapa.js` los convierte a WGS84 en tiempo de carga usando `proj4.js`:
 
 ```
-ESRI:103599  →  comunas (MAGNA-SIRGAS Origen Unico)
+ESRI:103599  →  comunas (MAGNA-SIRGAS Origen Único)
 EPSG:6249    →  vivienda (MAGNA-SIRGAS Colombia West)
 ```
 
-La funcion `reprojectGeoJSONToWGS84()` detecta el CRS del campo `geojson.crs.properties.name`
-y convierte coordenadas antes de pasarlas a Leaflet.
+La función `reprojectGeoJSONToWGS84()` detecta el CRS desde `geojson.crs.properties.name`.
 
-### `data/indices/itt_pulmon.json`
-Fuente unica de verdad para el frontend ITT. Estructura:
-```
+### `data/indices/itt_pulmon.json` — Estructura del JSON
+
+```json
 {
-  meta: { territorio, version, periodo, cobertura_datos, fuentes_activas, fuentes_total, nota },
-  itt_global: { score, score_anterior, variacion, clasificacion, rango, periodo_comparacion },
-  dimensiones: [ { id, nombre, peso, score, score_anterior, variacion, cobertura,
-                   calidad_dato, indicadores: [...], hurtos_series?: {...} } ],
-  serie_temporal: [ { periodo, itt, seguridad, entorno_urbano, movilidad, ... } ],
-  barrios: [ { nombre, itt, poblacion, proyectos } ]
+  "meta": {
+    "territorio", "version", "periodo", "lapso",
+    "cobertura_datos", "fuentes_activas", "fuentes_total", "nota"
+  },
+  "itt_global": {
+    "score", "score_anterior", "variacion",
+    "clasificacion", "rango", "periodo_comparacion"
+  },
+  "dimensiones": [{
+    "id", "nombre", "peso", "score", "score_anterior",
+    "variacion", "cobertura", "calidad_dato", "color", "icono",
+    "indicadores": [{
+      "nombre", "valor", "unidad", "tendencia",
+      "fuente", "oficial", "nota_real"
+    }]
+  }],
+  "serie_temporal": [{ "periodo", "itt", "seguridad", "movilidad", ... }],
+  "barrios": [{ "nombre", "itt", "poblacion", "proyectos" }]
 }
 ```
 
@@ -129,46 +236,34 @@ Fuente unica de verdad para el frontend ITT. Estructura:
 
 ## Scripts de mantenimiento
 
-### Calculo ITT
+### Cálculo ITT
 
 ```bash
-# Generar plantilla manual (primera vez)
-python scripts/calcular_itt.py --generar-manuales
+# Calcular para un período trimestral
+python scripts/calcular_itt.py --periodo 2025-T4
 
-# Calcular para un periodo
+# Calcular con versión específica
 python scripts/calcular_itt.py --periodo 2025-T4 --version preliminar
+
+# Generar plantilla de manuales (primera vez)
+python scripts/calcular_itt.py --generar-manuales
 
 # Salida custom opcional
 python scripts/calcular_itt.py --periodo 2025-T4 --output data/indices/custom.json
 ```
 
-Salida principal: `data/indices/itt_pulmon.json`  
-Archivos auxiliares: `data/indices/itt_historico.json` y `data/indices/indicadores_manuales.json`
+Salidas: `data/indices/itt_pulmon.json` (último período) + `itt_pulmon_trimestral.json` / `itt_pulmon_semestral.json`
 
-Pesos configurados (alineados al perfil Pulmon de Oriente):
-
-| Dimension | Peso |
-|---|---:|
-| Entorno Urbano | 0.30 |
-| Seguridad | 0.20 |
-| Movilidad | 0.20 |
-| Desarrollo Social | 0.15 |
-| Actividad Economica | 0.15 |
-
-### Conversion Excel → JSON
+### Conversión Excel → JSON (util)
 
 ```bash
 python scripts/excel_to_json.py
 python scripts/excel_to_json.py data/excel/archivo.xlsx
 ```
 
-Requiere: `pip install openpyxl`
-
 ---
 
-## Ejecucion local
-
-Levantar servidor estatico desde la raiz del proyecto:
+## Ejecución local
 
 ```bash
 python -m http.server 8000
@@ -178,24 +273,25 @@ Abrir: `http://localhost:8000/`
 
 ---
 
-## Flujo de actualizacion
+## Flujo de actualización periódica
 
-1. Actualizar fuentes en `data/` (GeoJSON, JSON, Excel).
-2. Si hay indicadores nuevos, ejecutar `calcular_itt.py` para recalcular `itt_pulmon.json`.
-3. Verificar vistas clave en el navegador: ITT, Mapa, Informe, Seguridad.
-4. Confirmar consola sin errores JS (especialmente reproyeccion CRS y carga de datos).
-5. Commit de cambios.
+1. Depositar nuevas fuentes en `data/` (GeoJSON, Excel, TIF según corresponda).
+2. Si hay indicadores manuales a actualizar, editar `data/indices/indicadores_manuales.json`.
+3. Ejecutar `python scripts/calcular_itt.py --periodo YYYY-TX` para recalcular los JSON.
+4. Verificar en navegador: Dashboard ITT, Mapa, Panel Seguridad.
+5. Confirmar consola sin errores JS (carga GeoJSON, reproyección CRS, fetch NDVI).
+6. Commit.
 
 ---
 
-## Referencia tecnica completa
+## Referencia técnica completa
 
 Ver `docs/CONTEXTO_TECNICO_ITT_PULMON.md` para:
-- Matriz de pesos modelo vs implementacion
-- Matriz de indicadores por dimension con fuentes y notas
-- Documentacion de capas GIS y CRS
-- Historial de cambios por sesion
-- Brechas tecnicas pendientes
+- Matriz de indicadores por dimensión con fuentes y metodología
+- Documentación de capas GIS y sistemas de coordenadas
+- Decisiones de diseño del motor de cálculo
+- Historial de cambios por versión
+- Brechas técnicas pendientes
 
 ---
 
