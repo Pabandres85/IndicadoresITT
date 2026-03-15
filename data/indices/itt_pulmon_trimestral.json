@@ -166,7 +166,7 @@
       "score_anterior": 56.0,
       "variacion": 0.0,
       "color": "#6A1B9A",
-      "calidad_dato": "preliminar",
+      "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
@@ -202,12 +202,13 @@
           "oficial": true
         },
         {
-          "nombre": "Aforo polideportivo Villa del Lago",
-          "valor": 4200,
-          "unidad": "personas/mes",
+          "nombre": "Cobertura deportiva activa · Territorio Pulmón",
+          "valor": 3877,
+          "unidad": "personas registradas",
           "tendencia": "estable",
-          "fuente": "Secretaría de Deportes",
-          "oficial": false
+          "fuente": "Secretaría de Deportes · Caracterización de Escenarios 2024",
+          "oficial": true,
+          "nota_real": "Proxy: aforo directo de Villa del Lago no disponible. 3.877 personas activas registradas en 25 escenarios deportivos de la Comuna 14 (formulario oficial Sec. Deportes, marzo 2024). No es conteo directo de asistencia — es lo que cada escenario reportó tener activo en ese momento."
         }
       ]
     },

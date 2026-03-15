@@ -24,8 +24,6 @@
           <p class="hero-date" id="hero-date-line">// PERIODO: — · SECRETARÍAS DISTRITALES + ENTIDADES</p>
           <div class="lapso-selector">
             <button class="lapso-btn active" data-lapso="trimestral">Trimestral</button>
-            <button class="lapso-btn" data-lapso="semestral">Semestral</button>
-            <button class="lapso-btn" data-lapso="anual">Anual</button>
           </div>
         </div>
       </div>
@@ -84,7 +82,14 @@
         </div>
       </div>
       <div class="chart-card">
-        <div class="chart-card-header"><div class="chart-card-title">Radar de Dimensiones · actual vs anterior</div></div>
+        <div class="chart-card-header">
+          <div class="chart-card-title">Radar de Dimensiones · actual vs anterior</div>
+          <div id="radar-lapso-btns" style="display:flex;gap:6px">
+            <button class="lapso-btn active" data-radar-lapso="trimestral" style="font-size:11px;padding:4px 10px">Trimestral</button>
+            <button class="lapso-btn" data-radar-lapso="semestral" style="font-size:11px;padding:4px 10px">Semestral</button>
+            <button class="lapso-btn" data-radar-lapso="anual" style="font-size:11px;padding:4px 10px">Anual</button>
+          </div>
+        </div>
         <div class="chart-body">
           <div class="chart-wrap-radar"><canvas id="chartRadar"></canvas></div>
         </div>
@@ -379,6 +384,15 @@
   }
 
   function getIndicatorDateRange(ind, dim, D) {
+    // Proxy deportivo — fecha de caracterización fija
+    if (ind?.nombre?.includes('Cobertura deportiva activa')) {
+      return '2024 · caracterización Sec. Deportes';
+    }
+    // Imágenes satelitales — no son trimestrales
+    if (ind?.fuente?.toLowerCase().includes('sentinel') || ind?.fuente?.toLowerCase().includes('copernicus')) {
+      const year = D?.meta?.periodo ? D.meta.periodo.slice(0, 4) : '2025';
+      return `${year} · imagen satelital`;
+    }
     // Indicadores educativos tienen ciclo anual — mostrar año lectivo, no trimestre
     if (dim?.id === 'educacion_desarrollo') {
       const year = D?.meta?.periodo ? D.meta.periodo.slice(0, 4) : null;
@@ -505,41 +519,69 @@
      Trazabilidad: <strong>${oficiales}</strong> oficiales / <strong>${estimados}</strong> estimados`;
 
   /* ── RADAR ───────────────────────────────────────────────────────────── */
-  const radarPalette = [
-    { border:'#003087', bg:'rgba(0,48,135,0.15)',   dash:[], radius:5 },
-    { border:'#1565C0', bg:'rgba(21,101,192,0.10)', dash:[4,4], radius:4 },
-    { border:'#90A4AE', bg:'rgba(144,164,174,0.08)',dash:[3,5], radius:3 },
-  ];
-  const radarDatasets = (() => {
-    // Modo anual: mostrar todos los años de serie_temporal
-    if (D.meta.lapso === 'anual' && D.serie_temporal) {
-      const series = D.serie_temporal.filter(p => !p.periodo.includes('-'));
-      return series.map((p, i) => {
-        const pal = radarPalette[Math.min(i, radarPalette.length-1)];
-        const isLast = i === series.length - 1;
-        return {
-          label: p.periodo,
-          data: D.dimensiones.map(d => p[d.id] ?? 0),
-          backgroundColor: pal.bg,
-          borderColor: pal.border,
-          borderWidth: isLast ? 2.5 : 1.8,
-          pointBackgroundColor: isLast ? D.dimensiones.map(d => d.color) : pal.border,
-          pointRadius: pal.radius,
-          borderDash: pal.dash,
-        };
+  function buildRadarDatasets(lapso) {
+    const serie = D.serie_temporal || [];
+
+    // Helper: promedio de dimensiones para un conjunto de períodos
+    function avgPeriods(periodos) {
+      const rows = serie.filter(p => periodos.includes(p.periodo));
+      if (!rows.length) return null;
+      return D.dimensiones.map(d => {
+        const vals = rows.map(r => r[d.id]).filter(v => v != null);
+        return vals.length ? vals.reduce((a,b) => a+b,0) / vals.length : 0;
       });
     }
-    // Modo trimestral/semestral: actual vs anterior (solo si hay datos reales)
-    const actual = { label: D.meta.periodo, data: D.dimensiones.map(d => d.score), backgroundColor:'rgba(0,48,135,0.15)', borderColor:'#003087', borderWidth:2.5, pointBackgroundColor:D.dimensiones.map(d=>d.color), pointRadius:5 };
-    const hayAnterior = D.dimensiones.some(d => d.score_anterior > 0);
-    if (!hayAnterior) return [actual];
-    return [actual, { label: g.periodo_comparacion, data: D.dimensiones.map(d => d.score_anterior), backgroundColor:'rgba(255,195,0,0.10)', borderColor:'rgba(255,195,0,0.65)', borderWidth:1.5, pointRadius:3, borderDash:[4,4] }];
-  })();
-  registerChart('chartRadar', new Chart(document.getElementById('chartRadar'), {
+
+    const actual = {
+      backgroundColor:'rgba(0,48,135,0.15)', borderColor:'#003087',
+      borderWidth:2.5, pointBackgroundColor:D.dimensiones.map(d=>d.color), pointRadius:5
+    };
+    const anterior = {
+      backgroundColor:'rgba(255,195,0,0.10)', borderColor:'rgba(255,195,0,0.65)',
+      borderWidth:1.5, pointRadius:3, borderDash:[4,4]
+    };
+
+    if (lapso === 'trimestral') {
+      const ds1 = { ...actual, label: D.meta.periodo, data: D.dimensiones.map(d => d.score) };
+      const hayAnt = D.dimensiones.some(d => d.score_anterior > 0);
+      if (!hayAnt) return [ds1];
+      return [ds1, { ...anterior, label: g.periodo_comparacion, data: D.dimensiones.map(d => d.score_anterior) }];
+    }
+
+    if (lapso === 'semestral') {
+      // Detectar año actual del período
+      const yr = D.meta.periodo ? D.meta.periodo.slice(0,4) : '2025';
+      const s2 = avgPeriods([`${yr}-T3`, `${yr}-T4`]);
+      const s1 = avgPeriods([`${yr}-T1`, `${yr}-T2`]);
+      if (!s2) return [{ ...actual, label: `S2-${yr}`, data: D.dimensiones.map(d=>d.score) }];
+      return [
+        { ...actual,   label: `S2-${yr}`, data: s2 },
+        { ...anterior, label: `S1-${yr}`, data: s1 || D.dimensiones.map(()=>0) }
+      ];
+    }
+
+    if (lapso === 'anual') {
+      const yr   = D.meta.periodo ? D.meta.periodo.slice(0,4) : '2025';
+      const yrP  = String(parseInt(yr) - 1);
+      const yrP2 = String(parseInt(yr) - 2);
+      const a1   = avgPeriods([`${yr}-T1`,`${yr}-T2`,`${yr}-T3`,`${yr}-T4`]);
+      const a0   = avgPeriods([`${yrP}-T1`,`${yrP}-T2`,`${yrP}-T3`,`${yrP}-T4`]);
+      const a00  = avgPeriods([`${yrP2}-T1`,`${yrP2}-T2`,`${yrP2}-T3`,`${yrP2}-T4`]);
+      if (!a1) return [{ ...actual, label: yr, data: D.dimensiones.map(d=>d.score) }];
+      const datasets = [{ ...actual, label: yr, data: a1 }];
+      if (a0)  datasets.push({ ...anterior, label: yrP,  data: a0 });
+      if (a00) datasets.push({ backgroundColor:'rgba(144,164,174,0.08)', borderColor:'rgba(144,164,174,0.5)', borderWidth:1.5, pointRadius:3, borderDash:[3,5], label: yrP2, data: a00 });
+      return datasets;
+    }
+
+    return [{ ...actual, label: D.meta.periodo, data: D.dimensiones.map(d=>d.score) }];
+  }
+
+  const radarChart = registerChart('chartRadar', new Chart(document.getElementById('chartRadar'), {
     type: 'radar',
     data: {
       labels: D.dimensiones.map(d => d.nombre),
-      datasets: radarDatasets
+      datasets: buildRadarDatasets('trimestral')
     },
     options: {
       responsive:true, maintainAspectRatio:false,
@@ -547,6 +589,17 @@
       plugins:{ legend:{position:'bottom',labels:{font:{size:11}}} }
     }
   }));
+
+  // Toggle radar lapso
+  document.getElementById('radar-lapso-btns').addEventListener('click', e => {
+    const btn = e.target.closest('[data-radar-lapso]');
+    if (!btn) return;
+    document.querySelectorAll('[data-radar-lapso]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const lapso = btn.dataset.radarLapso;
+    radarChart.data.datasets = buildRadarDatasets(lapso);
+    radarChart.update();
+  });
 
   /* ── CONTRIBUCIÓN PONDERADA ──────────────────────────────────────────── */
   // contrib = score × peso (puntos que cada dim aporta al ITT global)
@@ -574,11 +627,11 @@
     }
   }));
   // insight contribution
-  const topDim    = D.dimensiones.reduce((a,b) => a.score*a.peso>b.score*b.peso ? a : b);
-  const bottomDim = D.dimensiones.reduce((a,b) => a.score*a.peso<b.score*b.peso ? a : b);
+  const topDim     = D.dimensiones.reduce((a,b) => a.score*a.peso > b.score*b.peso ? a : b);
+  const topPotDim  = D.dimensiones.reduce((a,b) => (100-a.score)*a.peso > (100-b.score)*b.peso ? a : b);
   document.getElementById('insight-contrib').innerHTML =
     `<span class="ci-label">Mayor contribución:</span> <strong style="color:${topDim.color}">${topDim.nombre}</strong> aporta <strong>${(topDim.score*topDim.peso).toFixed(1)} pts</strong> ·
-     Mayor potencial de mejora: <strong style="color:${bottomDim.color}">${bottomDim.nombre}</strong> puede sumar hasta <strong>${((100-bottomDim.score)*bottomDim.peso).toFixed(1)} pts</strong> adicionales.`;
+     Mayor potencial de mejora: <strong style="color:${topPotDim.color}">${topPotDim.nombre}</strong> puede sumar hasta <strong>${((100-topPotDim.score)*topPotDim.peso).toFixed(1)} pts</strong> adicionales.`;
 
   /* ── DIM CARDS ───────────────────────────────────────────────────────── */
   const dimGrid = document.getElementById('dim-grid');
@@ -593,7 +646,6 @@
     card.className = 'dim-card';
     card.style.borderTopColor = dim.color;
     card.innerHTML = `
-      <div class="dim-icon">${ICONS[dim.id]||'📊'}</div>
       <div class="dim-nombre">${dim.nombre}</div>
       <div><span class="dim-score-num" style="color:${dim.color}">${dim.score.toFixed(1)}</span><span class="dim-score-max">/100</span></div>
       <div class="dim-peso">Peso: ${(dim.peso*100).toFixed(0)}% · <strong>${contrib} pts</strong> al ITT</div>
@@ -767,7 +819,7 @@
               <span class="ind-fuente">${ind.fuente}</span>
               <span class="ind-oficial ${oc}">${ol}</span>
             </div>
-            ${ind.nota_real ? `<div class="ind-nota-real${isAlert?' ind-nota-alert':''}">${isAlert?'<strong>⚠ ALERTA:</strong> ':'<strong>Dato real:</strong> '}${ind.nota_real.replace('ALERTA: ','')}</div>` : ''}
+            ${ind.nota_real ? `<div class="ind-nota-real${isAlert?' ind-nota-alert':''}">${isAlert?'<strong>⚠ ALERTA:</strong> ':''}${ind.nota_real.replace('ALERTA: ','')}</div>` : ''}
             <div class="ind-rango-fecha"><strong>Rango del dato:</strong> ${rangoDato}</div>
           </div>`;
         }).join('')}
