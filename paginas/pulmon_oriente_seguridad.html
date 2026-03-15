@@ -1146,7 +1146,7 @@ function buildDimensionModule(dimId) {
     const vel = findInd('velocidad');
     highlightTitle = 'Movilidad · lectura operativa';
     highlightText = `En ${periodoTxt} se reportan ${kpiVal(sin)} siniestros, ${kpiVal(les)} con lesionados y ${kpiVal(mue)} muertes en vía.`;
-    noteText = `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. Tres indicadores ya se alimentan con fuente geoespacial de movilidad; velocidad del corredor continúa como dato gestionado.`;
+    noteText = `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. Los cuatro indicadores ya se alimentan con fuentes operativas (GeoJSON + Excel oficial de velocidad del corredor).`;
     summaryText = `Movilidad combina presión vial y severidad: menor siniestralidad y menor mortalidad mejoran el score; velocidad refleja condición operacional del corredor.`;
     kpisOut = [
       { value: dim.score.toFixed(1), label: 'Score dimensión', sub: '/100', color: lineColor },
@@ -1190,7 +1190,7 @@ function buildDimensionModule(dimId) {
     const vul = findInd('vulnerabilidad');
     highlightTitle = 'Cohesión Social · conflictividad y riesgo';
     highlightText = `Para ${periodoTxt}: VIF ${kpiVal(vif)} casos, riñas/conflictividad ${kpiVal(rin)} y vulnerabilidad activa ${kpiVal(vul)}.`;
-    noteText = `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. Combina un indicador oficial de violencia intrafamiliar con indicadores sociales en consolidación de fuente.`;
+    noteText = `Peso en ITT: ${(dim.peso * 100).toFixed(0)}%. La dimensión ya integra VIF, riñas/conflictividad y vulnerabilidad activa con fuentes oficiales (GeoJSON + Excel Bienestar).`;
     summaryText = `Cohesión Social refleja tensiones de convivencia y exposición social; su lectura es clave para priorizar intervención preventiva.`;
     kpisOut = [
       { value: dim.score.toFixed(1), label: 'Score dimensión', sub: '/100', color: lineColor },
