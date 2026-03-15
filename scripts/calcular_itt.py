@@ -1,11 +1,90 @@
 """
 calcular_itt.py  v2
 ===================
-Motor de cálculo del ITT — Pulmón de Oriente — Cali 2024-2027.
+Motor de cálculo del ITT (Índice de Transformación Territorial)
+para el Pulmón de Oriente — Comunas 13 y 14 de Cali — 2024-2027.
 
-Lee directamente los GeoJSON de data/ y genera data/indices/itt_pulmon.json.
+Genera data/indices/itt_pulmon.json (período actual) y las series
+itt_pulmon_trimestral.json / itt_pulmon_semestral.json / itt_pulmon_anual.json.
 
-Fuentes automáticas (GeoJSON):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FÓRMULA ITT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ITT = 0.30 × I_Seg  +  0.25 × I_Mov  +  0.20 × I_Ent
+      + 0.13 × I_EyD  +  0.12 × I_Coh
+
+Donde cada I_Dim es el promedio simple de los scores normalizados
+de sus indicadores:
+
+  I_Dim = promedio(score_ind_1, score_ind_2, ..., score_ind_N)
+
+Normalización Min-Max por indicador (escala 0-100):
+
+  score = clamp((valor − ref_min) / (ref_max − ref_min) × 100, 0, 100)
+
+Para indicadores inversos (mayor valor = peor situación):
+
+  score = 100 − score_raw
+
+Los indicadores de conteo por período escalan ref_min y ref_max
+proporcionalmente al número de trimestres del lapso (ref_factor = n_trim).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CLASIFICACIÓN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   0–40   Nivel 1 · Emergencia
+  40–60   Nivel 2 · Consolidación
+  60–80   Nivel 3 · Avance
+  80–100  Nivel 4 · Transformación
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DIMENSIONES E INDICADORES (17 en total)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  I. SEGURIDAD (peso 30%) — 2 indicadores
+     1. Homicidios en polígono    inverso  GeoJSON  ref [5, 50]
+     2. Hurtos en polígono        inverso  GeoJSON  ref [200, 450]
+
+  II. MOVILIDAD (peso 25%) — 4 indicadores
+     3. Siniestralidad vial       inverso  GeoJSON  ref [30, 80]
+     4. Accidentes con lesionados inverso  GeoJSON  ref [20, 65]
+     5. Muertes en vía            inverso  GeoJSON  ref [1, 10]
+     6. Velocidad del corredor    directo  Excel    ref [12.0, 32.0] km/h
+
+  III. ENTORNO URBANO (peso 20%) — 3 indicadores
+     7. NDVI / cobertura vegetal  directo  GeoTIFF  ref [0.15, 0.65]
+     8. Área verde neta           directo  GeoTIFF  ref [500 000, 3 000 000] m²
+     9. Déficit habitacional      inverso  Excel    ref [10, 100] % pendiente
+        (AHDI, ponderado por etapa procesal)
+
+  IV. EDUCACIÓN Y DESARROLLO (peso 13%) — 5 indicadores
+    10. Matrícula escolar         directo  Excel    ref [40 000, 58 000] estudiantes
+    11. Deserción escolar         inverso  Excel    ref [1.0, 10.0] %
+    12. Repitencia escolar        inverso  Excel    ref [1.0, 15.0] %
+    13. Estudiantes por docente   inverso  Excel    ref [18.0, 40.0] ratio
+    14. Aforo Villa del Lago      directo  Manual   ref [1 000, 7 000] personas/mes
+
+  V. COHESIÓN SOCIAL (peso 12%) — 3 indicadores
+    15. VIF trimestral            inverso  GeoJSON  ref [60, 200]
+    16. Riñas / conflictividad    inverso  GeoJSON  ref [20, 160]
+    17. Concentración de
+        vulnerabilidad activa     inverso  Excel    ref [30.0, 160.0] x1000 hab
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+JERARQUÍA DE VALORES POR INDICADOR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  1. Fuente GIS automática (si gis_dir/gis_tipo está configurado)
+  2. Función de extracción Excel específica por indicador
+  3. Valor manual desde data/indices/indicadores_manuales.json
+  4. Se omite el indicador (no aporta al score de la dimensión)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FUENTES AUTOMÁTICAS (GeoJSON)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
   data/seguridad/hurtos/        → hurtos por período (FECHA_HECH)
   data/seguridad/homicidios/    → homicidios por período (FECHA_HECH)
   data/seguridad/violencia/     → VIF por período · VBG total 2025
@@ -15,18 +94,36 @@ Fuentes automáticas (GeoJSON):
   data/ambiente/                → árboles vivos (conteo)
   data/vivienda/                → polígonos AHDI (conteo+ha) · viviendas mejoramiento (suma)
 
-Fuentes manuales (JSON):
+FUENTES AUTOMÁTICAS (Excel / GeoTIFF)
+  data/NVDI/*.tif               → NDVI medio · área verde (Sentinel-2 / Copernicus)
+  data/excel/movilidad/         → velocidad corredor (Waze for Cities)
+  data/excel/vivienda/          → avance AHDI ponderado por etapa procesal
+  data/excel/educacion/         → matrícula, deserción, repitencia, docentes
+  data/excel/bienestar/         → vulnerabilidad activa por comuna
+
+FUENTES MANUALES (JSON fallback)
   data/indices/indicadores_manuales.json
     → riñas, siniestralidad, lesionados, muertes en vía, velocidad,
-      NDVI, área verde, déficit habitacional,
-      matrícula, deserción, repitencia, estudiantes/docente, aforo,
-      concentración de vulnerabilidad y barrios (ranking ITT estimado por barrio)
+      NDVI, área verde, déficit habitacional, matrícula, deserción,
+      repitencia, estudiantes/docente, aforo, concentración de
+      vulnerabilidad y ranking estimado por barrio
 
-Uso:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+USO EN LÍNEA DE COMANDOS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
   python scripts/calcular_itt.py                                 # período actual
-  python scripts/calcular_itt.py --periodo 2025-T4               # período específico
+  python scripts/calcular_itt.py --periodo 2025-T4               # trimestre específico
+  python scripts/calcular_itt.py --periodo 2025-S2               # semestre
+  python scripts/calcular_itt.py --periodo 2025                  # año completo
   python scripts/calcular_itt.py --periodo 2025-T4 --version oficial
-  python scripts/calcular_itt.py --generar-manuales              # crea/actualiza manuales.json
+  python scripts/calcular_itt.py --periodo 2025-T4 --output data/indices/custom.json
+  python scripts/calcular_itt.py --generar-manuales              # crea indicadores_manuales.json
+
+Salidas por lapso:
+  trimestral → data/indices/itt_pulmon_trimestral.json + itt_pulmon.json
+  semestral  → data/indices/itt_pulmon_semestral.json
+  anual      → data/indices/itt_pulmon_anual.json
 """
 
 import json
@@ -46,6 +143,31 @@ MAN   = DATA / "indices" / "indicadores_manuales.json"
 
 # ══════════════════════════════════════════════════════════════════════════════
 # CONFIGURACIÓN DE DIMENSIONES
+# ══════════════════════════════════════════════════════════════════════════════
+#
+# Cada dimensión define:
+#   nombre, icono, peso (0-1), color (hex), indicadores: [...]
+#
+# Cada indicador define:
+#   id          : str   — clave única usada como campo en el JSON de salida y en manuales.json
+#   nombre      : str   — etiqueta legible para el frontend
+#   unidad      : str   — unidad de medida del valor crudo
+#   fuente      : str   — origen institucional del dato
+#   oficial     : bool  — True si el dato proviene de fuente oficial verificada
+#   inverso     : bool  — True si mayor valor crudo = peor situación (se invierte la escala)
+#   ref_min     : float — límite inferior para normalización (calibrado con serie histórica)
+#   ref_max     : float — límite superior para normalización
+#
+# Claves opcionales para extracción automática:
+#   gis_dir          : ruta relativa dentro de data/ con los GeoJSON de la fuente
+#   gis_tipo         : tipo de extracción (ver extraer_gis)
+#   gis_patron       : prefijo de nombre de archivo para filtrar dentro del dir
+#   gis_campo_fecha  : campo de fecha en el GeoJSON para filtrar por período
+#   gis_filtro       : dict campo→valor para filtrar features por atributo
+#   edu_campo        : clave del dict devuelto por leer_indicadores_educacion
+#                      (matricula | tasa_desercion | tasa_repitencia | rad)
+#
+# Sin gis_tipo → el indicador usa exclusivamente indicadores_manuales.json.
 # ══════════════════════════════════════════════════════════════════════════════
 
 DIMENSIONES = {
@@ -650,8 +772,31 @@ def calcular_longitud_linea(coords):
 
 def extraer_gis(ind_cfg, year, mes_inicio, mes_fin):
     """
-    Extrae el valor de un indicador según su configuración GIS.
-    Devuelve None si no tiene fuente GIS.
+    Extrae el valor crudo de un indicador a partir de su configuración GIS.
+
+    Tipos soportados (campo 'gis_tipo' en DIMENSIONES)
+    ---------------------------------------------------
+    conteo_periodo  : cuenta features cuya fecha cae dentro del período activo.
+                      Aplica filtros adicionales de campo si gis_filtro está definido.
+    conteo_total    : cuenta el total de features en el archivo, sin filtrar por fecha.
+    conteo_archivo  : cuenta archivos .geojson presentes en el directorio.
+    suma_campo      : suma los valores de un campo numérico en todos los features.
+    longitud_lineas : calcula la longitud total (km) de geometrías LineString
+                      usando la fórmula de Haversine.
+    excel_edu       : delega en leer_indicadores_educacion() para leer
+                      hojas Excel de la Secretaría de Educación.
+
+    Parámetros
+    ----------
+    ind_cfg    : dict  Configuración del indicador (bloque de DIMENSIONES).
+    year       : int   Año del período activo.
+    mes_inicio : int   Mes de inicio del período (1-12).
+    mes_fin    : int   Mes de fin del período (1-12).
+
+    Retorna
+    -------
+    float | int | None  — None si el indicador no tiene fuente GIS configurada
+                          o si los archivos no existen.
     """
     tipo = ind_cfg.get("gis_tipo")
     if not tipo:
@@ -1107,7 +1252,25 @@ def generar_hurtos_series():
 # ══════════════════════════════════════════════════════════════════════════════
 
 def normalizar(valor, ref_min, ref_max, inverso=False):
-    """Min-Max → [0, 100]. inverso=True → menor valor = mayor score."""
+    """
+    Normalización Min-Max al rango [0, 100].
+
+    score = clamp((valor − ref_min) / (ref_max − ref_min) × 100, 0, 100)
+
+    Si inverso=True (indicadores donde más es peor, ej. hurtos):
+      score = 100 − score_raw
+
+    Parámetros
+    ----------
+    valor   : float  Valor crudo del indicador.
+    ref_min : float  Límite inferior de referencia (peor o mejor según inverso).
+    ref_max : float  Límite superior de referencia.
+    inverso : bool   True cuando un valor alto representa un resultado negativo.
+
+    Retorna
+    -------
+    float en [0.0, 100.0], redondeado a 2 decimales.
+    """
     if ref_max == ref_min:
         return 0.0
     score = (valor - ref_min) / (ref_max - ref_min) * 100
@@ -1243,6 +1406,50 @@ def leer_manuales(periodo_str):
 # ══════════════════════════════════════════════════════════════════════════════
 
 def calcular_itt(periodo_str, version="preliminar"):
+    """
+    Calcula el ITT completo para un período dado y devuelve el dict resultado.
+
+    Parámetros
+    ----------
+    periodo_str : str
+        Período en formato 'YYYY-TX' (trimestral), 'YYYY-SX' (semestral)
+        o 'YYYY' (anual). Ejemplos: '2025-T4', '2025-S2', '2025'.
+    version : str
+        'preliminar' u 'oficial'. Se incluye en el campo meta.version
+        del JSON de salida.
+
+    Flujo interno
+    -------------
+    1. Parsea el período → año, mes_inicio, mes_fin, lapso, n_trim.
+    2. Carga histórico del mismo lapso para comparación con período anterior.
+    3. Carga indicadores_manuales.json (fallback cuando GIS no hay dato).
+    4. Extrae automáticamente NDVI (TIF), velocidad corredor (Excel),
+       avance AHDI (Excel) y vulnerabilidad activa (Excel).
+    5. Itera las 5 dimensiones → para cada indicador:
+       a. Intenta extraer valor desde GeoJSON (extraer_gis).
+       b. Si no, usa el valor manual del JSON.
+       c. Normaliza el valor a score 0-100 (Min-Max, con inversión si aplica).
+       d. Aplica ref_factor para escalar refs en períodos > 1 trimestre.
+    6. Score por dimensión = promedio simple de scores de sus indicadores.
+    7. ITT global = suma ponderada de scores de dimensiones.
+    8. Clasifica el ITT en Nivel 1-4 (Emergencia → Transformación).
+    9. Construye la serie temporal del mismo lapso desde el histórico.
+    10. Guarda el período en itt_historico.json.
+    11. Devuelve el dict completo (meta, itt_global, dimensiones,
+        serie_temporal, barrios) listo para serializar como JSON.
+
+    Retorna
+    -------
+    dict con estructura:
+      {
+        "meta":          {...},
+        "itt_global":    {"score", "score_anterior", "variacion",
+                          "clasificacion", "rango", "periodo_comparacion"},
+        "dimensiones":   [{...indicadores y scores por dimensión...}],
+        "serie_temporal": [{...}],
+        "barrios":       [{...}]
+      }
+    """
     year, mes_inicio, mes_fin, lapso, _ = parsear_periodo(periodo_str)
     # Factor para escalar refs de indicadores de conteo (1=trimestral, 2=semestral, 4=anual)
     n_trim = (mes_fin - mes_inicio + 1) // 3
