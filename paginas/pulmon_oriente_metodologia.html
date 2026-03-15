@@ -261,6 +261,58 @@
   </div>
 </section>
 
+<!-- 06 NOTAS METODOLÓGICAS -->
+<section class="section pt-0">
+  <div class="container">
+    <div class="section-header"><span class="section-num">06 —</span><h2>Notas Metodológicas</h2></div>
+    <div class="divider"></div>
+    <div class="charts-grid wide">
+
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-card-title">NDVI — Alcance del polígono de medición</div>
+          <span style="font-size:11px;background:#FFF8E1;color:#F57F17;padding:3px 10px;border-radius:100px;font-weight:700;border:1px solid rgba(245,127,23,.3)">Limitación documentada · v7</span>
+        </div>
+        <div class="chart-body">
+          <div style="background:#FFFDE7;border-left:4px solid #FFC300;border-radius:0 10px 10px 0;padding:16px 20px;margin-bottom:16px">
+            <div style="font-size:12px;font-weight:700;color:#003087;margin-bottom:6px">Indicador afectado: NDVI / cobertura vegetal · Dimensión Entorno Urbano</div>
+            <p style="font-size:13px;color:#37474F;line-height:1.7;margin:0">
+              En esta versión del índice el NDVI se calcula sobre el polígono completo del Pulmón de Oriente.
+              Se reconoce que el polígono incluye áreas de alta densidad constructiva donde la cobertura vegetal
+              es estructuralmente baja e independiente de la intervención. En versiones posteriores del índice,
+              el NDVI se calculará sobre el subpolígono ambiental de las lagunas de <strong>Charco Azul</strong> y
+              <strong>El Pondaje</strong>, que es la zona donde la intervención tiene impacto ambiental directo
+              y donde los valores de referencia son metodológicamente más apropiados.
+            </p>
+          </div>
+          <div style="display:flex;gap:24px;flex-wrap:wrap">
+            <div style="flex:1;min-width:200px">
+              <div style="font-size:11px;font-weight:700;color:#003087;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Versión actual (v7)</div>
+              <div style="font-size:12px;color:#37474F;line-height:1.6">
+                Polígono completo Pulmón de Oriente (~12 km²).<br>
+                Incluye zonas urbanas densas donde el NDVI tiene piso estructural bajo.<br>
+                Score actual: <strong>10/100</strong> (refleja la limitación del área de medición).
+              </div>
+            </div>
+            <div style="flex:1;min-width:200px">
+              <div style="font-size:11px;font-weight:700;color:#2E7D32;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Versión siguiente</div>
+              <div style="font-size:12px;color:#37474F;line-height:1.6">
+                Sub-polígono ambiental: lagunas Charco Azul y El Pondaje.<br>
+                Área donde la intervención tiene impacto directo y medible.<br>
+                Refs [0.15, 0.65] serán apropiados para vegetación de humedal.
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:14px;font-size:11px;color:#78909C;border-top:1px solid #ECEFF1;padding-top:10px">
+            Precedente metodológico: el <em>Index of Multiple Deprivation</em> (IMD, Reino Unido) utiliza unidades de análisis diferenciadas según el fenómeno que mide. No todos los indicadores tienen que medirse sobre exactamente el mismo polígono.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- NAV -->
 <nav class="page-switcher" aria-label="Navegación">
   <a class="switcher-home" href="../index.html" title="Inicio">

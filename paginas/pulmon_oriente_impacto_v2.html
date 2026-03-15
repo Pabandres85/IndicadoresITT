@@ -135,26 +135,21 @@
   </div>
 </section>
 
-<!-- 04 BARRIOS -->
+<!-- 04 SEGURIDAD VS MOVILIDAD -->
 <section class="section pt-0">
   <div class="container">
-    <div class="section-header"><span class="section-num">04 —</span><h2>Ranking de Barrios · ITT Estimado</h2></div>
+    <div class="section-header"><span class="section-num">04 —</span><h2>Seguridad vs Movilidad · Comparativo por Período</h2></div>
     <div class="divider"></div>
-    <div class="chart-card" style="margin-bottom:20px">
+    <div class="chart-card">
       <div class="chart-card-header">
-        <div class="chart-card-title">ITT por Barrio</div>
-        <div class="barrio-sort-group" id="barrio-sort-group">
-          <span style="font-size:11px;color:var(--gris-light);margin-right:6px">Ordenar:</span>
-          <button class="barrio-sort-btn active" data-sort="itt">ITT ↓</button>
-          <button class="barrio-sort-btn" data-sort="poblacion">Población</button>
-          <button class="barrio-sort-btn" data-sort="proyectos">Proyectos</button>
-        </div>
+        <div class="chart-card-title">Score por trimestre · Seguridad y Movilidad</div>
+        <span style="font-size:11px;color:#78909C">Escala 0–100 · Serie 2023–2025</span>
       </div>
       <div class="chart-body">
-        <div class="chart-wrap" style="height:320px"><canvas id="chartBarrios"></canvas></div>
+        <div class="chart-wrap" style="height:320px"><canvas id="chartSegMovComp"></canvas></div>
       </div>
+      <div id="seg-mov-insight" style="margin-top:16px;padding:12px 16px;background:#F8F9FA;border-radius:10px;font-size:12px;color:#37474F;line-height:1.6"></div>
     </div>
-    <div class="barrios-grid" id="barrios-grid"></div>
   </div>
 </section>
 
@@ -256,7 +251,6 @@
 
   const chartRegistry = {};
   let chartModalState = null;
-  let currentSort = 'itt';
 
   function registerChart(id, chart) { chartRegistry[id] = chart; return chart; }
 
@@ -385,6 +379,12 @@
   }
 
   function getIndicatorDateRange(ind, dim, D) {
+    // Indicadores educativos tienen ciclo anual — mostrar año lectivo, no trimestre
+    if (dim?.id === 'educacion_desarrollo') {
+      const year = D?.meta?.periodo ? D.meta.periodo.slice(0, 4) : null;
+      return year ? `${year} · año lectivo` : 'Anual';
+    }
+
     const nota = String(ind?.nota_real || '');
     const periodMatches = [...nota.matchAll(/(\d{4}-(?:T[1-4]|S[1-2]))/g)].map(m => m[1]);
     if (periodMatches.length >= 2) {
@@ -610,12 +610,23 @@
       labels: D.serie_temporal.map(p => p.periodo),
       datasets: [
         { label:'ITT Global', data:D.serie_temporal.map(p=>p.itt), borderColor:'#003087', backgroundColor:'rgba(0,48,135,0.10)', borderWidth:3, pointRadius:6, pointHoverRadius:8, fill:true, tension:0.35 },
-        ...D.dimensiones.map(d => ({
-          label:d.nombre, data:D.serie_temporal.map(p=>p[d.id]),
-          borderColor:d.color, backgroundColor:'transparent', borderWidth:1.8,
-          pointRadius:4, fill:false, tension:0.35, borderDash:[5,3],
-          hidden: false
-        }))
+        ...D.dimensiones.map(d => {
+          const esAnual = ['entorno_urbano','educacion_desarrollo'].includes(d.id);
+          return {
+            label: d.nombre + (esAnual ? ' *' : ''),
+            data: D.serie_temporal.map(p => p[d.id]),
+            borderColor: d.color,
+            backgroundColor: 'transparent',
+            borderWidth: esAnual ? 1.5 : 1.8,
+            pointRadius: esAnual ? 0 : 4,
+            pointHoverRadius: esAnual ? 4 : 7,
+            fill: false,
+            tension: esAnual ? 0 : 0.35,
+            stepped: esAnual ? 'before' : false,
+            borderDash: esAnual ? [4, 4] : [5, 3],
+            hidden: true
+          };
+        })
       ]
     },
     options: {
@@ -656,7 +667,8 @@
   document.getElementById('insight-evolucion').innerHTML =
     `<span class="ci-label">Tendencia:</span> El ITT global ${ittVerb} <strong>${ittSign}${ittDelta.toFixed(1)} pts</strong> desde ${p0.periodo} hasta ${pN.periodo}.
      Dimensión de mayor variación: <strong style="color:${topDimVar.color}">${topDimVar.nombre} (${varSign}${topDimVar.variacion.toFixed(1)} pts)</strong>.
-     Dimensión con mayor brecha por cerrar: <strong style="color:${lowDimScr.color}">${lowDimScr.nombre} (${lowDimScr.score.toFixed(1)}/100)</strong>.`;
+     Dimensión con mayor brecha por cerrar: <strong style="color:${lowDimScr.color}">${lowDimScr.nombre} (${lowDimScr.score.toFixed(1)}/100)</strong>.
+     <br><span style="font-size:11px;color:#90A4AE;margin-top:6px;display:block">Nota: Entorno Urbano y Educación se miden anualmente — su línea es plana dentro de cada año por diseño, no por ausencia de cambio.</span>`;
 
   /* ── TABS INDICADORES ────────────────────────────────────────────────── */
   const tabsEl = document.getElementById('dim-tabs');
@@ -684,8 +696,36 @@
       ? `<div class="chart-card" style="margin-bottom:20px">
            <div class="chart-card-header"><div class="chart-card-title">Evolución de Hurtos por Trimestre · ${dim.hurtos_series.fuente}</div></div>
            <div class="chart-body">
-             <div class="chart-wrap" style="height:200px"><canvas id="chartHurtos"></canvas></div>
+             <div class="chart-wrap" style="height:240px"><canvas id="chartHurtos"></canvas></div>
              <div class="chart-insight" id="insight-hurtos"></div>
+           </div>
+         </div>`
+      : '';
+
+    // VIF series chart slot (only for cohesion_social)
+    const vifChartSlot = dim.id === 'cohesion_social' && dim.vif_series
+      ? `<div class="chart-card" style="margin-bottom:20px">
+           <div class="chart-card-header">
+             <div class="chart-card-title">Violencia Intrafamiliar (VIF) · Total Anual · ${dim.vif_series.fuente}</div>
+             <span style="font-size:11px;color:#C1272D;font-weight:600">⚠ Tendencia en alza</span>
+           </div>
+           <div class="chart-body">
+             <div class="chart-wrap" style="height:220px"><canvas id="chartVIF"></canvas></div>
+             <div class="chart-insight" id="insight-vif"></div>
+           </div>
+         </div>`
+      : '';
+
+    // Movilidad score series chart slot
+    const movilidadChartSlot = dim.id === 'movilidad' && D.serie_temporal?.length
+      ? `<div class="chart-card" style="margin-bottom:20px">
+           <div class="chart-card-header">
+             <div class="chart-card-title">Evolución del Score de Movilidad · Comparativo por Trimestre</div>
+             <span style="font-size:11px;color:#78909C">Escala 0–100 · Mayor score = mejor movilidad</span>
+           </div>
+           <div class="chart-body">
+             <div class="chart-wrap" style="height:240px"><canvas id="chartMovSerie"></canvas></div>
+             <div class="chart-insight" id="insight-mov-serie"></div>
            </div>
          </div>`
       : '';
@@ -705,6 +745,8 @@
         </div>
       </div>
       ${hurtosChartSlot}
+      ${vifChartSlot}
+      ${movilidadChartSlot}
       <div class="ind-grid">
         ${dim.indicadores.map(ind => {
           const tc  = ind.tendencia==='alza'?'tend-alza':ind.tendencia==='baja'?'tend-baja':'tend-estable';
@@ -746,101 +788,305 @@
     ctsEl.querySelectorAll('.dim-content').forEach((p, i) => p.classList.toggle('active', i===idx));
   });
 
-  // Hurtos series chart (rendered after tab panel is in DOM)
+  // Hurtos series chart — barras agrupadas por trimestre (T1–T4 × año)
   const segDim = D.dimensiones.find(d => d.id === 'seguridad');
   if (segDim?.hurtos_series) {
     const hs = segDim.hurtos_series;
-    const lastIdx = hs.serie.length - 1;
+
+    // Agrupar por trimestre y año
+    const byYearQ = {};
+    hs.serie.forEach(s => {
+      const [yr, q] = s.periodo.split('-'); // e.g. "2023", "T1"
+      if (!byYearQ[yr]) byYearQ[yr] = {};
+      byYearQ[yr][q] = s.n;
+    });
+    const years  = Object.keys(byYearQ).sort();           // ['2023','2024','2025']
+    const qtrs   = ['T1','T2','T3','T4'];
+    const yearColors = {
+      '2023': 'rgba(193,39,45,0.30)',
+      '2024': 'rgba(193,39,45,0.55)',
+      '2025': '#C1272D'
+    };
+
+    const datasets = years.map(yr => ({
+      label: yr,
+      data: qtrs.map(q => byYearQ[yr]?.[q] ?? null),
+      backgroundColor: yearColors[yr] || 'rgba(193,39,45,0.4)',
+      borderRadius: 4,
+      borderSkipped: false
+    }));
+
     registerChart('chartHurtos', new Chart(document.getElementById('chartHurtos'), {
       type: 'bar',
-      data: {
-        labels: hs.serie.map(s => s.periodo),
-        datasets: [{
-          label: 'Hurtos',
-          data:  hs.serie.map(s => s.n),
-          backgroundColor: hs.serie.map((s, i) =>
-            i === lastIdx ? '#C1272D' : i >= lastIdx-3 ? 'rgba(193,39,45,0.5)' : 'rgba(193,39,45,0.25)'
-          ),
-          borderRadius: 4, borderSkipped: false
-        }]
-      },
+      data: { labels: qtrs, datasets },
       options: {
-        responsive:true, maintainAspectRatio:false,
-        scales:{
-          y:{ beginAtZero:false, min:200, grid:{color:'rgba(0,0,0,0.05)'}, ticks:{font:{size:10}} },
-          x:{ grid:{display:false}, ticks:{font:{size:10}} }
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: false, min: 200, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } }
         },
-        plugins:{ legend:{display:false}, tooltip:{callbacks:{label: ctx=>`${ctx.raw} hurtos`}} }
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: { font: { size: 11 }, boxWidth: 14, padding: 12 }
+          },
+          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw} hurtos` } }
+        }
       }
     }));
-    const hurtosMax = Math.max(...hs.serie.map(s=>s.n));
-    const hurtosMin = hs.serie[lastIdx].n;
-    const pctBaja   = Math.round((hurtosMax - hurtosMin) / hurtosMax * 100);
+
+    // Insight: comparativo año sobre año por trimestre
+    const lastYr  = years[years.length - 1];
+    const prevYr  = years[years.length - 2];
+    const totalLast = qtrs.reduce((s,q) => s + (byYearQ[lastYr]?.[q] || 0), 0);
+    const totalPrev = qtrs.reduce((s,q) => s + (byYearQ[prevYr]?.[q] || 0), 0);
+    const pctYoY   = Math.round((totalPrev - totalLast) / totalPrev * 100);
+    const hurtosMax = Math.max(...hs.serie.map(s => s.n));
+    const hurtosLast = byYearQ[lastYr]?.['T4'] ?? hs.serie[hs.serie.length-1].n;
+    const pctTotal  = Math.round((hurtosMax - hurtosLast) / hurtosMax * 100);
     document.getElementById('insight-hurtos').innerHTML =
-      `<span class="ci-label">Tendencia:</span> Pico máximo <strong>${hurtosMax}</strong> hurtos (${hs.serie.find(s=>s.n===hurtosMax).periodo}) →
-       <strong>${hurtosMin}</strong> en ${hs.serie[lastIdx].periodo} — <strong style="color:#2E7D32">reducción del ${pctBaja}%</strong>.
+      `<span class="ci-label">Comparativo:</span> En <strong>${lastYr}</strong> los hurtos bajaron
+       <strong style="color:#2E7D32">${pctYoY}%</strong> respecto a <strong>${prevYr}</strong> (total anual).
+       Desde el pico histórico de <strong>${hurtosMax}</strong> (${hs.serie.find(s=>s.n===hurtosMax).periodo}),
+       la reducción acumulada es del <strong style="color:#2E7D32">${pctTotal}%</strong>.
        Fuente: ${hs.fuente}.`;
   }
 
-  /* ── BARRIOS ─────────────────────────────────────────────────────────── */
-  let barChart;
+  // VIF series chart — barras anuales con alerta de tendencia
+  (function renderVIF() {
+    const canvas = document.getElementById('chartVIF');
+    if (!canvas) return;
+    const cohDim = D.dimensiones.find(d => d.id === 'cohesion_social');
+    if (!cohDim?.vif_series) return;
+    const vs = cohDim.vif_series;
+    const labels = vs.serie.map(s => s.anio);
+    const values = vs.serie.map(s => s.n);
+    const last   = values[values.length - 1];
+    const colors = values.map((v, i) =>
+      i === values.length - 1 ? '#C1272D' : i === values.length - 2 ? 'rgba(193,39,45,0.55)' : 'rgba(193,39,45,0.30)'
+    );
 
-  function renderBarrios() {
-    const bs = [...D.barrios].sort((a,b) => {
-      if (currentSort === 'itt')       return b.itt - a.itt;
-      if (currentSort === 'poblacion') return b.poblacion - a.poblacion;
-      if (currentSort === 'proyectos') return b.proyectos - a.proyectos;
-      return 0;
-    });
-
-    // Update chart
-    if (barChart) barChart.destroy();
-    barChart = registerChart('chartBarrios', new Chart(document.getElementById('chartBarrios'), {
-      type:'bar',
-      data:{
-        labels: bs.map(b=>b.nombre),
-        datasets:[{ label:'ITT Estimado', data:bs.map(b=>b.itt),
-          backgroundColor: bs.map(b => colorByITT(b.itt)),
-          borderRadius:6, borderSkipped:false }]
+    registerChart('chartVIF', new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Casos VIF',
+          data: values,
+          backgroundColor: colors,
+          borderRadius: 6,
+          borderSkipped: false
+        }]
       },
-      options:{
-        responsive:true, maintainAspectRatio:false, indexAxis:'y',
-        scales:{ x:{min:0,max:100,grid:{color:'rgba(0,0,0,0.06)'},ticks:{stepSize:20}}, y:{grid:{display:false}} },
-        plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>`ITT ${ctx.raw.toFixed(1)}/100`}} }
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: false, min: 400, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 12, weight: 'bold' } } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: ctx => `${ctx.raw} casos VIF` } }
+        }
       }
     }));
 
-    // Update cards
-    const barriosGrid = document.getElementById('barrios-grid');
-    barriosGrid.innerHTML = '';
-    bs.forEach((b,i) => {
-      const color = colorByITT(b.itt);
-      const div = document.createElement('div');
-      div.className = 'barrio-item';
-      div.innerHTML = `
-        <div class="barrio-top">
-          <div class="barrio-nombre">#${i+1} ${b.nombre}</div>
-          <div class="barrio-score" style="color:${color}">${b.itt.toFixed(1)}</div>
-        </div>
-        <div class="barrio-meta">
-          <span>👥 ${b.poblacion.toLocaleString('es-CO')} hab.</span>
-          <span>🔨 ${b.proyectos} proyectos</span>
-        </div>
-        <div class="barrio-bar-track"><div class="barrio-bar-fill" style="width:${b.itt}%;background:${color}"></div></div>`;
-      barriosGrid.appendChild(div);
+    const primero  = values[0];
+    const pctTotal = Math.round((last - primero) / primero * 100);
+    const pctUlt   = Math.round((values[values.length-1] - values[values.length-2]) / values[values.length-2] * 100);
+    document.getElementById('insight-vif').innerHTML =
+      `<span class="ci-label" style="color:#C1272D">Alerta:</span>
+       La VIF aumentó <strong style="color:#C1272D">${pctTotal}%</strong> entre ${labels[0]} y ${labels[labels.length-1]}
+       (de <strong>${primero}</strong> a <strong>${last}</strong> casos anuales).
+       Solo en el último año el incremento fue del <strong style="color:#C1272D">+${pctUlt}%</strong>.
+       <strong>Acción prioritaria:</strong> reforzar atención psicosocial y rutas de acceso a justicia en el territorio.`;
+  })();
+
+  // Movilidad score series — barras agrupadas por trimestre (T1–T4 × año)
+  (function renderMovSerie() {
+    const canvas = document.getElementById('chartMovSerie');
+    if (!canvas) return;
+    const serie = D.serie_temporal || [];
+    if (!serie.length) return;
+
+    // Agrupar scores de movilidad por año y trimestre
+    const byYearQ = {};
+    serie.forEach(s => {
+      const [yr, q] = s.periodo.split('-');
+      if (!byYearQ[yr]) byYearQ[yr] = {};
+      byYearQ[yr][q] = s.movilidad;
     });
-  }
+    const years = Object.keys(byYearQ).sort();
+    const qtrs  = ['T1','T2','T3','T4'];
+    const yearColors = {
+      '2023': 'rgba(0,121,107,0.30)',
+      '2024': 'rgba(0,121,107,0.55)',
+      '2025': '#00796B'
+    };
 
-  renderBarrios();
+    const datasets = years.map(yr => ({
+      label: yr,
+      data: qtrs.map(q => byYearQ[yr]?.[q] ?? null),
+      backgroundColor: yearColors[yr] || 'rgba(0,121,107,0.4)',
+      borderRadius: 4,
+      borderSkipped: false
+    }));
 
-  document.getElementById('barrio-sort-group').addEventListener('click', e => {
-    const btn = e.target.closest('.barrio-sort-btn');
-    if (!btn) return;
-    document.querySelectorAll('.barrio-sort-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentSort = btn.dataset.sort;
-    renderBarrios();
-  });
+    registerChart('chartMovSerie', new Chart(canvas, {
+      type: 'bar',
+      data: { labels: qtrs, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: false, min: 30, max: 80,
+            grid: { color: 'rgba(0,0,0,0.05)' },
+            ticks: { font: { size: 10 } }
+          },
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+        },
+        plugins: {
+          legend: {
+            display: true, position: 'top',
+            labels: { font: { size: 11 }, boxWidth: 14, padding: 12 }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${ctx.dataset.label}: ${ctx.raw?.toFixed(1)} pts`
+            }
+          }
+        }
+      }
+    }));
+
+    // Insight ejecutivo
+    const lastYr = years[years.length - 1];
+    const prevYr = years[years.length - 2];
+    const lastScores = qtrs.map(q => byYearQ[lastYr]?.[q]).filter(v => v != null);
+    const prevScores = qtrs.map(q => byYearQ[prevYr]?.[q]).filter(v => v != null);
+    const avgLast = lastScores.reduce((a,b) => a+b, 0) / lastScores.length;
+    const avgPrev = prevScores.reduce((a,b) => a+b, 0) / prevScores.length;
+    const diff    = (avgLast - avgPrev).toFixed(1);
+    const sign    = diff > 0 ? '+' : '';
+    const color   = diff >= 0 ? '#2E7D32' : '#C1272D';
+    const pico    = Math.max(...serie.map(s => s.movilidad));
+    const picoP   = serie.find(s => s.movilidad === pico)?.periodo;
+    const actual  = byYearQ[lastYr]?.['T4'] ?? lastScores[lastScores.length-1];
+    const qtrsConDatos = qtrs.filter(q => byYearQ[lastYr]?.[q] != null && byYearQ[prevYr]?.[q] != null);
+    const mejoraron  = qtrsConDatos.filter(q => byYearQ[lastYr][q] > byYearQ[prevYr][q]);
+    const minQ  = qtrsConDatos.reduce((a, b) => byYearQ[lastYr][a] < byYearQ[lastYr][b] ? a : b);
+    const minVal = byYearQ[lastYr][minQ]?.toFixed(1);
+    const tendencia = diff < 0 ? 'empeoró' : 'mejoró';
+    const absDiff = Math.abs(diff);
+    const mejoraronStr = mejoraron.length
+      ? `Solo <strong>${mejoraron.join(' y ')}</strong> mostró mejora respecto a ${prevYr}.`
+      : `Ningún trimestre mejoró respecto a ${prevYr}.`;
+    document.getElementById('insight-mov-serie').innerHTML =
+      `<span class="ci-label">Lectura ejecutiva:</span>
+       La movilidad <strong style="color:${color}">${tendencia} ${absDiff} puntos</strong> en ${lastYr} respecto a ${prevYr}.
+       El punto más crítico fue <strong style="color:#C1272D">${minQ} (${minVal} pts)</strong> — el más bajo del período.
+       ${mejoraronStr}
+       <strong>Acción prioritaria:</strong> reducir siniestralidad vial, especialmente en el último trimestre del año.`;
+  })();
+
+  /* ── SEGURIDAD VS MOVILIDAD COMPARATIVO ─────────────────────────────── */
+  (function renderSegMovComp() {
+    const serie = (D.serie_temporal || []).filter(p => p.seguridad != null && p.movilidad != null);
+    if (!serie.length) return;
+
+    const labels  = serie.map(p => p.periodo);
+    const segData = serie.map(p => p.seguridad);
+    const movData = serie.map(p => p.movilidad);
+
+    // Resaltar último período
+    const lastIdx = serie.length - 1;
+    const segColors = segData.map((_, i) =>
+      i === lastIdx ? '#C1272D' : 'rgba(193,39,45,0.55)');
+    const movColors = movData.map((_, i) =>
+      i === lastIdx ? '#00796B' : 'rgba(0,121,107,0.55)');
+
+    registerChart('chartSegMovComp', new Chart(document.getElementById('chartSegMovComp'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Seguridad',
+            data: segData,
+            backgroundColor: segColors,
+            borderRadius: 4,
+            borderSkipped: false
+          },
+          {
+            label: 'Movilidad',
+            data: movData,
+            backgroundColor: movColors,
+            borderRadius: 4,
+            borderSkipped: false
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+          y: {
+            min: 0, max: 100,
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            ticks: { stepSize: 20 },
+            title: { display: true, text: 'Score (0–100)', font: { size: 10 }, color: '#78909C' }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            labels: { font: { size: 11 }, boxWidth: 12, padding: 16 }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)}/100`,
+              afterBody: (items) => {
+                const idx = items[0]?.dataIndex;
+                if (idx == null) return '';
+                const gap = Math.abs(segData[idx] - movData[idx]).toFixed(1);
+                const mayor = segData[idx] >= movData[idx] ? 'Seguridad' : 'Movilidad';
+                return `Brecha: ${gap} pts (${mayor} mayor)`;
+              }
+            }
+          }
+        }
+      }
+    }));
+
+    // ── Insight ejecutivo automático
+    const segActual  = segData[lastIdx];
+    const movActual  = movData[lastIdx];
+    const segAnterior = segData[lastIdx - 1] ?? segActual;
+    const movAnterior = movData[lastIdx - 1] ?? movActual;
+    const brecha     = (segActual - movActual).toFixed(1);
+    const segTend    = (segActual - segAnterior).toFixed(1);
+    const movTend    = (movActual - movAnterior).toFixed(1);
+    const periodoActual = labels[lastIdx];
+    const segMax     = Math.max(...segData);
+    const movMin     = Math.min(...movData);
+    const periodoSegMax = labels[segData.indexOf(segMax)];
+
+    const insightEl = document.getElementById('seg-mov-insight');
+    if (insightEl) {
+      insightEl.innerHTML = `
+        <strong style="color:#003087">📊 Lectura ejecutiva · ${periodoActual}:</strong>
+        Seguridad cerró en <strong style="color:#C1272D">${segActual.toFixed(1)}/100</strong>
+        (${segTend >= 0 ? '+' : ''}${segTend} vs período anterior) y Movilidad en
+        <strong style="color:#00796B">${movActual.toFixed(1)}/100</strong>
+        (${movTend >= 0 ? '+' : ''}${movTend} vs período anterior).
+        La brecha entre dimensiones es de <strong>${Math.abs(brecha)} pts</strong>
+        ${parseFloat(brecha) > 0 ? '— Seguridad supera a Movilidad' : '— Movilidad supera a Seguridad'}.
+        El mejor momento de Seguridad fue <strong>${periodoSegMax}</strong> con ${segMax.toFixed(1)}/100.
+        Movilidad tocó su piso histórico en <strong>${labels[movData.indexOf(movMin)]}</strong> con ${movMin.toFixed(1)}/100.`;
+    }
+  })();
 
   /* ── CALIDAD ─────────────────────────────────────────────────────────── */
   const calidadGrid = document.getElementById('calidad-grid');

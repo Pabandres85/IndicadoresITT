@@ -134,7 +134,8 @@
           "unidad": "índice",
           "tendencia": "estable",
           "fuente": "Copernicus / Sentinel-2 · TIF procesado",
-          "oficial": true
+          "oficial": true,
+          "nota_real": "Calculado sobre el polígono completo del Pulmón de Oriente. Limitación documentada v7: el polígono incluye zonas de alta densidad constructiva con cobertura vegetal estructuralmente baja. En v8 se recalculará sobre el sub-polígono ambiental (Charco Azul + El Pondaje)."
         },
         {
           "nombre": "Área verde neta",
@@ -142,7 +143,8 @@
           "unidad": "m²",
           "tendencia": "estable",
           "fuente": "Copernicus / Sentinel-2 · NDVI ≥ 0.20",
-          "oficial": true
+          "oficial": true,
+          "nota_real": "Derivado del mismo TIF que el NDVI (píxeles con NDVI ≥ 0.20). Limitación documentada v7: medido sobre el polígono completo; en v8 se recalculará sobre el sub-polígono ambiental (Charco Azul + El Pondaje)."
         },
         {
           "nombre": "Déficit habitacional cualitativo",
@@ -246,7 +248,17 @@
           "fuente": "Secretaría de Bienestar Social / Caracterización Sub PyE 2025 · C13-C14",
           "oficial": true
         }
-      ]
+      ],
+      "vif_series": {
+        "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
+        "unidad": "casos anuales",
+        "nota": "Totales anuales VIF. Área del Pulmón de Oriente.",
+        "serie": [
+          { "anio": "2023", "n": 457 },
+          { "anio": "2024", "n": 483 },
+          { "anio": "2025", "n": 562 }
+        ]
+      }
     }
   ],
   "serie_temporal": [
