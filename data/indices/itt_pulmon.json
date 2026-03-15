@@ -4,20 +4,20 @@
     "version": "preliminar",
     "periodo": "2025-T4",
     "lapso": "trimestral",
-    "fecha_calculo": "2026-03-14",
+    "fecha_calculo": "2026-03-15",
     "cobertura_datos": 100,
     "fuentes_activas": 17,
     "fuentes_total": 17,
     "nota": "ITT preliminar. Fuentes GIS verificadas: 16 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 72.5,
-    "score_anterior": 66.1,
-    "variacion": 6.4,
-    "clasificacion": "Nivel 3 · Avance",
+    "score": 52.7,
+    "score_anterior": 59.8,
+    "variacion": -7.1,
+    "clasificacion": "Nivel 2 · Consolidación",
     "rango": [
-      60,
-      80
+      40,
+      60
     ],
     "periodo_comparacion": "2025-T3"
   },
@@ -27,9 +27,9 @@
       "nombre": "Seguridad",
       "icono": "shield",
       "peso": 0.3,
-      "score": 72.8,
-      "score_anterior": 79.6,
-      "variacion": -6.8,
+      "score": 53.6,
+      "score_anterior": 77.6,
+      "variacion": -24.0,
       "color": "#C1272D",
       "calidad_dato": "oficial",
       "cobertura": 100,
@@ -114,9 +114,9 @@
       "nombre": "Movilidad",
       "icono": "route",
       "peso": 0.25,
-      "score": 81.2,
-      "score_anterior": 55.7,
-      "variacion": 25.5,
+      "score": 44.8,
+      "score_anterior": 56.1,
+      "variacion": -11.3,
       "color": "#00796B",
       "calidad_dato": "oficial",
       "cobertura": 100,
@@ -125,7 +125,7 @@
           "nombre": "Siniestralidad vial (accidentes)",
           "valor": 63,
           "unidad": "eventos",
-          "tendencia": "baja",
+          "tendencia": "alza",
           "fuente": "Secretaría de Movilidad · verificado GIS",
           "oficial": true
         },
@@ -133,7 +133,7 @@
           "nombre": "Accidentes con lesionados",
           "valor": 53,
           "unidad": "eventos",
-          "tendencia": "baja",
+          "tendencia": "estable",
           "fuente": "Secretaría de Movilidad · verificado GIS",
           "oficial": true
         },
@@ -141,7 +141,7 @@
           "nombre": "Muertes en vía",
           "valor": 6,
           "unidad": "casos",
-          "tendencia": "baja",
+          "tendencia": "alza",
           "fuente": "Secretaría de Movilidad · verificado GIS",
           "oficial": true
         },
@@ -149,7 +149,7 @@
           "nombre": "Velocidad promedio del corredor",
           "valor": 26.8,
           "unidad": "km/h",
-          "tendencia": "alza",
+          "tendencia": "estable",
           "fuente": "Secretaría de Movilidad / Waze for Cities 2025",
           "oficial": true
         }
@@ -160,8 +160,8 @@
       "nombre": "Entorno Urbano",
       "icono": "city",
       "peso": 0.2,
-      "score": 70.0,
-      "score_anterior": 70.0,
+      "score": 52.7,
+      "score_anterior": 52.7,
       "variacion": 0.0,
       "color": "#1565C0",
       "calidad_dato": "oficial",
@@ -253,9 +253,9 @@
       "nombre": "Cohesión Social",
       "icono": "people",
       "peso": 0.12,
-      "score": 70.0,
-      "score_anterior": 52.7,
-      "variacion": 17.3,
+      "score": 57.6,
+      "score_anterior": 33.6,
+      "variacion": 24.0,
       "color": "#8E24AA",
       "calidad_dato": "oficial",
       "cobertura": 100,
@@ -273,7 +273,7 @@
           "nombre": "Riñas / conflictividad (trimestral)",
           "valor": 127,
           "unidad": "casos",
-          "tendencia": "alza",
+          "tendencia": "baja",
           "fuente": "Observatorio de Seguridad y Justicia / Comparendos",
           "oficial": true
         },
@@ -281,7 +281,7 @@
           "nombre": "Concentración de vulnerabilidad activa",
           "valor": 54.1,
           "unidad": "personas por 1.000 hab",
-          "tendencia": "baja",
+          "tendencia": "estable",
           "fuente": "Secretaría de Bienestar Social / Caracterización Sub PyE 2025 · C13-C14",
           "oficial": true
         }
@@ -291,21 +291,21 @@
   "serie_temporal": [
     {
       "periodo": "2025-T3",
-      "itt": 66.1,
-      "seguridad": 79.6,
-      "movilidad": 55.7,
-      "entorno_urbano": 70.0,
+      "itt": 59.8,
+      "seguridad": 77.6,
+      "movilidad": 56.1,
+      "entorno_urbano": 52.7,
       "educacion_desarrollo": 61.0,
-      "cohesion_social": 52.7
+      "cohesion_social": 33.6
     },
     {
       "periodo": "2025-T4",
-      "itt": 72.5,
-      "seguridad": 72.8,
-      "movilidad": 81.2,
-      "entorno_urbano": 70.0,
+      "itt": 52.7,
+      "seguridad": 53.6,
+      "movilidad": 44.8,
+      "entorno_urbano": 52.7,
       "educacion_desarrollo": 61.0,
-      "cohesion_social": 70.0
+      "cohesion_social": 57.6
     }
   ],
   "barrios": [

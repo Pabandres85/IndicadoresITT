@@ -82,13 +82,13 @@
     },
     {
       "periodo": "2025-S1",
-      "itt_score": 60.7,
+      "itt_score": 58.2,
       "dimensiones_scores": {
-        "seguridad": 74.2,
-        "movilidad": 55.7,
-        "entorno_urbano": 43.6,
+        "seguridad": 64.1,
+        "movilidad": 55.4,
+        "entorno_urbano": 52.7,
         "educacion_desarrollo": 61.0,
-        "cohesion_social": 65.8
+        "cohesion_social": 55.7
       },
       "valores_crudos": {
         "seguridad": {
@@ -96,15 +96,15 @@
           "hurtos": 592
         },
         "movilidad": {
-          "siniestralidad_vial": 118,
-          "accidentes_lesionados": 83,
-          "muertes_via": 11,
-          "velocidad_corredor": 18.5
+          "siniestralidad_vial": 110,
+          "accidentes_lesionados": 92,
+          "muertes_via": 10,
+          "velocidad_corredor": 26.8
         },
         "entorno_urbano": {
-          "ndvi_cobertura_vegetal": 0.38,
-          "area_verde_neta": 148000,
-          "deficit_habitacional_cualitativo": 29.0
+          "ndvi_cobertura_vegetal": 0.1999,
+          "area_verde_neta": 1699769,
+          "deficit_habitacional_cualitativo": 0.0
         },
         "educacion_desarrollo": {
           "matricula_escolar": 50336,
@@ -115,20 +115,20 @@
         },
         "cohesion_social": {
           "vif": 268,
-          "rinas_conflictividad": 74,
-          "concentracion_vulnerabilidad_activa": 78.0
+          "rinas_conflictividad": 212,
+          "concentracion_vulnerabilidad_activa": 54.1
         }
       }
     },
     {
       "periodo": "2025",
-      "itt_score": 72.1,
+      "itt_score": 57.2,
       "dimensiones_scores": {
-        "seguridad": 75.2,
-        "movilidad": 83.4,
-        "entorno_urbano": 70.0,
+        "seguridad": 64.8,
+        "movilidad": 52.9,
+        "entorno_urbano": 52.7,
         "educacion_desarrollo": 61.0,
-        "cohesion_social": 56.5
+        "cohesion_social": 50.7
       },
       "valores_crudos": {
         "seguridad": {
@@ -156,19 +156,19 @@
         "cohesion_social": {
           "vif": 562,
           "rinas_conflictividad": 483,
-          "concentracion_vulnerabilidad_activa": 78.0
+          "concentracion_vulnerabilidad_activa": 54.1
         }
       }
     },
     {
       "periodo": "2025-T3",
-      "itt_score": 66.1,
+      "itt_score": 59.8,
       "dimensiones_scores": {
-        "seguridad": 79.6,
-        "movilidad": 55.7,
-        "entorno_urbano": 70.0,
+        "seguridad": 77.6,
+        "movilidad": 56.1,
+        "entorno_urbano": 52.7,
         "educacion_desarrollo": 61.0,
-        "cohesion_social": 52.7
+        "cohesion_social": 33.6
       },
       "valores_crudos": {
         "seguridad": {
@@ -176,10 +176,10 @@
           "hurtos": 290
         },
         "movilidad": {
-          "siniestralidad_vial": 118,
-          "accidentes_lesionados": 83,
-          "muertes_via": 11,
-          "velocidad_corredor": 18.5
+          "siniestralidad_vial": 57,
+          "accidentes_lesionados": 53,
+          "muertes_via": 3,
+          "velocidad_corredor": 26.8
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -195,20 +195,20 @@
         },
         "cohesion_social": {
           "vif": 189,
-          "rinas_conflictividad": 74,
-          "concentracion_vulnerabilidad_activa": 78.0
+          "rinas_conflictividad": 144,
+          "concentracion_vulnerabilidad_activa": 54.1
         }
       }
     },
     {
       "periodo": "2025-S2",
-      "itt_score": 71.8,
+      "itt_score": 56.2,
       "dimensiones_scores": {
-        "seguridad": 76.2,
-        "movilidad": 82.9,
-        "entorno_urbano": 70.0,
+        "seguridad": 65.6,
+        "movilidad": 50.4,
+        "entorno_urbano": 52.7,
         "educacion_desarrollo": 61.0,
-        "cohesion_social": 52.5
+        "cohesion_social": 45.6
       },
       "valores_crudos": {
         "seguridad": {
@@ -236,19 +236,19 @@
         "cohesion_social": {
           "vif": 294,
           "rinas_conflictividad": 271,
-          "concentracion_vulnerabilidad_activa": 78.0
+          "concentracion_vulnerabilidad_activa": 54.1
         }
       }
     },
     {
       "periodo": "2025-T4",
-      "itt_score": 72.5,
+      "itt_score": 52.7,
       "dimensiones_scores": {
-        "seguridad": 72.8,
-        "movilidad": 81.2,
-        "entorno_urbano": 70.0,
+        "seguridad": 53.6,
+        "movilidad": 44.8,
+        "entorno_urbano": 52.7,
         "educacion_desarrollo": 61.0,
-        "cohesion_social": 70.0
+        "cohesion_social": 57.6
       },
       "valores_crudos": {
         "seguridad": {

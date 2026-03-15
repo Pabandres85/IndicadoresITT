@@ -60,7 +60,7 @@ DIMENSIONES = {
                 "nombre": "Homicidios en polígono (trimestral)",
                 "unidad": "casos",
                 "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
-                "ref_min": 8, "ref_max": 130,
+                "ref_min": 5, "ref_max": 50,   # anclado a serie real C13-C14: min=9 max=38 (2023-2025)
                 "gis_dir": "seguridad/homicidios", "gis_tipo": "conteo_periodo",
                 "gis_campo_fecha": "FECHA_HECH",
             },
@@ -69,7 +69,7 @@ DIMENSIONES = {
                 "nombre": "Hurtos en polígono (trimestral)",
                 "unidad": "casos",
                 "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
-                "ref_min": 150, "ref_max": 500,
+                "ref_min": 200, "ref_max": 450,  # anclado a serie real C13-C14: min=259 max=434 (2023-2025)
                 "gis_dir": "seguridad/hurtos", "gis_tipo": "conteo_periodo",
                 "gis_campo_fecha": "FECHA_HECH",
             },
@@ -86,7 +86,7 @@ DIMENSIONES = {
                 "nombre": "Siniestralidad vial (accidentes)",
                 "unidad": "eventos",
                 "fuente": "Secretaría de Movilidad · verificado GIS",
-                "ref_min": 30, "ref_max": 260,
+                "ref_min": 30, "ref_max": 80,   # anclado a serie real C13-C14: min=47 max=68 (2023-2025)
                 "gis_dir": "movilidad", "gis_tipo": "conteo_periodo",
                 "gis_patron": "SINIESTROS", "gis_campo_fecha": "Fecha",
             },
@@ -95,7 +95,7 @@ DIMENSIONES = {
                 "nombre": "Accidentes con lesionados",
                 "unidad": "eventos",
                 "fuente": "Secretaría de Movilidad · verificado GIS",
-                "ref_min": 20, "ref_max": 180,
+                "ref_min": 20, "ref_max": 65,   # anclado a serie real C13-C14: min=42 max=56 (2023-2025)
                 "gis_dir": "movilidad", "gis_tipo": "conteo_periodo",
                 "gis_patron": "SINIESTROS", "gis_campo_fecha": "Fecha",
                 "gis_filtro": {"Tipo_Confi": "Lesiones"},
@@ -105,7 +105,7 @@ DIMENSIONES = {
                 "nombre": "Muertes en vía",
                 "unidad": "casos",
                 "fuente": "Secretaría de Movilidad · verificado GIS",
-                "ref_min": 2, "ref_max": 30,
+                "ref_min": 1, "ref_max": 10,    # anclado a serie real C13-C14: min=2 max=6 (2023-2025)
                 "gis_dir": "movilidad", "gis_tipo": "conteo_periodo",
                 "gis_patron": "SINIESTROS", "gis_campo_fecha": "Fecha",
                 "gis_filtro": {"Tipo_Confi": "Mortal"},
@@ -137,7 +137,7 @@ DIMENSIONES = {
                 "nombre": "Área verde neta",
                 "unidad": "m²",
                 "fuente": "Copernicus / Sentinel-2 · NDVI ≥ 0.20",
-                "ref_min": 50000, "ref_max": 300000,
+                "ref_min": 500000, "ref_max": 3000000,  # ref_max = 25% del poligono (12km2); anterior 300k era irreal
             },
             {
                 "id": "deficit_habitacional_cualitativo", "oficial": True, "inverso": True,
@@ -208,7 +208,7 @@ DIMENSIONES = {
                 "nombre": "Violencia intrafamiliar (VIF) trimestral",
                 "unidad": "casos",
                 "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
-                "ref_min": 80, "ref_max": 220,
+                "ref_min": 60, "ref_max": 200,  # anclado a serie real C13-C14: min=88 max=189 (2023-2025)
                 "gis_dir": "seguridad/violencia", "gis_tipo": "conteo_periodo",
                 "gis_campo_fecha": "FECHA_HECH",
                 "gis_patron": "VIOLENCIA_INTRAFAMILIAR",
@@ -218,7 +218,7 @@ DIMENSIONES = {
                 "nombre": "Riñas / conflictividad (trimestral)",
                 "unidad": "casos",
                 "fuente": "Observatorio de Seguridad y Justicia / Comparendos",
-                "ref_min": 20, "ref_max": 220,
+                "ref_min": 20, "ref_max": 160,  # anclado a serie real C13-C14: min=38 max=144 (2023-2025)
                 "gis_dir": "seguridad/comparendos", "gis_tipo": "conteo_periodo",
                 "gis_campo_fecha": "fecha_hech",
                 "gis_filtro": {"agrupado": "RIÑAS"},
@@ -1403,12 +1403,12 @@ def calcular_itt(periodo_str, version="preliminar"):
         for d in DIMENSIONES:
             row[d] = p.get("dimensiones_scores", {}).get(d, 0)
         serie_temp.append(row)
-    # Agregar período actual si no está
-    if not any(r["periodo"] == periodo_str for r in serie_temp):
-        row_actual = {"periodo": periodo_str, "itt": itt_global}
-        for d_out in resultado_dims:
-            row_actual[d_out["id"]] = d_out["score"]
-        serie_temp.append(row_actual)
+    # Agregar/reemplazar período actual (siempre usa el valor recién calculado)
+    serie_temp = [r for r in serie_temp if r["periodo"] != periodo_str]
+    row_actual = {"periodo": periodo_str, "itt": itt_global}
+    for d_out in resultado_dims:
+        row_actual[d_out["id"]] = d_out["score"]
+    serie_temp.append(row_actual)
     serie_temp.sort(key=lambda r: _periodo_sort_key(r.get("periodo", "")))
 
     # Barrios desde manuales

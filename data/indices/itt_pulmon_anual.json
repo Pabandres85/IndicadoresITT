@@ -4,20 +4,20 @@
     "version": "preliminar",
     "periodo": "2025",
     "lapso": "anual",
-    "fecha_calculo": "2026-03-14",
+    "fecha_calculo": "2026-03-15",
     "cobertura_datos": 100,
     "fuentes_activas": 17,
     "fuentes_total": 17,
-    "nota": "ITT preliminar. Fuentes GIS verificadas: 15 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
+    "nota": "ITT preliminar. Fuentes GIS verificadas: 16 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 72.1,
+    "score": 57.2,
     "score_anterior": 58.4,
-    "variacion": 13.7,
-    "clasificacion": "Nivel 3 · Avance",
+    "variacion": -1.2,
+    "clasificacion": "Nivel 2 · Consolidación",
     "rango": [
-      60,
-      80
+      40,
+      60
     ],
     "periodo_comparacion": "2024"
   },
@@ -27,9 +27,9 @@
       "nombre": "Seguridad",
       "icono": "shield",
       "peso": 0.3,
-      "score": 75.2,
+      "score": 64.8,
       "score_anterior": 65.9,
-      "variacion": 9.3,
+      "variacion": -1.1,
       "color": "#C1272D",
       "calidad_dato": "oficial",
       "cobertura": 100,
@@ -114,9 +114,9 @@
       "nombre": "Movilidad",
       "icono": "route",
       "peso": 0.25,
-      "score": 83.4,
+      "score": 52.9,
       "score_anterior": 55.7,
-      "variacion": 27.7,
+      "variacion": -2.8,
       "color": "#00796B",
       "calidad_dato": "oficial",
       "cobertura": 100,
@@ -160,9 +160,9 @@
       "nombre": "Entorno Urbano",
       "icono": "city",
       "peso": 0.2,
-      "score": 70.0,
+      "score": 52.7,
       "score_anterior": 43.6,
-      "variacion": 26.4,
+      "variacion": 9.1,
       "color": "#1565C0",
       "calidad_dato": "oficial",
       "cobertura": 100,
@@ -253,11 +253,11 @@
       "nombre": "Cohesión Social",
       "icono": "people",
       "peso": 0.12,
-      "score": 56.5,
+      "score": 50.7,
       "score_anterior": 69.0,
-      "variacion": -12.5,
+      "variacion": -18.3,
       "color": "#8E24AA",
-      "calidad_dato": "preliminar",
+      "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
@@ -279,11 +279,11 @@
         },
         {
           "nombre": "Concentración de vulnerabilidad activa",
-          "valor": 78.0,
+          "valor": 54.1,
           "unidad": "personas por 1.000 hab",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Bienestar Social",
-          "oficial": false
+          "tendencia": "baja",
+          "fuente": "Secretaría de Bienestar Social / Caracterización Sub PyE 2025 · C13-C14",
+          "oficial": true
         }
       ]
     }
@@ -309,12 +309,12 @@
     },
     {
       "periodo": "2025",
-      "itt": 70.5,
-      "seguridad": 75.2,
-      "movilidad": 73.1,
-      "entorno_urbano": 70.0,
+      "itt": 57.2,
+      "seguridad": 64.8,
+      "movilidad": 52.9,
+      "entorno_urbano": 52.7,
       "educacion_desarrollo": 61.0,
-      "cohesion_social": 64.3
+      "cohesion_social": 50.7
     }
   ],
   "barrios": [

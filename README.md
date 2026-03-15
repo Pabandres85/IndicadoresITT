@@ -104,10 +104,10 @@ Los indicadores de conteo por período escalan `ref_min` y `ref_max` proporciona
 
 | Rango | Nivel |
 |---|---|
-| 0 – 40 | Nivel 1 · Crítico |
-| 40 – 60 | Nivel 2 · En desarrollo |
+| 0 – 40 | Nivel 1 · Emergencia |
+| 40 – 60 | Nivel 2 · Consolidación |
 | 60 – 80 | Nivel 3 · Avance |
-| 80 – 100 | Nivel 4 · Consolidado |
+| 80 – 100 | Nivel 4 · Transformación |
 
 ---
 
