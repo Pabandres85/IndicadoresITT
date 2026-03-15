@@ -647,10 +647,16 @@
   });
 
   const p0 = D.serie_temporal[0], pN = D.serie_temporal[D.serie_temporal.length-1];
+  const ittDelta = pN.itt - p0.itt;
+  const topDimVar  = D.dimensiones.reduce((a,b) => b.variacion > a.variacion ? b : a);
+  const lowDimScr  = D.dimensiones.reduce((a,b) => b.score < a.score ? b : a);
+  const ittVerb    = ittDelta >= 0 ? 'avanzó' : 'retrocedió';
+  const ittSign    = ittDelta >= 0 ? '+' : '';
+  const varSign    = topDimVar.variacion >= 0 ? '+' : '';
   document.getElementById('insight-evolucion').innerHTML =
-    `<span class="ci-label">Tendencia:</span> El ITT global avanzó <strong>+${(pN.itt-p0.itt).toFixed(1)} pts</strong> desde ${p0.periodo} hasta ${pN.periodo}.
-     Dimensión de mayor crecimiento: <strong style="color:${D.dimensiones.find(d=>d.id==='entorno_urbano')?.color}">Entorno Urbano (+${D.dimensiones.find(d=>d.id==='entorno_urbano').variacion.toFixed(1)} pts)</strong>.
-     Dimensión con mayor brecha por cerrar: <strong style="color:${D.dimensiones.reduce((a,b)=>a.score<b.score?a:b).color}">${D.dimensiones.reduce((a,b)=>a.score<b.score?a:b).nombre} (${D.dimensiones.reduce((a,b)=>a.score<b.score?a:b).score.toFixed(1)}/100)</strong>.`;
+    `<span class="ci-label">Tendencia:</span> El ITT global ${ittVerb} <strong>${ittSign}${ittDelta.toFixed(1)} pts</strong> desde ${p0.periodo} hasta ${pN.periodo}.
+     Dimensión de mayor variación: <strong style="color:${topDimVar.color}">${topDimVar.nombre} (${varSign}${topDimVar.variacion.toFixed(1)} pts)</strong>.
+     Dimensión con mayor brecha por cerrar: <strong style="color:${lowDimScr.color}">${lowDimScr.nombre} (${lowDimScr.score.toFixed(1)}/100)</strong>.`;
 
   /* ── TABS INDICADORES ────────────────────────────────────────────────── */
   const tabsEl = document.getElementById('dim-tabs');

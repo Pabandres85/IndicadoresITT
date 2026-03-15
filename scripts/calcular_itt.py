@@ -1285,8 +1285,8 @@ def calcular_itt(periodo_str, version="preliminar"):
         eu["deficit_habitacional_cualitativo"] = deficit_restante
         nota_deficit = (
             f"Corte {periodo_str}: {deficit_restante}% pendiente "
-            f"(avance {avance}% = {deficit_ahdi['activo_ha']:.2f} ha activas / "
-            f"{deficit_ahdi['total_ha']:.2f} ha; {deficit_ahdi['corte']})."
+            f"(avance ponderado {avance}% = {deficit_ahdi['activo_ha']:.2f} ha-equiv / "
+            f"{deficit_ahdi['total_ha']:.2f} ha totales; {deficit_ahdi['corte']})."
         )
     else:
         print("  [AHDI] Usando déficit manual de indicadores_manuales.json")
