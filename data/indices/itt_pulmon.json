@@ -2,7 +2,7 @@
   "meta": {
     "territorio": "Pulmón de Oriente",
     "version": "preliminar",
-    "periodo": "2025-T4",
+    "periodo": "2024-T4",
     "lapso": "trimestral",
     "fecha_calculo": "2026-03-15",
     "cobertura_datos": 100,
@@ -11,15 +11,15 @@
     "nota": "ITT preliminar. Fuentes GIS verificadas: 16 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 49.3,
-    "score_anterior": 56.5,
-    "variacion": -7.2,
+    "score": 55.5,
+    "score_anterior": 49.3,
+    "variacion": 6.2,
     "clasificacion": "Nivel 2 · Consolidación",
     "rango": [
       40,
       60
     ],
-    "periodo_comparacion": "2025-T3"
+    "periodo_comparacion": "2025-T4"
   },
   "dimensiones": [
     {
@@ -27,30 +27,30 @@
       "nombre": "Seguridad",
       "icono": "shield",
       "peso": 0.3,
-      "score": 53.6,
-      "score_anterior": 77.6,
-      "variacion": -24.0,
+      "score": 58.1,
+      "score_anterior": 53.6,
+      "variacion": 4.5,
       "color": "#C1272D",
       "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
           "nombre": "Homicidios en polígono (trimestral)",
-          "valor": 36,
+          "valor": 20,
           "unidad": "casos",
-          "tendencia": "alza",
+          "tendencia": "baja",
           "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
           "oficial": true,
           "nota_real": "2023=117 · 2024=85 · 2025=85"
         },
         {
           "nombre": "Hurtos en polígono (trimestral)",
-          "valor": 260,
+          "valor": 326,
           "unidad": "casos",
-          "tendencia": "baja",
+          "tendencia": "alza",
           "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
           "oficial": true,
-          "nota_real": "Pico 434 (2023-T1) → 260 (2025-T4) — reducción 40%"
+          "nota_real": "Pico 434 (2023-T1) → 326 (2024-T4) — reducción 25%"
         }
       ],
       "hurtos_series": {
@@ -114,16 +114,16 @@
       "nombre": "Movilidad",
       "icono": "route",
       "peso": 0.25,
-      "score": 44.8,
-      "score_anterior": 56.1,
-      "variacion": -11.3,
+      "score": 52.7,
+      "score_anterior": 44.8,
+      "variacion": 7.9,
       "color": "#00796B",
       "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
           "nombre": "Siniestralidad vial (accidentes)",
-          "valor": 63,
+          "valor": 66,
           "unidad": "eventos",
           "tendencia": "alza",
           "fuente": "Secretaría de Movilidad · verificado GIS",
@@ -131,17 +131,17 @@
         },
         {
           "nombre": "Accidentes con lesionados",
-          "valor": 53,
+          "valor": 56,
           "unidad": "eventos",
-          "tendencia": "estable",
+          "tendencia": "alza",
           "fuente": "Secretaría de Movilidad · verificado GIS",
           "oficial": true
         },
         {
           "nombre": "Muertes en vía",
-          "valor": 6,
+          "valor": 2,
           "unidad": "casos",
-          "tendencia": "alza",
+          "tendencia": "baja",
           "fuente": "Secretaría de Movilidad · verificado GIS",
           "oficial": true
         },
@@ -160,9 +160,9 @@
       "nombre": "Entorno Urbano",
       "icono": "city",
       "peso": 0.2,
-      "score": 39.2,
+      "score": 47.1,
       "score_anterior": 39.2,
-      "variacion": 0.0,
+      "variacion": 7.9,
       "color": "#1565C0",
       "calidad_dato": "oficial",
       "cobertura": 100,
@@ -185,12 +185,12 @@
         },
         {
           "nombre": "Déficit habitacional cualitativo",
-          "valor": 46.4,
+          "valor": 25.0,
           "unidad": "% pendiente",
-          "tendencia": "estable",
+          "tendencia": "baja",
           "fuente": "Secretaría de Vivienda / AHDI 2024-2026",
           "oficial": true,
-          "nota_real": "Corte 2025-T4: 46.4% pendiente (avance ponderado 53.6% = 8.48 ha-equiv / 15.83 ha totales; AÑO_INTERV <= 2025, ponderado por etapa)."
+          "nota_real": "Corte 2024-T4: 25.0% pendiente (avance ponderado 75.0% = 4.61 ha-equiv / 6.15 ha totales; AÑO_INTERV <= 2024, ponderado por etapa)."
         }
       ]
     },
@@ -199,40 +199,40 @@
       "nombre": "Educación y Desarrollo",
       "icono": "school",
       "peso": 0.13,
-      "score": 56.0,
+      "score": 56.1,
       "score_anterior": 56.0,
-      "variacion": 0.0,
+      "variacion": 0.1,
       "color": "#6A1B9A",
       "calidad_dato": "preliminar",
       "cobertura": 100,
       "indicadores": [
         {
           "nombre": "Matrícula escolar · Territorio Pulmón",
-          "valor": 50336,
+          "valor": 53138,
           "unidad": "estudiantes",
-          "tendencia": "estable",
+          "tendencia": "alza",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
         {
           "nombre": "Deserción escolar · Territorio Pulmón",
-          "valor": 4.3,
+          "valor": 5.3,
           "unidad": "%",
-          "tendencia": "estable",
+          "tendencia": "alza",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
         {
           "nombre": "Repitencia escolar · Territorio Pulmón",
-          "valor": 8.4,
+          "valor": 9.2,
           "unidad": "%",
-          "tendencia": "estable",
+          "tendencia": "alza",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
           "oficial": true
         },
         {
           "nombre": "Estudiantes por docente · Territorio Pulmón",
-          "valor": 27.1,
+          "valor": 26.7,
           "unidad": "ratio",
           "tendencia": "estable",
           "fuente": "Secretaría de Educación / Indicadores Sectoriales",
@@ -253,25 +253,25 @@
       "nombre": "Cohesión Social",
       "icono": "people",
       "peso": 0.12,
-      "score": 57.6,
-      "score_anterior": 33.6,
-      "variacion": 24.0,
+      "score": 68.1,
+      "score_anterior": 57.6,
+      "variacion": 10.5,
       "color": "#8E24AA",
       "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
           "nombre": "Violencia intrafamiliar (VIF) trimestral",
-          "valor": 105,
+          "valor": 126,
           "unidad": "casos",
-          "tendencia": "baja",
+          "tendencia": "alza",
           "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
           "oficial": true,
-          "nota_real": "ALERTA: 2023=457 · 2024=483 · 2025=562 — incremento +23%"
+          "nota_real": "ALERTA: 2023=457 · 2024=483 · 2025=562 — incremento +6%"
         },
         {
           "nombre": "Riñas / conflictividad (trimestral)",
-          "valor": 127,
+          "valor": 62,
           "unidad": "casos",
           "tendencia": "baja",
           "fuente": "Observatorio de Seguridad y Justicia / Comparendos",
@@ -289,6 +289,78 @@
     }
   ],
   "serie_temporal": [
+    {
+      "periodo": "2023-T1",
+      "itt": 50.6,
+      "seguridad": 32.1,
+      "movilidad": 64.2,
+      "entorno_urbano": 45.6,
+      "educacion_desarrollo": 56.4,
+      "cohesion_social": 70.7
+    },
+    {
+      "periodo": "2023-T2",
+      "itt": 50.7,
+      "seguridad": 44.3,
+      "movilidad": 52.9,
+      "entorno_urbano": 45.6,
+      "educacion_desarrollo": 56.4,
+      "cohesion_social": 64.1
+    },
+    {
+      "periodo": "2023-T3",
+      "itt": 44.2,
+      "seguridad": 27.7,
+      "movilidad": 43.4,
+      "entorno_urbano": 45.6,
+      "educacion_desarrollo": 56.4,
+      "cohesion_social": 71.4
+    },
+    {
+      "periodo": "2023-T4",
+      "itt": 56.5,
+      "seguridad": 59.3,
+      "movilidad": 49.1,
+      "entorno_urbano": 45.6,
+      "educacion_desarrollo": 56.4,
+      "cohesion_social": 82.9
+    },
+    {
+      "periodo": "2024-T1",
+      "itt": 57.0,
+      "seguridad": 50.2,
+      "movilidad": 67.8,
+      "entorno_urbano": 47.1,
+      "educacion_desarrollo": 56.1,
+      "cohesion_social": 69.1
+    },
+    {
+      "periodo": "2024-T2",
+      "itt": 57.2,
+      "seguridad": 51.8,
+      "movilidad": 70.0,
+      "entorno_urbano": 47.1,
+      "educacion_desarrollo": 56.1,
+      "cohesion_social": 61.9
+    },
+    {
+      "periodo": "2024-T3",
+      "itt": 51.4,
+      "seguridad": 46.9,
+      "movilidad": 50.2,
+      "entorno_urbano": 47.1,
+      "educacion_desarrollo": 56.1,
+      "cohesion_social": 67.4
+    },
+    {
+      "periodo": "2024-T4",
+      "itt": 55.5,
+      "seguridad": 58.1,
+      "movilidad": 52.7,
+      "entorno_urbano": 47.1,
+      "educacion_desarrollo": 56.1,
+      "cohesion_social": 68.1
+    },
     {
       "periodo": "2025-T1",
       "itt": 54.0,
