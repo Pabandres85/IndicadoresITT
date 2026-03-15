@@ -11,8 +11,8 @@
     "nota": "ITT preliminar. Fuentes GIS verificadas: 16 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 55.6,
-    "score_anterior": 57.6,
+    "score": 52.9,
+    "score_anterior": 54.9,
     "variacion": -2.0,
     "clasificacion": "Nivel 2 · Consolidación",
     "rango": [
@@ -160,8 +160,8 @@
       "nombre": "Entorno Urbano",
       "icono": "city",
       "peso": 0.2,
-      "score": 52.7,
-      "score_anterior": 52.7,
+      "score": 39.2,
+      "score_anterior": 39.2,
       "variacion": 0.0,
       "color": "#1565C0",
       "calidad_dato": "oficial",
@@ -185,12 +185,12 @@
         },
         {
           "nombre": "Déficit habitacional cualitativo",
-          "valor": 0.0,
+          "valor": 46.4,
           "unidad": "% pendiente",
           "tendencia": "estable",
           "fuente": "Secretaría de Vivienda / AHDI 2024-2026",
           "oficial": true,
-          "nota_real": "Corte 2025-S2: 0.0% pendiente (avance 100.0% = 15.83 ha activas / 15.83 ha; AÑO_INTERV <= 2025)."
+          "nota_real": "Corte 2025-S2: 46.4% pendiente (avance 53.6% = 8.48 ha activas / 15.83 ha; AÑO_INTERV <= 2025, ponderado por etapa)."
         }
       ]
     },
@@ -291,19 +291,19 @@
   "serie_temporal": [
     {
       "periodo": "2025-S1",
-      "itt": 57.6,
+      "itt": 54.9,
       "seguridad": 64.1,
       "movilidad": 55.4,
-      "entorno_urbano": 52.7,
+      "entorno_urbano": 39.2,
       "educacion_desarrollo": 56.0,
       "cohesion_social": 55.7
     },
     {
       "periodo": "2025-S2",
-      "itt": 55.6,
+      "itt": 52.9,
       "seguridad": 65.6,
       "movilidad": 50.4,
-      "entorno_urbano": 52.7,
+      "entorno_urbano": 39.2,
       "educacion_desarrollo": 56.0,
       "cohesion_social": 45.6
     }

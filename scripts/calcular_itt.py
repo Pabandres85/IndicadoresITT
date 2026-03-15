@@ -382,16 +382,21 @@ def leer_ndvi_tif():
 def leer_deficit_ahdi_excel(year):
     """
     Lee data/excel/vivienda/INTERVENCION_AHDI_AÑOS_24_25_26.xlsx.
-    Calcula el % de avance en resolución del déficit habitacional cualitativo:
+    Calcula el % de avance ponderado por etapa procesal:
 
-      avance = ha AHDI con proceso activo (Con Radicación + Proceso de Legalización)
-               ──────────────────────────────────────────────────────────────────────
-                          total ha AHDI priorizadas en el año ≤ year
+      avance = Σ(ha × peso_etapa)  /  Σ(ha totales con AÑO_INTERV ≤ year)
+
+    Pesos por etapa (supuesto metodológico explícito v7):
+      Escriturado / Resuelto       → 1.00  (déficit realmente resuelto)
+      Proceso de Legalización      → 0.75  (expediente en etapa final)
+      Con Radicación               → 0.40  (expediente iniciado y radicado)
+      A Intervenir                 → 0.05  (solo planificado, sin trámite)
+      Estado desconocido           → 0.00  (conservador)
 
     Retorna dict con avance y trazabilidad o None si no se puede leer:
       {
-        "avance_pct": float,   # % de avance
-        "activo_ha": float,    # ha en proceso activo
+        "avance_pct": float,   # % de avance ponderado
+        "activo_ha": float,    # ha-equivalente ponderadas
         "total_ha": float,     # ha totales consideradas
         "corte": str           # regla de corte aplicada
       }
@@ -461,12 +466,19 @@ def leer_deficit_ahdi_excel(year):
             print("  [WARN] AHDI Excel: no se encontraron columnas esperadas")
             return None
 
-        # Estados que indican proceso activo (déficit en vías de resolución)
-        ACTIVOS = {"CON RADICACION", "CON RADICACIÓN", "PROCESO DE LEGALIZACION",
-                   "PROCESO DE LEGALIZACIÓN", "LEGALIZ"}
+        # Pesos por etapa de avance procesal (supuesto metodológico explícito v7)
+        PESOS_ETAPA = [
+            ("ESCRITURADO",            1.00),
+            ("RESUELTO",               1.00),
+            ("PROCESO DE LEGALIZ",     0.75),
+            ("LEGALIZ",                0.75),
+            ("CON RADICACI",           0.40),
+            ("CON RADICACION",         0.40),
+            ("A INTERVENIR",           0.05),
+        ]
 
-        total_ha  = 0.0
-        activo_ha = 0.0
+        total_ha = 0.0
+        pond_ha  = 0.0
 
         for fila in rows[1:]:
             def get(i):
@@ -485,20 +497,25 @@ def leer_deficit_ahdi_excel(year):
                 ha = 0.0
 
             estado = get(idx_estado).upper()
+            peso = 0.0
+            for kw, w in PESOS_ETAPA:
+                if kw in estado:
+                    peso = w
+                    break
+
             total_ha += ha
-            if any(kw in estado for kw in ACTIVOS):
-                activo_ha += ha
+            pond_ha  += ha * peso
 
         if total_ha == 0:
             return None
 
-        pct = round(activo_ha / total_ha * 100, 1)
-        print(f"  [AHDI] {year}: {activo_ha:.2f} ha activas / {total_ha:.2f} ha totales -> avance {pct}%")
+        pct = round(pond_ha / total_ha * 100, 1)
+        print(f"  [AHDI] {year}: avance ponderado {pct}% ({pond_ha:.2f} ha-equiv / {total_ha:.2f} ha totales)")
         return {
             "avance_pct": pct,
-            "activo_ha": round(activo_ha, 2),
+            "activo_ha": round(pond_ha, 2),
             "total_ha":  round(total_ha, 2),
-            "corte": f"AÑO_INTERV <= {year}",
+            "corte": f"AÑO_INTERV <= {year}, ponderado por etapa",
         }
 
     except Exception as e:

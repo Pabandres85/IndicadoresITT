@@ -11,8 +11,8 @@
     "nota": "ITT preliminar. Fuentes GIS verificadas: 16 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 52.0,
-    "score_anterior": 59.2,
+    "score": 49.3,
+    "score_anterior": 56.5,
     "variacion": -7.2,
     "clasificacion": "Nivel 2 · Consolidación",
     "rango": [
@@ -160,8 +160,8 @@
       "nombre": "Entorno Urbano",
       "icono": "city",
       "peso": 0.2,
-      "score": 52.7,
-      "score_anterior": 52.7,
+      "score": 39.2,
+      "score_anterior": 39.2,
       "variacion": 0.0,
       "color": "#1565C0",
       "calidad_dato": "oficial",
@@ -185,12 +185,12 @@
         },
         {
           "nombre": "Déficit habitacional cualitativo",
-          "valor": 0.0,
+          "valor": 46.4,
           "unidad": "% pendiente",
           "tendencia": "estable",
           "fuente": "Secretaría de Vivienda / AHDI 2024-2026",
           "oficial": true,
-          "nota_real": "Corte 2025-T4: 0.0% pendiente (avance 100.0% = 15.83 ha activas / 15.83 ha; AÑO_INTERV <= 2025)."
+          "nota_real": "Corte 2025-T4: 46.4% pendiente (avance 53.6% = 8.48 ha activas / 15.83 ha; AÑO_INTERV <= 2025, ponderado por etapa)."
         }
       ]
     },
@@ -291,37 +291,37 @@
   "serie_temporal": [
     {
       "periodo": "2025-T1",
-      "itt": 56.7,
+      "itt": 54.0,
       "seguridad": 60.4,
       "movilidad": 53.8,
-      "entorno_urbano": 52.7,
+      "entorno_urbano": 39.2,
       "educacion_desarrollo": 56.0,
       "cohesion_social": 61.0
     },
     {
       "periodo": "2025-T2",
-      "itt": 58.5,
+      "itt": 55.8,
       "seguridad": 67.9,
       "movilidad": 57.1,
-      "entorno_urbano": 52.7,
+      "entorno_urbano": 39.2,
       "educacion_desarrollo": 56.0,
       "cohesion_social": 50.5
     },
     {
       "periodo": "2025-T3",
-      "itt": 59.2,
+      "itt": 56.5,
       "seguridad": 77.6,
       "movilidad": 56.1,
-      "entorno_urbano": 52.7,
+      "entorno_urbano": 39.2,
       "educacion_desarrollo": 56.0,
       "cohesion_social": 33.6
     },
     {
       "periodo": "2025-T4",
-      "itt": 52.0,
+      "itt": 49.3,
       "seguridad": 53.6,
       "movilidad": 44.8,
-      "entorno_urbano": 52.7,
+      "entorno_urbano": 39.2,
       "educacion_desarrollo": 56.0,
       "cohesion_social": 57.6
     }
