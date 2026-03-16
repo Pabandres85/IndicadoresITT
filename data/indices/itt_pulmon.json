@@ -312,6 +312,19 @@
           { "anio": "2024", "n": 483 },
           { "anio": "2025", "n": 562 }
         ]
+      },
+      "rinas_series": {
+        "fuente": "Observatorio de Seguridad y Justicia / Comparendos SIEDCO",
+        "unidad": "casos por trimestre",
+        "nota": "Datos reales 2023–2025. GeoJSON comparendos Pulmón de Oriente.",
+        "serie": [
+          {"periodo": "2023-T1", "n": 71}, {"periodo": "2023-T2", "n": 67},
+          {"periodo": "2023-T3", "n": 49}, {"periodo": "2023-T4", "n": 38},
+          {"periodo": "2024-T1", "n": 86}, {"periodo": "2024-T2", "n": 91},
+          {"periodo": "2024-T3", "n": 55}, {"periodo": "2024-T4", "n": 62},
+          {"periodo": "2025-T1", "n": 92}, {"periodo": "2025-T2", "n": 120},
+          {"periodo": "2025-T3", "n": 144}, {"periodo": "2025-T4", "n": 127}
+        ]
       }
     }
   ],

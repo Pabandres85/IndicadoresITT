@@ -944,6 +944,60 @@ function buildDimensionIndicatorModule(dimId, idx = 0) {
       { value: `${dim.score.toFixed(1)}/100`, label: 'Score de la dimensión', sub: `${(dim.peso * 100).toFixed(0)}% del ITT`, color: '#003087' }
     ],
     mainChart: (() => {
+      // Cohesión Social: VIF anual y Riñas trimestral
+      if (dim.id === 'cohesion_social') {
+        const nmLow = ind.nombre.toLowerCase();
+        if (nmLow.includes('vif') || nmLow.includes('intrafamiliar')) {
+          const vs = dim.vif_series;
+          if (vs?.serie) {
+            return {
+              title: 'Evolución anual · VIF',
+              type: 'bar',
+              data: {
+                labels: vs.serie.map(s => s.anio),
+                datasets: [{
+                  label: 'Casos VIF',
+                  data: vs.serie.map(s => s.n),
+                  backgroundColor: vs.serie.map((_, i) => i === vs.serie.length - 1 ? '#8E24AA' : colorAlpha('#8E24AA', 0.45)),
+                  borderColor: '#8E24AA',
+                  borderWidth: 1.5,
+                  borderRadius: 8
+                }]
+              },
+              options: {
+                scales: { x: { grid: { display: false } }, y: { beginAtZero: false, grid: { color: 'rgba(0,0,0,0.06)' } } },
+                plugins: { legend: { display: false } }
+              }
+            };
+          }
+        }
+        if (nmLow.includes('riña') || nmLow.includes('rina') || nmLow.includes('conflicti')) {
+          const rs = dim.rinas_series;
+          if (rs?.serie) {
+            return {
+              title: 'Evolución trimestral · Riñas',
+              type: 'line',
+              data: {
+                labels: rs.serie.map(s => s.periodo),
+                datasets: [{
+                  label: 'Riñas',
+                  data: rs.serie.map(s => s.n),
+                  borderColor: '#8E24AA',
+                  backgroundColor: colorAlpha('#8E24AA', 0.12),
+                  borderWidth: 2.5,
+                  fill: true,
+                  tension: 0.3,
+                  pointRadius: 4
+                }]
+              },
+              options: {
+                scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } } },
+                plugins: { legend: { display: false } }
+              }
+            };
+          }
+        }
+      }
       // Educación: mostrar serie anual para matrícula, deserción, repitencia y RAD
       if (dim.id === 'educacion_desarrollo' && dim.educacion_series) {
         const es = dim.educacion_series;
