@@ -205,12 +205,13 @@ DIMENSIONES = {
         "indicadores": [
             {
                 "id": "siniestralidad_vial", "oficial": True, "inverso": True,
-                "nombre": "Siniestralidad vial (accidentes)",
+                "nombre": "Siniestralidad vial (sin fallecidos)",
                 "unidad": "eventos",
                 "fuente": "Secretaría de Movilidad · verificado GIS",
-                "ref_min": 30, "ref_max": 80,   # anclado a serie real C13-C14: min=47 max=68 (2023-2025)
+                "ref_min": 28, "ref_max": 75,   # serie real C13-C14 sin Mortal: aprox min=44 max=65 (2023-2025)
                 "gis_dir": "movilidad", "gis_tipo": "conteo_periodo",
                 "gis_patron": "SINIESTROS", "gis_campo_fecha": "Fecha",
+                "gis_excluir": {"Tipo_Confi": "Mortal"},
             },
             {
                 "id": "accidentes_lesionados", "oficial": True, "inverso": True,
@@ -231,13 +232,6 @@ DIMENSIONES = {
                 "gis_dir": "movilidad", "gis_tipo": "conteo_periodo",
                 "gis_patron": "SINIESTROS", "gis_campo_fecha": "Fecha",
                 "gis_filtro": {"Tipo_Confi": "Mortal"},
-            },
-            {
-                "id": "velocidad_corredor", "oficial": True, "inverso": False,
-                "nombre": "Velocidad promedio del corredor",
-                "unidad": "km/h",
-                "fuente": "Secretaría de Movilidad / Waze for Cities 2025",
-                "ref_min": 12.0, "ref_max": 32.0,
             },
         ],
     },
@@ -803,11 +797,14 @@ def extraer_gis(ind_cfg, year, mes_inicio, mes_fin):
         return None
 
     def _cumple_filtro(props):
-        filtro = ind_cfg.get("gis_filtro")
-        if not filtro:
-            return True
+        filtro   = ind_cfg.get("gis_filtro")
+        excluir  = ind_cfg.get("gis_excluir")
         try:
-            return all(props.get(k) == v for k, v in filtro.items())
+            if filtro and not all(props.get(k) == v for k, v in filtro.items()):
+                return False
+            if excluir and any(props.get(k) == v for k, v in excluir.items()):
+                return False
+            return True
         except Exception:
             return False
 
@@ -1804,8 +1801,44 @@ def main():
         if lapso_det == 'trimestral':
             out_paths.append(OUT)
 
+    # Campos de series que deben preservarse del JSON existente (no los calcula el script)
+    SERIES_KEYS_DIM = {
+        'movilidad':            ['movilidad_series'],
+        'educacion_desarrollo': ['educacion_series'],
+        'seguridad':            ['hurtos_series', 'homicidios_series'],
+        'cohesion_social':      ['vif_series', 'rinas_series'],
+    }
+    # Indicadores cuyo valor se muestra en escala anual (no trimestral) — preservar del JSON
+    INDICADORES_ANUALES = {
+        'cohesion_social': ['intrafamiliar'],   # VIF se muestra como total anual
+    }
+
     for out_path in out_paths:
         out_path.parent.mkdir(parents=True, exist_ok=True)
+        # Preservar series del JSON existente antes de sobreescribir
+        if out_path.exists():
+            try:
+                existing = json.loads(out_path.read_text(encoding='utf-8'))
+                existing_dims = {d['id']: d for d in existing.get('dimensiones', []) if 'id' in d}
+                for dim in resultado.get('dimensiones', []):
+                    dim_id = dim.get('id')
+                    keys_to_keep = SERIES_KEYS_DIM.get(dim_id, [])
+                    for key in keys_to_keep:
+                        if key not in dim and key in existing_dims.get(dim_id, {}):
+                            dim[key] = existing_dims[dim_id][key]
+                    # Preservar valor/nombre/unidad/nota de indicadores anuales
+                    palabras_anuales = INDICADORES_ANUALES.get(dim_id, [])
+                    if palabras_anuales:
+                        ex_inds = {i['nombre']: i for i in existing_dims.get(dim_id, {}).get('indicadores', [])}
+                        for ind in dim.get('indicadores', []):
+                            if any(p in ind['nombre'].lower() for p in palabras_anuales):
+                                match = next((v for k, v in ex_inds.items() if any(p in k.lower() for p in palabras_anuales)), None)
+                                if match:
+                                    for f in ['valor', 'nombre', 'unidad', 'nota_real']:
+                                        if f in match:
+                                            ind[f] = match[f]
+            except Exception:
+                pass
         out_path.write_text(json.dumps(resultado, ensure_ascii=False, indent=2), encoding="utf-8")
 
     g = resultado["itt_global"]

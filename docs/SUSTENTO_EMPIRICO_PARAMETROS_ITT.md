@@ -1,8 +1,8 @@
 # Sustento empírico para parámetros ref_min y ref_max
 ## Consolidado técnico de indicadores y evidencia de soporte para la calibración del ITT
 
-**Última actualización:** 2026-03-15
-**Versión ITT de referencia:** v7 · ITT 2025-T4 = 49.3
+**Última actualización:** 2026-03-16
+**Versión ITT de referencia:** v7 · ITT 2025-T4 = 46.9
 
 ---
 
@@ -65,7 +65,7 @@ Este grupo concentra la evidencia más débil. Los valores de referencia depende
 
 | Indicador | Dim | Valor | ref_min | ref_max | Sustento |
 |---|---|---:|---:|---:|---|
-| Velocidad corredor | Movilidad | 26.8 km/h | 12 | 32 | Un solo corte (2025). Refs son juicio experto sin serie histórica. |
+| ~~Velocidad corredor~~ | ~~Movilidad~~ | ~~26.8 km/h~~ | ~~12~~ | ~~32~~ | **Retirada del modelo v7.** Dato único sin serie histórica generaba score 74/100 inflando Movilidad. Queda como dato de contexto. |
 | NDVI cobertura vegetal | Entorno | 0.20 | 0.15 | 0.65 | Un solo TIF (imagen 2025). ref_max=0.65 es muy aspiracional para zona urbana densa. En v8 se recalculará sobre sub-polígono ambiental. |
 | Área verde neta | Entorno | 1,699,769 m² | 500,000 | 3,000,000 | Un solo TIF. ref_max=3M equivale al ~25% del polígono — supuesto de diseño. Misma limitación v7 que NDVI. |
 | Déficit AHDI | Entorno | 46.4% pend. | 10 | 100 | Escala conceptual 0–100, no anclada a observación histórica del polígono. |
@@ -100,6 +100,6 @@ El ITT es un índice de seguimiento territorial operativo, no un modelo economé
 |---|---|---|
 | NDVI / Área verde | Recalcular sobre sub-polígono ambiental (Charco Azul + El Pondaje) — v8 | Alta |
 | Cobertura deportiva activa | Obtener aforo directo Villa del Lago (Sec. Deportes) | Media |
-| Velocidad corredor | Acumular cortes trimestrales Waze for Cities | Media |
+| Velocidad corredor | Acumular cortes trimestrales Waze for Cities · reintegrar al modelo cuando haya serie | Media |
 | Conc. vulnerabilidad | Acumular cortes anuales de caracterización Sub PyE | Baja |
 | Matrícula / Deserción / Repitencia / Ratio docente | Continuar actualización anual — granularidad apropiada por diseño | Baja |

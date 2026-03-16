@@ -8,7 +8,7 @@ Documento interno para alinear metodologia, codigo y tablero del ITT en Pulmon d
 
 > **METODOLOGIA CONGELADA. Esta es la version oficial de referencia para presentaciones, comites tecnicos y rendicion de cuentas.**
 >
-> - ITT de referencia: **49.3/100** · Nivel 2 · Consolidacion · 2025-T4
+> - ITT de referencia: **46.9/100** · Nivel 2 · Consolidacion · 2025-T4
 > - Los valores anteriores 72.5/71.7/72.1/66.4 corresponden a versiones pre-calibracion con rangos de diseno no anclados a datos historicos reales. **No deben usarse en presentaciones publicas.**
 > - Cambios de `ref_min`/`ref_max` solo por ventana anual o decision de comite tecnico — no en caliente.
 
@@ -17,11 +17,11 @@ Documento interno para alinear metodologia, codigo y tablero del ITT en Pulmon d
 | Dimension | ITT pre-calibracion | ITT v7 calibrado | Diferencia | Principal causa |
 |---|---:|---:|---:|---|
 | Seguridad | 72.8 | 53.6 | -19.2 | ref_max homicidios 130→50; hurtos 500→450 |
-| Movilidad | 81.2 | 44.8 | -36.4 | ref_max siniestralidad 260→80; lesionados 180→65; muertes 30→10 |
+| Movilidad | 81.2 | 35.0 | -46.2 | ref_max siniestralidad 260→80; lesionados 180→65; muertes 30→10; velocidad retirada del modelo |
 | Entorno Urbano | 70.0 | 52.7 | -17.3 | ref_max area verde 300k→3M m² (correccion critica) |
 | Educacion y Desarrollo | 61.0 | 61.0 | 0.0 | Sin cambio (refs normativos validos) |
 | Cohesion Social | 70.0 | 57.6 | -12.4 | ref_max rinas 220→160; VIF ajuste leve |
-| **ITT Global** | **72.5** | **52.7** | **-19.8** | Recalibracion con 12 trimestres de data real |
+| **ITT Global** | **72.5** | **46.9** | **-25.6** | Recalibracion con 12 trimestres de data real + retiro de velocidad corredor |
 
 > El cambio de -19.8 pts NO representa deterioro real del territorio. Representa la correccion de rangos de normalizacion que estaban inflados respecto a la realidad historica del poligono. El territorio sigue igual; la escala de medicion ahora es correcta.
 
@@ -95,7 +95,7 @@ Formula operativa: `ITT = 0.30*I_Seg + 0.25*I_Mov + 0.20*I_Ent + 0.13*I_EyD + 0.
 
 ## 5) Matriz de indicadores por dimension
 
-**Corte 2025-T4 · ITT Global: 49.3 · Nivel 2 · Consolidacion**
+**Corte 2025-T4 · ITT Global: 46.9 · Nivel 2 · Consolidacion**
 *(refs recalibrados con serie historica real 12 trimestres — ver seccion 15.6)*
 
 ### Seguridad (peso 0.30 | score 53.6 | cobertura 100%)
@@ -107,14 +107,15 @@ Formula operativa: `ITT = 0.30*I_Seg + 0.25*I_Mov + 0.20*I_Ent + 0.13*I_EyD + 0.
 
 Serie temporal hurtos: 12 trimestres 2023-T1 a 2025-T4 (campo `hurtos_series` en JSON).
 
-### Movilidad (peso 0.25 | score 44.8 | cobertura 100%)
+### Movilidad (peso 0.25 | score 35.0 | cobertura 100%)
 
 | Indicador | Valor | ref_min | ref_max | Score | Fuente efectiva | Oficial |
 |---|---|---:|---:|---:|---|---|
 | Siniestralidad vial | 63 eventos | 30 | 80 | 34.0 | GeoJSON BD_SINIESTROS | Si |
 | Accidentes con lesionados | 53 eventos | 20 | 65 | 26.7 | GeoJSON BD_SINIESTROS (Lesiones) | Si |
 | Muertes en via | 6 casos | 1 | 10 | 44.4 | GeoJSON BD_SINIESTROS (Mortal) | Si |
-| Velocidad promedio corredor | 26.8 km/h | 12 | 32 | 74.0 | Excel Velocidades Jornadas / fila General | Si |
+
+> **Velocidad promedio del corredor (26.8 km/h)** retirada del modelo v7. Razón: dato único 2025 sin serie histórica — generaba score 74/100 que inflaba la dimensión sin respaldo empírico. Queda como dato de contexto. Se reintegrará cuando se acumulen cortes trimestrales Waze for Cities.
 
 ### Entorno Urbano (peso 0.20 | score 39.2 | cobertura 100%)
 
@@ -160,7 +161,7 @@ Nota indicador deportivo: dato proxy — aforo directo de Villa del Lago no disp
 ### Datos publicados (`data/indices/`)
 
 Tres archivos JSON separados por lapso:
-- `itt_pulmon_trimestral.json` — ultimo: 2025-T4 | ITT **49.3** · Nivel 2 · Consolidacion (-7.2 vs T3)
+- `itt_pulmon_trimestral.json` — ultimo: 2025-T4 | ITT **46.9** · Nivel 2 · Consolidacion (-8.1 vs T3)
 - `itt_pulmon_semestral.json` — ultimo: 2025-S2 | ITT **56.2** · Nivel 2 · Consolidacion
 - `itt_pulmon_anual.json` — ultimo: 2025 | ITT **57.2** · Nivel 2 · Consolidacion
 - `itt_pulmon.json` — copia del ultimo trimestral (compatibilidad hacia atras)

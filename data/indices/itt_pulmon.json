@@ -4,16 +4,16 @@
     "version": "preliminar",
     "periodo": "2025-T4",
     "lapso": "trimestral",
-    "fecha_calculo": "2026-03-15",
+    "fecha_calculo": "2026-03-16",
     "cobertura_datos": 100,
-    "fuentes_activas": 17,
-    "fuentes_total": 17,
-    "nota": "ITT preliminar. Fuentes GIS verificadas: 16 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
+    "fuentes_activas": 16,
+    "fuentes_total": 16,
+    "nota": "ITT preliminar. Fuentes GIS verificadas: 15 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 46.9,
-    "score_anterior": 55.0,
-    "variacion": -8.1,
+    "score": 47.2,
+    "score_anterior": 54.9,
+    "variacion": -7.7,
     "clasificacion": "Nivel 2 · Consolidación",
     "rango": [
       40,
@@ -114,16 +114,16 @@
       "nombre": "Movilidad",
       "icono": "route",
       "peso": 0.25,
-      "score": 35.0,
-      "score_anterior": 50.2,
-      "variacion": -15.2,
+      "score": 36.5,
+      "score_anterior": 49.7,
+      "variacion": -13.2,
       "color": "#00796B",
       "calidad_dato": "oficial",
       "cobertura": 100,
       "indicadores": [
         {
-          "nombre": "Siniestralidad vial (accidentes)",
-          "valor": 63,
+          "nombre": "Siniestralidad vial (sin fallecidos)",
+          "valor": 57,
           "unidad": "eventos",
           "tendencia": "alza",
           "fuente": "Secretaría de Movilidad · verificado GIS",
@@ -147,57 +147,54 @@
         }
       ],
       "movilidad_series": {
-        "fuente": "Secretaría de Movilidad · verificado GIS",
-        "unidad": "eventos por trimestre",
-        "nota": "Datos reales 2023–2025. GeoJSON siniestralidad vial Comunas 13-14.",
         "siniestralidad": [
           {
             "periodo": "2023-T1",
-            "n": 52
+            "n": 49
           },
           {
             "periodo": "2023-T2",
-            "n": 60
+            "n": 55
           },
           {
             "periodo": "2023-T3",
-            "n": 68
+            "n": 63
           },
           {
             "periodo": "2023-T4",
-            "n": 60
+            "n": 55
           },
           {
             "periodo": "2024-T1",
-            "n": 48
+            "n": 46
           },
           {
             "periodo": "2024-T2",
-            "n": 47
+            "n": 45
           },
           {
             "periodo": "2024-T3",
-            "n": 61
-          },
-          {
-            "periodo": "2024-T4",
-            "n": 66
-          },
-          {
-            "periodo": "2025-T1",
-            "n": 55
-          },
-          {
-            "periodo": "2025-T2",
-            "n": 55
-          },
-          {
-            "periodo": "2025-T3",
             "n": 57
           },
           {
+            "periodo": "2024-T4",
+            "n": 64
+          },
+          {
+            "periodo": "2025-T1",
+            "n": 49
+          },
+          {
+            "periodo": "2025-T2",
+            "n": 51
+          },
+          {
+            "periodo": "2025-T3",
+            "n": 54
+          },
+          {
             "periodo": "2025-T4",
-            "n": 63
+            "n": 57
           }
         ],
         "lesionados": [
@@ -320,8 +317,7 @@
           "unidad": "índice",
           "tendencia": "estable",
           "fuente": "Copernicus / Sentinel-2 · TIF procesado",
-          "oficial": true,
-          "nota_real": "Calculado sobre el polígono completo del Pulmón de Oriente. Limitación documentada v7: el polígono incluye zonas de alta densidad constructiva con cobertura vegetal estructuralmente baja. En v8 se recalculará sobre el sub-polígono ambiental (Charco Azul + El Pondaje)."
+          "oficial": true
         },
         {
           "nombre": "Área verde neta",
@@ -329,8 +325,7 @@
           "unidad": "m²",
           "tendencia": "estable",
           "fuente": "Copernicus / Sentinel-2 · NDVI ≥ 0.20",
-          "oficial": true,
-          "nota_real": "Derivado del mismo TIF que el NDVI (píxeles con NDVI ≥ 0.20). Limitación documentada v7: medido sobre el polígono completo; en v8 se recalculará sobre el sub-polígono ambiental (Charco Azul + El Pondaje)."
+          "oficial": true
         },
         {
           "nombre": "Déficit habitacional cualitativo",
@@ -339,7 +334,7 @@
           "tendencia": "estable",
           "fuente": "Secretaría de Vivienda / AHDI 2024-2026",
           "oficial": true,
-          "nota_real": "Corte 2025-T4: 46.4% pendiente (avance ponderado 53.6% sobre total ha AHDI 2024-2026; AÑO_INTERV <= 2025, ponderado por etapa)."
+          "nota_real": "Corte 2025-T4: 46.4% pendiente (avance ponderado 53.6% = 8.48 ha-equiv / 15.83 ha totales; AÑO_INTERV <= 2025, ponderado por etapa)."
         }
       ]
     },
@@ -352,7 +347,7 @@
       "score_anterior": 56.0,
       "variacion": 0.0,
       "color": "#6A1B9A",
-      "calidad_dato": "oficial",
+      "calidad_dato": "preliminar",
       "cobertura": 100,
       "indicadores": [
         {
@@ -388,18 +383,15 @@
           "oficial": true
         },
         {
-          "nombre": "Cobertura deportiva activa · Territorio Pulmón",
-          "valor": 3877,
-          "unidad": "personas registradas",
+          "nombre": "Aforo polideportivo Villa del Lago",
+          "valor": 4200,
+          "unidad": "personas/mes",
           "tendencia": "estable",
-          "fuente": "Secretaría de Deportes · Caracterización de Escenarios 2024",
-          "oficial": true,
-          "nota_real": "Proxy: aforo directo de Villa del Lago no disponible. 3.877 personas activas registradas en 25 escenarios deportivos de la Comuna 14 (formulario oficial Sec. Deportes, marzo 2024). No es conteo directo de asistencia — es lo que cada escenario reportó tener activo en ese momento."
+          "fuente": "Secretaría de Deportes",
+          "oficial": false
         }
       ],
       "educacion_series": {
-        "fuente": "Secretaría de Educación / Indicadores Sectoriales 2023-2025",
-        "nota": "Serie anual por año lectivo. Comunas 13 y 14.",
         "matricula": [
           {
             "anio": "2023",
@@ -407,7 +399,7 @@
           },
           {
             "anio": "2024",
-            "n": 52018
+            "n": 52090
           },
           {
             "anio": "2025",
@@ -417,11 +409,11 @@
         "desercion": [
           {
             "anio": "2023",
-            "n": 5.9
+            "n": 5.3
           },
           {
             "anio": "2024",
-            "n": 5.2
+            "n": 4.7
           },
           {
             "anio": "2025",
@@ -435,7 +427,7 @@
           },
           {
             "anio": "2024",
-            "n": 9.2
+            "n": 8.9
           },
           {
             "anio": "2025",
@@ -471,13 +463,13 @@
       "cobertura": 100,
       "indicadores": [
         {
-          "nombre": "Violencia intrafamiliar (VIF) trimestral",
-          "valor": 105,
-          "unidad": "casos",
+          "nombre": "Violencia intrafamiliar (VIF) anual",
+          "valor": 562,
+          "unidad": "en 2025",
           "tendencia": "baja",
           "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
           "oficial": true,
-          "nota_real": "ALERTA: 2023=457 · 2024=483 · 2025=562 — incremento +6%"
+          "nota_real": "ALERTA: 562 casos en 2025 — máximo del período · tendencia ascendente (+23% vs 2023)"
         },
         {
           "nombre": "Riñas / conflictividad (trimestral)",
@@ -499,7 +491,6 @@
       "vif_series": {
         "fuente": "Observatorio de Seguridad y Justicia / SIEDCO",
         "unidad": "casos anuales",
-        "nota": "Totales anuales VIF. Área del Pulmón de Oriente.",
         "serie": [
           {
             "anio": "2023",
@@ -516,9 +507,8 @@
         ]
       },
       "rinas_series": {
-        "fuente": "Observatorio de Seguridad y Justicia / Comparendos SIEDCO",
+        "fuente": "Observatorio de Seguridad y Justicia / Comparendos",
         "unidad": "casos por trimestre",
-        "nota": "Datos reales 2023–2025. GeoJSON comparendos Pulmón de Oriente.",
         "serie": [
           {
             "periodo": "2023-T1",
@@ -575,108 +565,108 @@
   "serie_temporal": [
     {
       "periodo": "2023-T1",
-      "itt": 49.8,
+      "itt": 49.7,
       "seguridad": 32.1,
-      "movilidad": 60.9,
+      "movilidad": 60.7,
       "entorno_urbano": 45.6,
       "educacion_desarrollo": 56.4,
       "cohesion_social": 70.7
     },
     {
       "periodo": "2023-T2",
-      "itt": 49.0,
+      "itt": 49.1,
       "seguridad": 44.3,
-      "movilidad": 45.9,
+      "movilidad": 46.8,
       "entorno_urbano": 45.6,
       "educacion_desarrollo": 56.4,
       "cohesion_social": 64.1
     },
     {
       "periodo": "2023-T3",
-      "itt": 41.7,
+      "itt": 41.8,
       "seguridad": 27.7,
-      "movilidad": 33.2,
+      "movilidad": 33.7,
       "entorno_urbano": 45.6,
       "educacion_desarrollo": 56.4,
       "cohesion_social": 71.4
     },
     {
       "periodo": "2023-T4",
-      "itt": 54.4,
+      "itt": 54.6,
       "seguridad": 59.3,
-      "movilidad": 40.8,
+      "movilidad": 41.6,
       "entorno_urbano": 45.6,
       "educacion_desarrollo": 56.4,
       "cohesion_social": 82.9
     },
     {
       "periodo": "2024-T1",
-      "itt": 56.5,
+      "itt": 56.3,
       "seguridad": 50.2,
-      "movilidad": 65.8,
+      "movilidad": 65.0,
       "entorno_urbano": 47.1,
       "educacion_desarrollo": 56.1,
       "cohesion_social": 69.1
     },
     {
       "periodo": "2024-T2",
-      "itt": 56.9,
+      "itt": 56.7,
       "seguridad": 51.8,
-      "movilidad": 68.7,
+      "movilidad": 67.9,
       "entorno_urbano": 47.1,
       "educacion_desarrollo": 56.1,
       "cohesion_social": 61.9
     },
     {
       "periodo": "2024-T3",
-      "itt": 49.4,
+      "itt": 49.5,
       "seguridad": 46.9,
-      "movilidad": 42.3,
+      "movilidad": 42.4,
       "entorno_urbano": 47.1,
       "educacion_desarrollo": 56.1,
       "cohesion_social": 67.4
     },
     {
       "periodo": "2024-T4",
-      "itt": 53.7,
+      "itt": 53.3,
       "seguridad": 58.1,
-      "movilidad": 45.6,
+      "movilidad": 44.1,
       "entorno_urbano": 47.1,
       "educacion_desarrollo": 56.1,
       "cohesion_social": 68.1
     },
     {
       "periodo": "2025-T1",
-      "itt": 52.3,
+      "itt": 52.8,
       "seguridad": 60.4,
-      "movilidad": 47.0,
+      "movilidad": 48.8,
       "entorno_urbano": 39.2,
       "educacion_desarrollo": 56.0,
       "cohesion_social": 61.0
     },
     {
       "periodo": "2025-T2",
-      "itt": 54.4,
+      "itt": 54.5,
       "seguridad": 67.9,
-      "movilidad": 51.5,
+      "movilidad": 51.8,
       "entorno_urbano": 39.2,
       "educacion_desarrollo": 56.0,
       "cohesion_social": 50.5
     },
     {
       "periodo": "2025-T3",
-      "itt": 55.0,
+      "itt": 54.9,
       "seguridad": 77.6,
-      "movilidad": 50.2,
+      "movilidad": 49.7,
       "entorno_urbano": 39.2,
       "educacion_desarrollo": 56.0,
       "cohesion_social": 33.6
     },
     {
       "periodo": "2025-T4",
-      "itt": 46.9,
+      "itt": 47.2,
       "seguridad": 53.6,
-      "movilidad": 35.0,
+      "movilidad": 36.5,
       "entorno_urbano": 39.2,
       "educacion_desarrollo": 56.0,
       "cohesion_social": 57.6

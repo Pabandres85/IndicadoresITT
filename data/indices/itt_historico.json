@@ -2,10 +2,10 @@
   "periodos": [
     {
       "periodo": "2023-T1",
-      "itt_score": 50.6,
+      "itt_score": 49.7,
       "dimensiones_scores": {
         "seguridad": 32.1,
-        "movilidad": 64.2,
+        "movilidad": 60.7,
         "entorno_urbano": 45.6,
         "educacion_desarrollo": 56.4,
         "cohesion_social": 70.7
@@ -16,10 +16,9 @@
           "hurtos": 434
         },
         "movilidad": {
-          "siniestralidad_vial": 52,
+          "siniestralidad_vial": 49,
           "accidentes_lesionados": 43,
-          "muertes_via": 3,
-          "velocidad_corredor": 26.8
+          "muertes_via": 3
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -82,10 +81,10 @@
     },
     {
       "periodo": "2023-T2",
-      "itt_score": 50.7,
+      "itt_score": 49.1,
       "dimensiones_scores": {
         "seguridad": 44.3,
-        "movilidad": 52.9,
+        "movilidad": 46.8,
         "entorno_urbano": 45.6,
         "educacion_desarrollo": 56.4,
         "cohesion_social": 64.1
@@ -96,10 +95,9 @@
           "hurtos": 373
         },
         "movilidad": {
-          "siniestralidad_vial": 60,
+          "siniestralidad_vial": 55,
           "accidentes_lesionados": 46,
-          "muertes_via": 5,
-          "velocidad_corredor": 26.8
+          "muertes_via": 5
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -122,10 +120,10 @@
     },
     {
       "periodo": "2023-T3",
-      "itt_score": 44.2,
+      "itt_score": 41.8,
       "dimensiones_scores": {
         "seguridad": 27.7,
-        "movilidad": 43.4,
+        "movilidad": 33.7,
         "entorno_urbano": 45.6,
         "educacion_desarrollo": 56.4,
         "cohesion_social": 71.4
@@ -136,10 +134,9 @@
           "hurtos": 378
         },
         "movilidad": {
-          "siniestralidad_vial": 68,
+          "siniestralidad_vial": 63,
           "accidentes_lesionados": 56,
-          "muertes_via": 5,
-          "velocidad_corredor": 26.8
+          "muertes_via": 5
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -162,10 +159,10 @@
     },
     {
       "periodo": "2023-T4",
-      "itt_score": 56.5,
+      "itt_score": 54.6,
       "dimensiones_scores": {
         "seguridad": 59.3,
-        "movilidad": 49.1,
+        "movilidad": 41.6,
         "entorno_urbano": 45.6,
         "educacion_desarrollo": 56.4,
         "cohesion_social": 82.9
@@ -176,10 +173,9 @@
           "hurtos": 259
         },
         "movilidad": {
-          "siniestralidad_vial": 60,
+          "siniestralidad_vial": 55,
           "accidentes_lesionados": 53,
-          "muertes_via": 5,
-          "velocidad_corredor": 26.8
+          "muertes_via": 5
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -202,10 +198,10 @@
     },
     {
       "periodo": "2024-T1",
-      "itt_score": 57.0,
+      "itt_score": 56.3,
       "dimensiones_scores": {
         "seguridad": 50.2,
-        "movilidad": 67.8,
+        "movilidad": 65.0,
         "entorno_urbano": 47.1,
         "educacion_desarrollo": 56.1,
         "cohesion_social": 69.1
@@ -216,10 +212,9 @@
           "hurtos": 377
         },
         "movilidad": {
-          "siniestralidad_vial": 48,
+          "siniestralidad_vial": 46,
           "accidentes_lesionados": 45,
-          "muertes_via": 2,
-          "velocidad_corredor": 26.8
+          "muertes_via": 2
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -282,10 +277,10 @@
     },
     {
       "periodo": "2024-T2",
-      "itt_score": 57.2,
+      "itt_score": 56.7,
       "dimensiones_scores": {
         "seguridad": 51.8,
-        "movilidad": 70.0,
+        "movilidad": 67.9,
         "entorno_urbano": 47.1,
         "educacion_desarrollo": 56.1,
         "cohesion_social": 61.9
@@ -296,10 +291,9 @@
           "hurtos": 352
         },
         "movilidad": {
-          "siniestralidad_vial": 47,
+          "siniestralidad_vial": 45,
           "accidentes_lesionados": 42,
-          "muertes_via": 2,
-          "velocidad_corredor": 26.8
+          "muertes_via": 2
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -322,10 +316,10 @@
     },
     {
       "periodo": "2024-T3",
-      "itt_score": 51.4,
+      "itt_score": 49.5,
       "dimensiones_scores": {
         "seguridad": 46.9,
-        "movilidad": 50.2,
+        "movilidad": 42.4,
         "entorno_urbano": 47.1,
         "educacion_desarrollo": 56.1,
         "cohesion_social": 67.4
@@ -336,10 +330,9 @@
           "hurtos": 349
         },
         "movilidad": {
-          "siniestralidad_vial": 61,
+          "siniestralidad_vial": 57,
           "accidentes_lesionados": 55,
-          "muertes_via": 4,
-          "velocidad_corredor": 26.8
+          "muertes_via": 4
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -362,10 +355,10 @@
     },
     {
       "periodo": "2024-T4",
-      "itt_score": 55.5,
+      "itt_score": 53.3,
       "dimensiones_scores": {
         "seguridad": 58.1,
-        "movilidad": 52.7,
+        "movilidad": 44.1,
         "entorno_urbano": 47.1,
         "educacion_desarrollo": 56.1,
         "cohesion_social": 68.1
@@ -376,10 +369,9 @@
           "hurtos": 326
         },
         "movilidad": {
-          "siniestralidad_vial": 66,
+          "siniestralidad_vial": 64,
           "accidentes_lesionados": 56,
-          "muertes_via": 2,
-          "velocidad_corredor": 26.8
+          "muertes_via": 2
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -402,10 +394,10 @@
     },
     {
       "periodo": "2025-T1",
-      "itt_score": 54.0,
+      "itt_score": 52.8,
       "dimensiones_scores": {
         "seguridad": 60.4,
-        "movilidad": 53.8,
+        "movilidad": 48.8,
         "entorno_urbano": 39.2,
         "educacion_desarrollo": 56.0,
         "cohesion_social": 61.0
@@ -416,10 +408,9 @@
           "hurtos": 287
         },
         "movilidad": {
-          "siniestralidad_vial": 55,
+          "siniestralidad_vial": 49,
           "accidentes_lesionados": 44,
-          "muertes_via": 6,
-          "velocidad_corredor": 26.8
+          "muertes_via": 6
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -522,10 +513,10 @@
     },
     {
       "periodo": "2025-T2",
-      "itt_score": 55.8,
+      "itt_score": 54.5,
       "dimensiones_scores": {
         "seguridad": 67.9,
-        "movilidad": 57.1,
+        "movilidad": 51.8,
         "entorno_urbano": 39.2,
         "educacion_desarrollo": 56.0,
         "cohesion_social": 50.5
@@ -536,10 +527,9 @@
           "hurtos": 305
         },
         "movilidad": {
-          "siniestralidad_vial": 55,
+          "siniestralidad_vial": 51,
           "accidentes_lesionados": 48,
-          "muertes_via": 4,
-          "velocidad_corredor": 26.8
+          "muertes_via": 4
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -562,10 +552,10 @@
     },
     {
       "periodo": "2025-T3",
-      "itt_score": 56.5,
+      "itt_score": 54.9,
       "dimensiones_scores": {
         "seguridad": 77.6,
-        "movilidad": 56.1,
+        "movilidad": 49.7,
         "entorno_urbano": 39.2,
         "educacion_desarrollo": 56.0,
         "cohesion_social": 33.6
@@ -576,10 +566,9 @@
           "hurtos": 290
         },
         "movilidad": {
-          "siniestralidad_vial": 57,
+          "siniestralidad_vial": 54,
           "accidentes_lesionados": 53,
-          "muertes_via": 3,
-          "velocidad_corredor": 26.8
+          "muertes_via": 3
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
@@ -642,10 +631,10 @@
     },
     {
       "periodo": "2025-T4",
-      "itt_score": 49.3,
+      "itt_score": 47.2,
       "dimensiones_scores": {
         "seguridad": 53.6,
-        "movilidad": 44.8,
+        "movilidad": 36.5,
         "entorno_urbano": 39.2,
         "educacion_desarrollo": 56.0,
         "cohesion_social": 57.6
@@ -656,10 +645,9 @@
           "hurtos": 260
         },
         "movilidad": {
-          "siniestralidad_vial": 63,
+          "siniestralidad_vial": 57,
           "accidentes_lesionados": 53,
-          "muertes_via": 6,
-          "velocidad_corredor": 26.8
+          "muertes_via": 6
         },
         "entorno_urbano": {
           "ndvi_cobertura_vegetal": 0.1999,
