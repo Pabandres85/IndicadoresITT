@@ -330,11 +330,11 @@
         {
           "nombre": "Déficit habitacional cualitativo",
           "valor": 46.4,
-          "unidad": "% pendiente",
+          "unidad": "%",
           "tendencia": "estable",
           "fuente": "Secretaría de Vivienda / AHDI 2024-2026",
           "oficial": true,
-          "nota_real": "Corte 2025-T4: 46.4% pendiente (avance ponderado 53.6% = 8.48 ha-equiv / 15.83 ha totales; AÑO_INTERV <= 2025, ponderado por etapa)."
+          "nota_real": "Corte 2025-T4: 46.4% (avance ponderado 53.6% = 8.48 ha-equiv / 15.83 ha totales; AÑO_INTERV <= 2025, ponderado por etapa)."
         }
       ]
     },
@@ -383,12 +383,12 @@
           "oficial": true
         },
         {
-          "nombre": "Aforo polideportivo Villa del Lago",
+          "nombre": "Cobertura deportiva activa",
           "valor": 3877,
           "unidad": "personas registradas",
           "tendencia": "baja",
           "fuente": "Secretaría de Deportes",
-          "oficial": false,
+          "oficial": true,
           "nota_real": "Dato proxy oficial: personas registradas activas en 25 escenarios deportivos de la Comuna 14 (formulario Sec. Deportes, marzo 2024)"
         }
       ],
