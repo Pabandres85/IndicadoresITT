@@ -631,12 +631,12 @@
     },
     {
       "periodo": "2025-T4",
-      "itt_score": 47.2,
+      "itt_score": 47.1,
       "dimensiones_scores": {
         "seguridad": 53.6,
         "movilidad": 36.5,
         "entorno_urbano": 39.2,
-        "educacion_desarrollo": 56.0,
+        "educacion_desarrollo": 54.9,
         "cohesion_social": 57.6
       },
       "valores_crudos": {
@@ -659,7 +659,7 @@
           "desercion_escolar": 4.3,
           "repitencia_escolar": 8.4,
           "estudiantes_por_docente": 27.1,
-          "aforo_villa_lago": 4200
+          "aforo_villa_lago": 3877
         },
         "cohesion_social": {
           "vif": 105,
