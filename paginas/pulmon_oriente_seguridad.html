@@ -332,7 +332,7 @@ const MODULES = {
       options: {
         scales: {
           x: { grid: { display: false } },
-          y: { grid: { color: 'rgba(0,0,0,0.06)' } }
+          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } }
         },
         plugins: { legend: { display: false } }
       }
@@ -396,10 +396,10 @@ const MODULES = {
     noteText: 'La mayor parte responde a delincuencia y se concentra en comunas 13 y 14. Aunque el acumulado mejora, el último trimestre exige seguimiento puntual.',
     summary: 'En <strong>homicidios</strong> hay mejora frente a 2023, pero no se puede leer como una trayectoria totalmente estable. El repunte del último trimestre sugiere una dinámica que merece vigilancia fina y no solo lectura anual.',
     kpis: [
-      { value: '287', label: 'Total 2023-2025', sub: 'Concentración alta en C13 y C14', color: '#C1272D', badge: { text: '-27% vs 2023', type: 'badge-down' } },
-      { value: '85', label: 'Total 2025', sub: 'Mismo total de 2024', color: '#E67E22', badge: { text: 'Comportamiento estable', type: 'badge-flat' } },
-      { value: '72%', label: 'Tipo delincuencia', sub: '208 de 287 casos', color: '#607D8B' },
-      { value: '94%', label: 'Comunas 13 + 14', sub: '149 + 120 casos', color: '#003087' }
+      { value: '29→21', label: 'Promedio trimestral', sub: 'De 29 casos/trim en 2023 a 21 en 2025', color: '#2E7D32', badge: { text: 'Reducción sostenida', type: 'badge-down' } },
+      { value: '36', label: 'Pico 2025-T4', sub: 'Tras el mínimo histórico de 9 casos en T3', color: '#C1272D', badge: { text: 'Señal de alerta', type: 'badge-up' } },
+      { value: '21.2', label: 'Tasa por 100K hab', sub: 'Estándar comparable con Cali y región', color: '#607D8B' },
+      { value: '2023-T3', label: 'Trimestre más crítico', sub: '38 casos · el más alto del período', color: '#003087' }
     ],
     mainChart: {
       title: 'Evolución trimestral de homicidios',
