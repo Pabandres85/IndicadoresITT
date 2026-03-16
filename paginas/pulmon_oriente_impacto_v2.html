@@ -394,6 +394,10 @@
     if (ind?.nombre?.includes('Cobertura deportiva activa')) {
       return '2024 · caracterización Sec. Deportes';
     }
+    // Vulnerabilidad activa — dato anual de caracterización
+    if (ind?.nombre?.includes('vulnerabilidad activa')) {
+      return '2025 · caracterización Sec. Bienestar Social';
+    }
     // Imágenes satelitales — no son trimestrales
     if (ind?.fuente?.toLowerCase().includes('sentinel') || ind?.fuente?.toLowerCase().includes('copernicus')) {
       const year = D?.meta?.periodo ? D.meta.periodo.slice(0, 4) : '2025';

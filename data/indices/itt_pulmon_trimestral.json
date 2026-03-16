@@ -156,7 +156,7 @@
           "tendencia": "estable",
           "fuente": "Copernicus / Sentinel-2 · TIF procesado",
           "oficial": true,
-          "nota_real": "Calculado sobre el polígono completo del Pulmón de Oriente. Alcance metodológico v7: incluye zonas de alta densidad constructiva con cobertura vegetal estructuralmente baja. En v8 se refinará sobre el sub-polígono ambiental (Charco Azul + El Pondaje) para mayor precisión."
+          "nota_real": "Calculado sobre el polígono completo del Pulmón de Oriente. Incluye zonas de alta densidad constructiva con cobertura vegetal estructuralmente baja. En la próxima versión se refinará sobre el sub-polígono ambiental (Charco Azul + El Pondaje) para mayor precisión."
         },
         {
           "nombre": "Área verde neta",
@@ -165,7 +165,7 @@
           "tendencia": "estable",
           "fuente": "Copernicus / Sentinel-2 · NDVI ≥ 0.20",
           "oficial": true,
-          "nota_real": "Derivado del mismo TIF que el NDVI (píxeles con NDVI ≥ 0.20). Alcance metodológico v7: medido sobre el polígono completo; en v8 se refinará sobre el sub-polígono ambiental (Charco Azul + El Pondaje) para mayor precisión."
+          "nota_real": "Derivado del mismo TIF que el NDVI (píxeles con NDVI ≥ 0.20). Medido sobre el polígono completo del Pulmón de Oriente. En la próxima versión se refinará sobre el sub-polígono ambiental (Charco Azul + El Pondaje) para mayor precisión."
         },
         {
           "nombre": "Déficit habitacional cualitativo",
@@ -292,7 +292,8 @@
           "unidad": "personas por 1.000 hab",
           "tendencia": "estable",
           "fuente": "Secretaría de Bienestar Social / Caracterización Sub PyE 2025 · C13-C14",
-          "oficial": true
+          "oficial": true,
+          "nota_real": "54 de cada 1.000 habitantes del Pulmón de Oriente tienen atención activa registrada por la Secretaría de Bienestar Social. El dato refleja el alcance de los servicios sociales en el territorio — una señal de presencia institucional activa."
         }
       ],
       "vif_series": {
