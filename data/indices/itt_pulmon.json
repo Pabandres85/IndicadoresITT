@@ -114,7 +114,36 @@
           "fuente": "Secretaría de Movilidad / Waze for Cities 2025",
           "oficial": true
         }
-      ]
+      ],
+      "movilidad_series": {
+        "fuente": "Secretaría de Movilidad · verificado GIS",
+        "unidad": "eventos por trimestre",
+        "nota": "Datos reales 2023–2025. GeoJSON siniestralidad vial Comunas 13-14.",
+        "siniestralidad": [
+          {"periodo": "2023-T1", "n": 52}, {"periodo": "2023-T2", "n": 60},
+          {"periodo": "2023-T3", "n": 68}, {"periodo": "2023-T4", "n": 60},
+          {"periodo": "2024-T1", "n": 48}, {"periodo": "2024-T2", "n": 47},
+          {"periodo": "2024-T3", "n": 61}, {"periodo": "2024-T4", "n": 66},
+          {"periodo": "2025-T1", "n": 55}, {"periodo": "2025-T2", "n": 55},
+          {"periodo": "2025-T3", "n": 57}, {"periodo": "2025-T4", "n": 63}
+        ],
+        "lesionados": [
+          {"periodo": "2023-T1", "n": 43}, {"periodo": "2023-T2", "n": 46},
+          {"periodo": "2023-T3", "n": 56}, {"periodo": "2023-T4", "n": 53},
+          {"periodo": "2024-T1", "n": 45}, {"periodo": "2024-T2", "n": 42},
+          {"periodo": "2024-T3", "n": 55}, {"periodo": "2024-T4", "n": 56},
+          {"periodo": "2025-T1", "n": 44}, {"periodo": "2025-T2", "n": 48},
+          {"periodo": "2025-T3", "n": 53}, {"periodo": "2025-T4", "n": 53}
+        ],
+        "muertes": [
+          {"periodo": "2023-T1", "n": 3}, {"periodo": "2023-T2", "n": 5},
+          {"periodo": "2023-T3", "n": 5}, {"periodo": "2023-T4", "n": 5},
+          {"periodo": "2024-T1", "n": 2}, {"periodo": "2024-T2", "n": 2},
+          {"periodo": "2024-T3", "n": 4}, {"periodo": "2024-T4", "n": 2},
+          {"periodo": "2025-T1", "n": 6}, {"periodo": "2025-T2", "n": 4},
+          {"periodo": "2025-T3", "n": 3}, {"periodo": "2025-T4", "n": 6}
+        ]
+      }
     },
     {
       "id": "entorno_urbano",

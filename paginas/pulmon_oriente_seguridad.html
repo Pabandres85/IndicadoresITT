@@ -943,28 +943,68 @@ function buildDimensionIndicatorModule(dimId, idx = 0) {
       { value: `${participacion}%`, label: 'Peso interno relativo', sub: 'vs indicador máximo de la dimensión', color: '#E65100' },
       { value: `${dim.score.toFixed(1)}/100`, label: 'Score de la dimensión', sub: `${(dim.peso * 100).toFixed(0)}% del ITT`, color: '#003087' }
     ],
-    mainChart: {
-      title: `Comparativo de indicadores · ${dim.nombre}`,
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Valor',
-          data: vals,
-          backgroundColor: vals.map((_, i) => i === selectedIdx ? lineColor : colorAlpha(lineColor, 0.28)),
-          borderColor: vals.map((_, i) => i === selectedIdx ? lineColor : colorAlpha(lineColor, 0.4)),
-          borderWidth: 1.5,
-          borderRadius: 6
-        }]
-      },
-      options: {
-        scales: {
-          x: { grid: { display: false }, ticks: { font: { size: 11 } } },
-          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } }
-        },
-        plugins: { legend: { display: false } }
+    mainChart: (() => {
+      // Movilidad: mostrar serie trimestral para siniestralidad, lesionados y muertes
+      if (dim.id === 'movilidad' && dim.movilidad_series) {
+        const ms = dim.movilidad_series;
+        const nmLow = ind.nombre.toLowerCase();
+        let serieKey = null;
+        let serieLabel = '';
+        let serieColor = lineColor;
+        if (nmLow.includes('siniestral')) { serieKey = 'siniestralidad'; serieLabel = 'Siniestralidad vial'; serieColor = '#E65100'; }
+        else if (nmLow.includes('lesionad')) { serieKey = 'lesionados'; serieLabel = 'Con lesionados'; serieColor = '#E65100'; }
+        else if (nmLow.includes('muerte') || nmLow.includes('muertes')) { serieKey = 'muertes'; serieLabel = 'Muertes en vía'; serieColor = '#C1272D'; }
+        if (serieKey && ms[serieKey]) {
+          const sd = ms[serieKey];
+          return {
+            title: `Evolución trimestral · ${serieLabel}`,
+            type: 'line',
+            data: {
+              labels: sd.map(s => s.periodo),
+              datasets: [{
+                label: serieLabel,
+                data: sd.map(s => s.n),
+                borderColor: serieColor,
+                backgroundColor: colorAlpha(serieColor, 0.12),
+                borderWidth: 2.5,
+                fill: true,
+                tension: 0.3,
+                pointRadius: 4
+              }]
+            },
+            options: {
+              scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } }
+              },
+              plugins: { legend: { display: false } }
+            }
+          };
+        }
       }
-    },
+      return {
+        title: `Comparativo de indicadores · ${dim.nombre}`,
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Valor',
+            data: vals,
+            backgroundColor: vals.map((_, i) => i === selectedIdx ? lineColor : colorAlpha(lineColor, 0.28)),
+            borderColor: vals.map((_, i) => i === selectedIdx ? lineColor : colorAlpha(lineColor, 0.4)),
+            borderWidth: 1.5,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          scales: {
+            x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } }
+          },
+          plugins: { legend: { display: false } }
+        }
+      };
+    })(),
     sideChart: buildDimensionSideChart(dim, selectedIdx),
     bottomChart: {
       title: `Evolución temporal de ${dim.nombre}`,
