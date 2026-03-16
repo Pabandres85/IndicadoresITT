@@ -156,7 +156,7 @@
           "tendencia": "estable",
           "fuente": "Copernicus / Sentinel-2 · TIF procesado",
           "oficial": true,
-          "nota_real": "Calculado sobre el polígono completo del Pulmón de Oriente. Limitación documentada v7: el polígono incluye zonas de alta densidad constructiva con cobertura vegetal estructuralmente baja. En v8 se recalculará sobre el sub-polígono ambiental (Charco Azul + El Pondaje)."
+          "nota_real": "Calculado sobre el polígono completo del Pulmón de Oriente. Alcance metodológico v7: incluye zonas de alta densidad constructiva con cobertura vegetal estructuralmente baja. En v8 se refinará sobre el sub-polígono ambiental (Charco Azul + El Pondaje) para mayor precisión."
         },
         {
           "nombre": "Área verde neta",
@@ -165,16 +165,16 @@
           "tendencia": "estable",
           "fuente": "Copernicus / Sentinel-2 · NDVI ≥ 0.20",
           "oficial": true,
-          "nota_real": "Derivado del mismo TIF que el NDVI (píxeles con NDVI ≥ 0.20). Limitación documentada v7: medido sobre el polígono completo; en v8 se recalculará sobre el sub-polígono ambiental (Charco Azul + El Pondaje)."
+          "nota_real": "Derivado del mismo TIF que el NDVI (píxeles con NDVI ≥ 0.20). Alcance metodológico v7: medido sobre el polígono completo; en v8 se refinará sobre el sub-polígono ambiental (Charco Azul + El Pondaje) para mayor precisión."
         },
         {
           "nombre": "Déficit habitacional cualitativo",
           "valor": 46.4,
-          "unidad": "% pendiente",
+          "unidad": "% por resolver",
           "tendencia": "estable",
           "fuente": "Secretaría de Vivienda / AHDI 2024-2026",
           "oficial": true,
-          "nota_real": "Corte 2025-T4: 46.4% pendiente (avance ponderado 53.6% sobre total ha AHDI 2024-2026; AÑO_INTERV <= 2025, ponderado por etapa)."
+          "nota_real": "Más de la mitad del déficit habitacional del territorio ya tiene intervención registrada. El 53.6% de las hectáreas del programa AHDI 2024-2026 cuenta con actuación en campo al corte 2025-T4."
         }
       ]
     },

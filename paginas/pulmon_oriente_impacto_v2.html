@@ -1059,43 +1059,60 @@
 
     const lastIdx = serie.length - 1;
 
+    const dumbbellPlugin = {
+      id: 'dumbbellLines',
+      afterDatasetsDraw(chart) {
+        const ctx = chart.ctx;
+        const meta0 = chart.getDatasetMeta(0);
+        const meta1 = chart.getDatasetMeta(1);
+        meta0.data.forEach((pt, i) => {
+          const pt2 = meta1.data[i];
+          const isLast = i === lastIdx;
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(pt.x, pt.y);
+          ctx.lineTo(pt2.x, pt2.y);
+          ctx.strokeStyle = isLast ? 'rgba(80,80,80,0.55)' : 'rgba(150,150,150,0.30)';
+          ctx.lineWidth = isLast ? 2.5 : 1.5;
+          ctx.stroke();
+          ctx.restore();
+        });
+      }
+    };
+
     registerChart('chartSegMovComp', new Chart(document.getElementById('chartSegMovComp'), {
-      type: 'line',
+      type: 'scatter',
       data: {
-        labels,
         datasets: [
           {
             label: 'Seguridad',
-            data: segData,
+            data: segData.map((v, i) => ({ x: i, y: v })),
+            backgroundColor: segData.map((_, i) => i === lastIdx ? '#C1272D' : 'rgba(193,39,45,0.65)'),
             borderColor: '#C1272D',
-            backgroundColor: 'rgba(193,39,45,0.08)',
-            borderWidth: 2.5,
-            pointRadius: segData.map((_, i) => i === lastIdx ? 6 : 3),
-            pointBackgroundColor: segData.map((_, i) => i === lastIdx ? '#C1272D' : '#fff'),
-            pointBorderColor: '#C1272D',
-            pointBorderWidth: 2,
-            fill: false,
-            tension: 0.3
+            borderWidth: 1.5,
+            pointRadius: segData.map((_, i) => i === lastIdx ? 8 : 6),
+            pointStyle: 'circle'
           },
           {
             label: 'Movilidad',
-            data: movData,
+            data: movData.map((v, i) => ({ x: i, y: v })),
+            backgroundColor: movData.map((_, i) => i === lastIdx ? '#00796B' : 'rgba(0,121,107,0.65)'),
             borderColor: '#00796B',
-            backgroundColor: 'rgba(0,121,107,0.08)',
-            borderWidth: 2.5,
-            pointRadius: movData.map((_, i) => i === lastIdx ? 6 : 3),
-            pointBackgroundColor: movData.map((_, i) => i === lastIdx ? '#00796B' : '#fff'),
-            pointBorderColor: '#00796B',
-            pointBorderWidth: 2,
-            fill: false,
-            tension: 0.3
+            borderWidth: 1.5,
+            pointRadius: movData.map((_, i) => i === lastIdx ? 8 : 6),
+            pointStyle: 'circle'
           }
         ]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
         scales: {
-          x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+          x: {
+            type: 'linear',
+            min: -0.5, max: labels.length - 0.5,
+            grid: { display: false },
+            ticks: { stepSize: 1, font: { size: 10 }, callback: val => labels[val] || '' }
+          },
           y: {
             min: 0, max: 100,
             grid: { color: 'rgba(0,0,0,0.06)' },
@@ -1105,15 +1122,14 @@
         },
         plugins: {
           legend: {
-            display: true,
-            position: 'top',
-            labels: { font: { size: 11 }, boxWidth: 12, padding: 16 }
+            display: true, position: 'top',
+            labels: { font: { size: 11 }, boxWidth: 12, padding: 16, usePointStyle: true }
           },
           tooltip: {
             callbacks: {
-              label: ctx => `${ctx.dataset.label}: ${ctx.raw.toFixed(1)}/100`,
+              label: ctx => `${ctx.dataset.label}: ${ctx.raw.y.toFixed(1)}/100`,
               afterBody: (items) => {
-                const idx = items[0]?.dataIndex;
+                const idx = items[0]?.raw?.x;
                 if (idx == null) return '';
                 const gap = Math.abs(segData[idx] - movData[idx]).toFixed(1);
                 const mayor = segData[idx] >= movData[idx] ? 'Seguridad' : 'Movilidad';
@@ -1122,7 +1138,8 @@
             }
           }
         }
-      }
+      },
+      plugins: [dumbbellPlugin]
     }));
 
     // ── Insight ejecutivo automático
