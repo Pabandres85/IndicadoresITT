@@ -965,7 +965,7 @@ function buildDimensionIndicatorModule(dimId, idx = 0) {
                 }]
               },
               options: {
-                scales: { x: { grid: { display: false } }, y: { beginAtZero: false, grid: { color: 'rgba(0,0,0,0.06)' } } },
+                scales: { x: { grid: { display: false } }, y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } } },
                 plugins: { legend: { display: false } }
               }
             };
@@ -1026,7 +1026,7 @@ function buildDimensionIndicatorModule(dimId, idx = 0) {
             options: {
               scales: {
                 x: { grid: { display: false } },
-                y: { beginAtZero: false, grid: { color: 'rgba(0,0,0,0.06)' } }
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } }
               },
               plugins: { legend: { display: false } }
             }

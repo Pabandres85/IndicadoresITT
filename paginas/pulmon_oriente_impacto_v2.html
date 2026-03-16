@@ -1057,31 +1057,38 @@
     const segData = serie.map(p => p.seguridad);
     const movData = serie.map(p => p.movilidad);
 
-    // Resaltar último período
     const lastIdx = serie.length - 1;
-    const segColors = segData.map((_, i) =>
-      i === lastIdx ? '#C1272D' : 'rgba(193,39,45,0.55)');
-    const movColors = movData.map((_, i) =>
-      i === lastIdx ? '#00796B' : 'rgba(0,121,107,0.55)');
 
     registerChart('chartSegMovComp', new Chart(document.getElementById('chartSegMovComp'), {
-      type: 'bar',
+      type: 'line',
       data: {
         labels,
         datasets: [
           {
             label: 'Seguridad',
             data: segData,
-            backgroundColor: segColors,
-            borderRadius: 4,
-            borderSkipped: false
+            borderColor: '#C1272D',
+            backgroundColor: 'rgba(193,39,45,0.08)',
+            borderWidth: 2.5,
+            pointRadius: segData.map((_, i) => i === lastIdx ? 6 : 3),
+            pointBackgroundColor: segData.map((_, i) => i === lastIdx ? '#C1272D' : '#fff'),
+            pointBorderColor: '#C1272D',
+            pointBorderWidth: 2,
+            fill: false,
+            tension: 0.3
           },
           {
             label: 'Movilidad',
             data: movData,
-            backgroundColor: movColors,
-            borderRadius: 4,
-            borderSkipped: false
+            borderColor: '#00796B',
+            backgroundColor: 'rgba(0,121,107,0.08)',
+            borderWidth: 2.5,
+            pointRadius: movData.map((_, i) => i === lastIdx ? 6 : 3),
+            pointBackgroundColor: movData.map((_, i) => i === lastIdx ? '#00796B' : '#fff'),
+            pointBorderColor: '#00796B',
+            pointBorderWidth: 2,
+            fill: false,
+            tension: 0.3
           }
         ]
       },

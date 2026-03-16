@@ -11,9 +11,9 @@
     "nota": "ITT preliminar. Fuentes GIS verificadas: 16 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 49.3,
-    "score_anterior": 56.5,
-    "variacion": -7.2,
+    "score": 46.9,
+    "score_anterior": 55.0,
+    "variacion": -8.1,
     "clasificacion": "Nivel 2 · Consolidación",
     "rango": [40, 60],
     "periodo_comparacion": "2025-T3"
@@ -75,9 +75,9 @@
       "nombre": "Movilidad",
       "icono": "route",
       "peso": 0.25,
-      "score": 44.8,
-      "score_anterior": 56.1,
-      "variacion": -11.3,
+      "score": 35.0,
+      "score_anterior": 50.2,
+      "variacion": -15.2,
       "color": "#00796B",
       "calidad_dato": "oficial",
       "cobertura": 100,
@@ -104,14 +104,6 @@
           "unidad": "casos",
           "tendencia": "alza",
           "fuente": "Secretaría de Movilidad · verificado GIS",
-          "oficial": true
-        },
-        {
-          "nombre": "Velocidad promedio del corredor",
-          "valor": 26.8,
-          "unidad": "km/h",
-          "tendencia": "estable",
-          "fuente": "Secretaría de Movilidad / Waze for Cities 2025",
           "oficial": true
         }
       ],
@@ -329,18 +321,18 @@
     }
   ],
   "serie_temporal": [
-    {"periodo": "2023-T1", "itt": 50.6, "seguridad": 32.1, "movilidad": 64.2, "entorno_urbano": 45.6, "educacion_desarrollo": 56.4, "cohesion_social": 70.7},
-    {"periodo": "2023-T2", "itt": 50.7, "seguridad": 44.3, "movilidad": 52.9, "entorno_urbano": 45.6, "educacion_desarrollo": 56.4, "cohesion_social": 64.1},
-    {"periodo": "2023-T3", "itt": 44.2, "seguridad": 27.7, "movilidad": 43.4, "entorno_urbano": 45.6, "educacion_desarrollo": 56.4, "cohesion_social": 71.4},
-    {"periodo": "2023-T4", "itt": 56.5, "seguridad": 59.3, "movilidad": 49.1, "entorno_urbano": 45.6, "educacion_desarrollo": 56.4, "cohesion_social": 82.9},
-    {"periodo": "2024-T1", "itt": 57.0, "seguridad": 50.2, "movilidad": 67.8, "entorno_urbano": 47.1, "educacion_desarrollo": 56.1, "cohesion_social": 69.1},
-    {"periodo": "2024-T2", "itt": 57.2, "seguridad": 51.8, "movilidad": 70.0, "entorno_urbano": 47.1, "educacion_desarrollo": 56.1, "cohesion_social": 61.9},
-    {"periodo": "2024-T3", "itt": 51.4, "seguridad": 46.9, "movilidad": 50.2, "entorno_urbano": 47.1, "educacion_desarrollo": 56.1, "cohesion_social": 67.4},
-    {"periodo": "2024-T4", "itt": 55.5, "seguridad": 58.1, "movilidad": 52.7, "entorno_urbano": 47.1, "educacion_desarrollo": 56.1, "cohesion_social": 68.1},
-    {"periodo": "2025-T1", "itt": 54.0, "seguridad": 60.4, "movilidad": 53.8, "entorno_urbano": 39.2, "educacion_desarrollo": 56.0, "cohesion_social": 61.0},
-    {"periodo": "2025-T2", "itt": 55.8, "seguridad": 67.9, "movilidad": 57.1, "entorno_urbano": 39.2, "educacion_desarrollo": 56.0, "cohesion_social": 50.5},
-    {"periodo": "2025-T3", "itt": 56.5, "seguridad": 77.6, "movilidad": 56.1, "entorno_urbano": 39.2, "educacion_desarrollo": 56.0, "cohesion_social": 33.6},
-    {"periodo": "2025-T4", "itt": 49.3, "seguridad": 53.6, "movilidad": 44.8, "entorno_urbano": 39.2, "educacion_desarrollo": 56.0, "cohesion_social": 57.6}
+    {"periodo": "2023-T1", "itt": 49.8, "seguridad": 32.1, "movilidad": 60.9, "entorno_urbano": 45.6, "educacion_desarrollo": 56.4, "cohesion_social": 70.7},
+    {"periodo": "2023-T2", "itt": 49.0, "seguridad": 44.3, "movilidad": 45.9, "entorno_urbano": 45.6, "educacion_desarrollo": 56.4, "cohesion_social": 64.1},
+    {"periodo": "2023-T3", "itt": 41.7, "seguridad": 27.7, "movilidad": 33.2, "entorno_urbano": 45.6, "educacion_desarrollo": 56.4, "cohesion_social": 71.4},
+    {"periodo": "2023-T4", "itt": 54.4, "seguridad": 59.3, "movilidad": 40.8, "entorno_urbano": 45.6, "educacion_desarrollo": 56.4, "cohesion_social": 82.9},
+    {"periodo": "2024-T1", "itt": 56.5, "seguridad": 50.2, "movilidad": 65.8, "entorno_urbano": 47.1, "educacion_desarrollo": 56.1, "cohesion_social": 69.1},
+    {"periodo": "2024-T2", "itt": 56.9, "seguridad": 51.8, "movilidad": 68.7, "entorno_urbano": 47.1, "educacion_desarrollo": 56.1, "cohesion_social": 61.9},
+    {"periodo": "2024-T3", "itt": 49.4, "seguridad": 46.9, "movilidad": 42.3, "entorno_urbano": 47.1, "educacion_desarrollo": 56.1, "cohesion_social": 67.4},
+    {"periodo": "2024-T4", "itt": 53.7, "seguridad": 58.1, "movilidad": 45.6, "entorno_urbano": 47.1, "educacion_desarrollo": 56.1, "cohesion_social": 68.1},
+    {"periodo": "2025-T1", "itt": 52.3, "seguridad": 60.4, "movilidad": 47.0, "entorno_urbano": 39.2, "educacion_desarrollo": 56.0, "cohesion_social": 61.0},
+    {"periodo": "2025-T2", "itt": 54.4, "seguridad": 67.9, "movilidad": 51.5, "entorno_urbano": 39.2, "educacion_desarrollo": 56.0, "cohesion_social": 50.5},
+    {"periodo": "2025-T3", "itt": 55.0, "seguridad": 77.6, "movilidad": 50.2, "entorno_urbano": 39.2, "educacion_desarrollo": 56.0, "cohesion_social": 33.6},
+    {"periodo": "2025-T4", "itt": 46.9, "seguridad": 53.6, "movilidad": 35.0, "entorno_urbano": 39.2, "educacion_desarrollo": 56.0, "cohesion_social": 57.6}
   ],
   "barrios": [
     {"nombre": "Alfonso López",   "itt": 65.2, "poblacion": 18400, "proyectos": 12},
