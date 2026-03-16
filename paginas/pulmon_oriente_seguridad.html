@@ -944,6 +944,41 @@ function buildDimensionIndicatorModule(dimId, idx = 0) {
       { value: `${dim.score.toFixed(1)}/100`, label: 'Score de la dimensión', sub: `${(dim.peso * 100).toFixed(0)}% del ITT`, color: '#003087' }
     ],
     mainChart: (() => {
+      // Educación: mostrar serie anual para matrícula, deserción, repitencia y RAD
+      if (dim.id === 'educacion_desarrollo' && dim.educacion_series) {
+        const es = dim.educacion_series;
+        const nmLow = ind.nombre.toLowerCase();
+        let serieKey = null, serieLabel = '', serieColor = '#6A1B9A', unidad = '';
+        if (nmLow.includes('matr')) { serieKey = 'matricula'; serieLabel = 'Matrícula escolar'; serieColor = '#6A1B9A'; unidad = 'estudiantes'; }
+        else if (nmLow.includes('deser')) { serieKey = 'desercion'; serieLabel = 'Deserción escolar'; serieColor = '#C1272D'; unidad = '%'; }
+        else if (nmLow.includes('repit')) { serieKey = 'repitencia'; serieLabel = 'Repitencia escolar'; serieColor = '#E65100'; unidad = '%'; }
+        else if (nmLow.includes('docente') || nmLow.includes('rad')) { serieKey = 'rad'; serieLabel = 'Estudiantes por docente'; serieColor = '#1565C0'; unidad = 'ratio'; }
+        if (serieKey && es[serieKey]) {
+          const sd = es[serieKey];
+          return {
+            title: `Evolución anual · ${serieLabel}`,
+            type: 'bar',
+            data: {
+              labels: sd.map(s => s.anio),
+              datasets: [{
+                label: serieLabel,
+                data: sd.map(s => s.n),
+                backgroundColor: sd.map((_, i) => i === sd.length - 1 ? serieColor : colorAlpha(serieColor, 0.45)),
+                borderColor: serieColor,
+                borderWidth: 1.5,
+                borderRadius: 8
+              }]
+            },
+            options: {
+              scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: false, grid: { color: 'rgba(0,0,0,0.06)' } }
+              },
+              plugins: { legend: { display: false } }
+            }
+          };
+        }
+      }
       // Movilidad: mostrar serie trimestral para siniestralidad, lesionados y muertes
       if (dim.id === 'movilidad' && dim.movilidad_series) {
         const ms = dim.movilidad_series;

@@ -239,7 +239,31 @@
           "oficial": true,
           "nota_real": "Proxy: aforo directo de Villa del Lago no disponible. 3.877 personas activas registradas en 25 escenarios deportivos de la Comuna 14 (formulario oficial Sec. Deportes, marzo 2024). No es conteo directo de asistencia — es lo que cada escenario reportó tener activo en ese momento."
         }
-      ]
+      ],
+      "educacion_series": {
+        "fuente": "Secretaría de Educación / Indicadores Sectoriales 2023-2025",
+        "nota": "Serie anual por año lectivo. Comunas 13 y 14.",
+        "matricula": [
+          {"anio": "2023", "n": 53746},
+          {"anio": "2024", "n": 52018},
+          {"anio": "2025", "n": 50336}
+        ],
+        "desercion": [
+          {"anio": "2023", "n": 5.9},
+          {"anio": "2024", "n": 5.2},
+          {"anio": "2025", "n": 4.3}
+        ],
+        "repitencia": [
+          {"anio": "2023", "n": 9.4},
+          {"anio": "2024", "n": 9.2},
+          {"anio": "2025", "n": 8.4}
+        ],
+        "rad": [
+          {"anio": "2023", "n": 28.3},
+          {"anio": "2024", "n": 26.7},
+          {"anio": "2025", "n": 27.1}
+        ]
+      }
     },
     {
       "id": "cohesion_social",
