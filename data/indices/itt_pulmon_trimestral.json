@@ -11,9 +11,9 @@
     "nota": "ITT preliminar. Fuentes GIS verificadas: 15 indicadores oficiales. Manuales pendientes de actualización: 0 indicadores."
   },
   "itt_global": {
-    "score": 47.2,
+    "score": 47.1,
     "score_anterior": 54.9,
-    "variacion": -7.7,
+    "variacion": -7.8,
     "clasificacion": "Nivel 2 · Consolidación",
     "rango": [
       40,
@@ -343,9 +343,9 @@
       "nombre": "Educación y Desarrollo",
       "icono": "school",
       "peso": 0.13,
-      "score": 56.0,
+      "score": 54.9,
       "score_anterior": 56.0,
-      "variacion": 0.0,
+      "variacion": -1.1,
       "color": "#6A1B9A",
       "calidad_dato": "preliminar",
       "cobertura": 100,
@@ -384,11 +384,12 @@
         },
         {
           "nombre": "Aforo polideportivo Villa del Lago",
-          "valor": 4200,
-          "unidad": "personas/mes",
-          "tendencia": "estable",
+          "valor": 3877,
+          "unidad": "personas registradas",
+          "tendencia": "baja",
           "fuente": "Secretaría de Deportes",
-          "oficial": false
+          "oficial": false,
+          "nota_real": "Dato proxy oficial: personas registradas activas en 25 escenarios deportivos de la Comuna 14 (formulario Sec. Deportes, marzo 2024)"
         }
       ],
       "educacion_series": {
@@ -664,11 +665,11 @@
     },
     {
       "periodo": "2025-T4",
-      "itt": 47.2,
+      "itt": 47.1,
       "seguridad": 53.6,
       "movilidad": 36.5,
       "entorno_urbano": 39.2,
-      "educacion_desarrollo": 56.0,
+      "educacion_desarrollo": 54.9,
       "cohesion_social": 57.6
     }
   ],
