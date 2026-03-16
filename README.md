@@ -60,9 +60,10 @@ PoryectoITT/
 │   ├── ambiente/                             # GeoJSON árboles y zonas verdes
 │   └── excel/
 │       ├── educacion/                        # Matrícula, deserción, repitencia
-│       ├── movilidad/                        # Velocidades Waze for Cities
+│       ├── movilidad/                        # Velocidades Waze for Cities + UsosEstacionesComuna14.xlsx (MIO)
 │       ├── vivienda/                         # AHDI intervención por año
-│       └── bienestar/                        # Vulnerabilidad activa por comuna
+│       ├── bienestar/                        # Vulnerabilidad activa por comuna
+│       └── deporte/                          # escenarios-deportivos.csv + secretaria_deporte_v2.xlsx
 ├── scripts/
 │   ├── calcular_itt.py                       # Motor de cálculo ITT
 │   └── excel_to_json.py                      # Conversión Excel → JSON (util)
@@ -160,15 +161,18 @@ Para cada indicador el motor busca en este orden:
 
 ### `pulmon_oriente_impacto_v2.html` — Dashboard ITT
 
-Lee `data/indices/itt_pulmon.json` y renderiza todo dinámicamente:
+Lee `data/indices/itt_pulmon_trimestral.json` y renderiza todo dinámicamente:
 - KPI strip animado con métricas clave del período
 - Alertas automáticas detectadas desde campo `nota_real` del JSON
-- Gauge ITT global + radar de dimensiones (actual vs anterior)
-- Gráfico de contribución ponderada por dimensión (`score × peso`)
-- Gráfico de evolución temporal con toggle por dimensión
+- Gauge ITT global + radar de dimensiones con toggle Trimestral / Semestral / Anual
+- Gráfico de contribución ponderada por dimensión (`score × peso`) con insight corregido (mayor potencial real)
+- Gráfico de evolución temporal con toggle individual por dimensión; Entorno Urbano y Educación con línea escalonada (dato anual)
 - Tabs de indicadores por dimensión con estado oficial/estimado
-- Ranking de barrios con sort dinámico (ITT / Población / Proyectos)
-- Sección de calidad y madurez del dato por indicador
+- `calidad_dato` derivado automáticamente en el frontend según `oficial` de cada indicador
+- Gráfica de hurtos agrupada por trimestre (T1–T4 × 2023/2024/2025) — sólo Seguridad
+- Gráfica VIF anual (2023/2024/2025) con alerta visual — sólo Cohesión Social
+- Gráfica de score de Movilidad comparativo por trimestre con insight ejecutivo
+- Sección 04: Seguridad vs Movilidad · Comparativo por Período (barras agrupadas, reemplaza ranking de barrios)
 
 ### `pulmon_oriente_mapa_v2.html` — Mapa interactivo
 
@@ -292,6 +296,12 @@ Ver `docs/CONTEXTO_TECNICO_ITT_PULMON.md` para:
 - Decisiones de diseño del motor de cálculo
 - Historial de cambios por versión
 - Brechas técnicas pendientes
+
+Ver `docs/SUSTENTO_EMPIRICO_PARAMETROS_ITT.md` para:
+- Evidencia empírica de soporte para cada ref_min / ref_max
+- Clasificación por calidad de serie: serie real (12 trim) · serie anual por diseño · dato débil
+- Peso metodológico de cada grupo dentro del ITT (~35% / ~11% / ~54%)
+- Hoja de ruta de fortalecimiento empírico
 
 ---
 

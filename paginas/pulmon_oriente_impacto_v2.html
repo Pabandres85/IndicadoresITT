@@ -366,6 +366,12 @@
   /* ═══ RENDER PRINCIPAL ══════════════════════════════════════════════════ */
   function renderDashboard(D) {
 
+  // Derivar calidad_dato automáticamente según estado real de indicadores
+  D.dimensiones.forEach(dim => {
+    const todosOficiales = dim.indicadores.every(i => i.oficial === true);
+    dim.calidad_dato = todosOficiales ? 'oficial' : 'preliminar';
+  });
+
   const isRealIndicator = ind => {
     const fuente = String(ind?.fuente || '').toLowerCase();
     if (ind?.valor === null || typeof ind?.valor === 'undefined') return false;
