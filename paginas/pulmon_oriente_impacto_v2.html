@@ -133,10 +133,9 @@
 <!-- 03 INDICADORES -->
 <section class="section pt-0">
   <div class="container">
-    <div class="section-header"><span class="section-num">03 —</span><h2>Indicadores por Dimensión</h2></div>
+    <div class="section-header"><span class="section-num">03 —</span><h2>Resumen por Dimensión</h2></div>
     <div class="divider"></div>
-    <div class="dim-tabs" id="dim-tabs"></div>
-    <div id="dim-contents"></div>
+    <div id="dim-accordion"></div>
   </div>
 </section>
 
@@ -267,7 +266,7 @@
 
   function clearDashboard() {
     destroyAllCharts();
-    ['kpi-strip','alertas-grid','dim-grid','dim-tabs','dim-contents',
+    ['kpi-strip','alertas-grid','dim-grid','dim-accordion',
      'dim-line-toggles','barrios-grid','calidad-grid','meta-nota'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.innerHTML = '';
@@ -733,324 +732,65 @@
      <br><span style="font-size:11px;color:#90A4AE;margin-top:6px;display:block">Nota: Entorno Urbano y Educación se miden anualmente — su línea es plana dentro de cada año por diseño, no por ausencia de cambio.</span>`;
 
   /* ── TABS INDICADORES ────────────────────────────────────────────────── */
-  const tabsEl = document.getElementById('dim-tabs');
-  const ctsEl  = document.getElementById('dim-contents');
+  /* ── ACCORDION INDICADORES POR DIMENSIÓN ────────────────────────────── */
+  const accEl = document.getElementById('dim-accordion');
+  D.dimensiones.forEach(dim => {
+    const ofDim   = dim.indicadores.filter(i => i.oficial).length;
+    const varSign = dim.variacion >= 0 ? '+' : '';
+    const varCls  = dim.variacion >= 0 ? 'var-up' : 'var-down';
+    const item    = document.createElement('div');
+    item.className = 'acc-item';
 
-  D.dimensiones.forEach((dim, idx) => {
-    const btn = document.createElement('button');
-    btn.className = 'dim-tab' + (idx===0?' active':'');
-    btn.style.background  = idx===0 ? dim.color : '';
-    btn.style.borderColor = idx===0 ? dim.color : '';
-    btn.style.color       = idx===0 ? '#fff' : '';
-    btn.textContent = (ICONS[dim.id]||'') + ' ' + dim.nombre;
-    btn.dataset.idx = idx;
-    tabsEl.appendChild(btn);
-
-    const panel = document.createElement('div');
-    panel.className = 'dim-content' + (idx===0?' active':'');
-    panel.dataset.idx = idx;
-    const ofDim  = dim.indicadores.filter(i=>i.oficial).length;
-    const estDim = dim.indicadores.length - ofDim;
-    const realDim= dim.indicadores.filter(isRealIndicator).length;
-
-    // Hurtos series chart slot (only for seguridad)
-    const hurtosChartSlot = dim.id === 'seguridad' && dim.hurtos_series
-      ? `<div class="chart-card" style="margin-bottom:20px">
-           <div class="chart-card-header"><div class="chart-card-title">Evolución de Hurtos por Trimestre · ${dim.hurtos_series.fuente}</div></div>
-           <div class="chart-body">
-             <div class="chart-wrap" style="height:240px"><canvas id="chartHurtos"></canvas></div>
-             <div class="chart-insight" id="insight-hurtos"></div>
-           </div>
-         </div>`
-      : '';
-
-    // VIF series chart slot (only for cohesion_social)
-    const vifChartSlot = dim.id === 'cohesion_social' && dim.vif_series
-      ? `<div class="chart-card" style="margin-bottom:20px">
-           <div class="chart-card-header">
-             <div class="chart-card-title">Violencia Intrafamiliar (VIF) · Total Anual · ${dim.vif_series.fuente}</div>
-             <span style="font-size:11px;color:#C1272D;font-weight:600">⚠ Tendencia en alza</span>
-           </div>
-           <div class="chart-body">
-             <div class="chart-wrap" style="height:220px"><canvas id="chartVIF"></canvas></div>
-             <div class="chart-insight" id="insight-vif"></div>
-           </div>
-         </div>`
-      : '';
-
-    // Movilidad score series chart slot
-    const movilidadChartSlot = dim.id === 'movilidad' && D.serie_temporal?.length
-      ? `<div class="chart-card" style="margin-bottom:20px">
-           <div class="chart-card-header">
-             <div class="chart-card-title">Evolución del Score de Movilidad · Comparativo por Trimestre</div>
-             <span style="font-size:11px;color:#78909C">Escala 0–100 · Mayor score = mejor movilidad</span>
-           </div>
-           <div class="chart-body">
-             <div class="chart-wrap" style="height:240px"><canvas id="chartMovSerie"></canvas></div>
-             <div class="chart-insight" id="insight-mov-serie"></div>
-           </div>
-         </div>`
-      : '';
-
-    panel.innerHTML = `
-      <div class="dim-panel-header">
-        <div>
-          Score: <strong style="color:${dim.color}">${dim.score.toFixed(1)}/100</strong> ·
-          Peso: ${(dim.peso*100).toFixed(0)}% ·
-          Contribución al ITT: <strong>${(dim.score*dim.peso).toFixed(1)} pts</strong> ·
-          Cobertura: ${dim.cobertura}%
+    const cardsHTML = dim.indicadores.map(ind => {
+      const tc  = ind.tendencia==='alza'?'tend-alza':ind.tendencia==='baja'?'tend-baja':'tend-estable';
+      const ta  = ind.tendencia==='alza'?'↑':ind.tendencia==='baja'?'↓':'→';
+      const oc  = ind.oficial?'ind-of-si':'ind-of-no';
+      const ol  = ind.oficial?'Oficial':'Estimado';
+      const v   = (typeof ind.valor==='number'&&ind.valor>999) ? ind.valor.toLocaleString('es-CO') : ind.valor;
+      const isAlert = ind.nota_real?.includes('ALERTA');
+      const rangoDato = getIndicatorDateRange(ind, dim, D);
+      return `<div class="ind-card${isAlert?' ind-card-alert':''}" style="border-left-color:${dim.color}">
+        <div class="ind-nombre">${ind.nombre}</div>
+        <div class="ind-val-row">
+          <span class="ind-val">${v}</span>
+          <span class="ind-unidad">${ind.unidad}</span>
+          <span class="ind-tend ${tc}" style="margin-left:auto">${ta} ${ind.tendencia}</span>
         </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-          <span class="ind-badge-of">Oficiales: ${ofDim}/${dim.indicadores.length}</span>
-          <span class="ind-badge-est">Estimados: ${estDim}</span>
-          <span class="ind-badge-real">Con fuente real: ${realDim}</span>
+        <div class="ind-meta">
+          <span class="ind-fuente">${ind.fuente}</span>
+          <span class="ind-oficial ${oc}">${ol}</span>
+        </div>
+        ${ind.nota_real ? `<div class="ind-nota-real${isAlert?' ind-nota-alert':''}">${isAlert?'<strong>⚠ ALERTA:</strong> ':''}${ind.nota_real.replace('ALERTA: ','')}</div>` : ''}
+        <div class="ind-rango-fecha"><strong>Rango del dato:</strong> ${rangoDato}</div>
+      </div>`;
+    }).join('');
+
+    item.innerHTML = `
+      <div class="acc-header" style="border-left:4px solid ${dim.color}">
+        <div class="acc-left">
+          <span class="acc-icon">${ICONS[dim.id]||''}</span>
+          <span class="acc-nombre">${dim.nombre}</span>
+          <span class="acc-score" style="color:${dim.color}">${dim.score.toFixed(1)}/100</span>
+          <span class="acc-var ${varCls}">${dim.variacion>=0?'↑':'↓'} ${varSign}${dim.variacion.toFixed(1)} pts</span>
+        </div>
+        <div class="acc-right">
+          <span class="acc-meta">${ofDim}/${dim.indicadores.length} oficiales · ${(dim.peso*100).toFixed(0)}% del ITT</span>
+          <span class="acc-chevron">▾</span>
         </div>
       </div>
-      ${hurtosChartSlot}
-      ${vifChartSlot}
-      ${movilidadChartSlot}
-      <div class="ind-grid">
-        ${dim.indicadores.map(ind => {
-          const tc  = ind.tendencia==='alza'?'tend-alza':ind.tendencia==='baja'?'tend-baja':'tend-estable';
-          const ta  = ind.tendencia==='alza'?'↑':ind.tendencia==='baja'?'↓':'→';
-          const oc  = ind.oficial?'ind-of-si':'ind-of-no';
-          const ol  = ind.oficial?'Oficial':'Estimado';
-          const v   = (typeof ind.valor==='number'&&ind.valor>999) ? ind.valor.toLocaleString('es-CO') : ind.valor;
-          const isAlert = ind.nota_real?.includes('ALERTA');
-          const rangoDato = getIndicatorDateRange(ind, dim, D);
-          return `<div class="ind-card${isAlert?' ind-card-alert':''}" style="border-left-color:${dim.color}">
-            <div class="ind-nombre">${ind.nombre}</div>
-            <div class="ind-val-row">
-              <span class="ind-val">${v}</span>
-              <span class="ind-unidad">${ind.unidad}</span>
-              <span class="ind-tend ${tc}" style="margin-left:auto">${ta} ${ind.tendencia}</span>
-            </div>
-            <div class="ind-meta">
-              <span class="ind-fuente">${ind.fuente}</span>
-              <span class="ind-oficial ${oc}">${ol}</span>
-            </div>
-            ${ind.nota_real ? `<div class="ind-nota-real${isAlert?' ind-nota-alert':''}">${isAlert?'<strong>⚠ ALERTA:</strong> ':''}${ind.nota_real.replace('ALERTA: ','')}</div>` : ''}
-            <div class="ind-rango-fecha"><strong>Rango del dato:</strong> ${rangoDato}</div>
-          </div>`;
-        }).join('')}
+      <div class="acc-body">
+        <div class="ind-grid">${cardsHTML}</div>
+        <div class="acc-footer">
+          <a href="pulmon_oriente_seguridad.html" class="acc-link">Ver análisis completo con gráficas →</a>
+        </div>
       </div>`;
-    ctsEl.appendChild(panel);
+
+    item.querySelector('.acc-header').addEventListener('click', () => {
+      const open = item.classList.toggle('open');
+      item.querySelector('.acc-chevron').textContent = open ? '▴' : '▾';
+    });
+    accEl.appendChild(item);
   });
-
-  tabsEl.addEventListener('click', e => {
-    const btn = e.target.closest('.dim-tab');
-    if (!btn) return;
-    const idx = parseInt(btn.dataset.idx);
-    tabsEl.querySelectorAll('.dim-tab').forEach((b, i) => {
-      b.classList.toggle('active', i===idx);
-      b.style.background  = i===idx ? D.dimensiones[i].color : '';
-      b.style.borderColor = i===idx ? D.dimensiones[i].color : '#ddd';
-      b.style.color       = i===idx ? '#fff' : '';
-    });
-    ctsEl.querySelectorAll('.dim-content').forEach((p, i) => p.classList.toggle('active', i===idx));
-  });
-
-  // Hurtos series chart — barras agrupadas por trimestre (T1–T4 × año)
-  const segDim = D.dimensiones.find(d => d.id === 'seguridad');
-  if (segDim?.hurtos_series) {
-    const hs = segDim.hurtos_series;
-
-    // Agrupar por trimestre y año
-    const byYearQ = {};
-    hs.serie.forEach(s => {
-      const [yr, q] = s.periodo.split('-'); // e.g. "2023", "T1"
-      if (!byYearQ[yr]) byYearQ[yr] = {};
-      byYearQ[yr][q] = s.n;
-    });
-    const years  = Object.keys(byYearQ).sort();           // ['2023','2024','2025']
-    const qtrs   = ['T1','T2','T3','T4'];
-    const yearColors = {
-      '2023': 'rgba(193,39,45,0.30)',
-      '2024': 'rgba(193,39,45,0.55)',
-      '2025': '#C1272D'
-    };
-
-    const datasets = years.map(yr => ({
-      label: yr,
-      data: qtrs.map(q => byYearQ[yr]?.[q] ?? null),
-      backgroundColor: yearColors[yr] || 'rgba(193,39,45,0.4)',
-      borderRadius: 4,
-      borderSkipped: false
-    }));
-
-    registerChart('chartHurtos', new Chart(document.getElementById('chartHurtos'), {
-      type: 'bar',
-      data: { labels: qtrs, datasets },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        scales: {
-          y: { beginAtZero: false, min: 200, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 } } },
-          x: { grid: { display: false }, ticks: { font: { size: 11 } } }
-        },
-        plugins: {
-          legend: {
-            display: true,
-            position: 'top',
-            labels: { font: { size: 11 }, boxWidth: 14, padding: 12 }
-          },
-          tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw} hurtos` } }
-        }
-      }
-    }));
-
-    // Insight: comparativo año sobre año por trimestre
-    const lastYr  = years[years.length - 1];
-    const prevYr  = years[years.length - 2];
-    const totalLast = qtrs.reduce((s,q) => s + (byYearQ[lastYr]?.[q] || 0), 0);
-    const totalPrev = qtrs.reduce((s,q) => s + (byYearQ[prevYr]?.[q] || 0), 0);
-    const pctYoY   = Math.round((totalPrev - totalLast) / totalPrev * 100);
-    const hurtosMax = Math.max(...hs.serie.map(s => s.n));
-    const hurtosLast = byYearQ[lastYr]?.['T4'] ?? hs.serie[hs.serie.length-1].n;
-    const pctTotal  = Math.round((hurtosMax - hurtosLast) / hurtosMax * 100);
-    document.getElementById('insight-hurtos').innerHTML =
-      `<span class="ci-label">Comparativo:</span> En <strong>${lastYr}</strong> los hurtos bajaron
-       <strong style="color:#2E7D32">${pctYoY}%</strong> respecto a <strong>${prevYr}</strong> (total anual).
-       Desde el pico histórico de <strong>${hurtosMax}</strong> (${hs.serie.find(s=>s.n===hurtosMax).periodo}),
-       la reducción acumulada es del <strong style="color:#2E7D32">${pctTotal}%</strong>.
-       Fuente: ${hs.fuente}.`;
-  }
-
-  // VIF series chart — barras anuales con alerta de tendencia
-  (function renderVIF() {
-    const canvas = document.getElementById('chartVIF');
-    if (!canvas) return;
-    const cohDim = D.dimensiones.find(d => d.id === 'cohesion_social');
-    if (!cohDim?.vif_series) return;
-    const vs = cohDim.vif_series;
-    const labels = vs.serie.map(s => s.anio);
-    const values = vs.serie.map(s => s.n);
-    const last   = values[values.length - 1];
-    const colors = values.map((v, i) =>
-      i === values.length - 1 ? '#C1272D' : i === values.length - 2 ? 'rgba(193,39,45,0.55)' : 'rgba(193,39,45,0.30)'
-    );
-
-    registerChart('chartVIF', new Chart(canvas, {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [{
-          label: 'Casos VIF',
-          data: values,
-          backgroundColor: colors,
-          borderRadius: 6,
-          borderSkipped: false
-        }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        scales: {
-          y: { beginAtZero: false, min: 400, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { size: 10 } } },
-          x: { grid: { display: false }, ticks: { font: { size: 12, weight: 'bold' } } }
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: { callbacks: { label: ctx => `${ctx.raw} casos VIF` } }
-        }
-      }
-    }));
-
-    const primero  = values[0];
-    const pctTotal = Math.round((last - primero) / primero * 100);
-    const pctUlt   = Math.round((values[values.length-1] - values[values.length-2]) / values[values.length-2] * 100);
-    document.getElementById('insight-vif').innerHTML =
-      `<span class="ci-label" style="color:#C1272D">Alerta:</span>
-       La VIF aumentó <strong style="color:#C1272D">${pctTotal}%</strong> entre ${labels[0]} y ${labels[labels.length-1]}
-       (de <strong>${primero}</strong> a <strong>${last}</strong> casos anuales).
-       Solo en el último año el incremento fue del <strong style="color:#C1272D">+${pctUlt}%</strong>.
-       <strong>Acción prioritaria:</strong> reforzar atención psicosocial y rutas de acceso a justicia en el territorio.`;
-  })();
-
-  // Movilidad score series — barras agrupadas por trimestre (T1–T4 × año)
-  (function renderMovSerie() {
-    const canvas = document.getElementById('chartMovSerie');
-    if (!canvas) return;
-    const serie = D.serie_temporal || [];
-    if (!serie.length) return;
-
-    // Agrupar scores de movilidad por año y trimestre
-    const byYearQ = {};
-    serie.forEach(s => {
-      const [yr, q] = s.periodo.split('-');
-      if (!byYearQ[yr]) byYearQ[yr] = {};
-      byYearQ[yr][q] = s.movilidad;
-    });
-    const years = Object.keys(byYearQ).sort();
-    const qtrs  = ['T1','T2','T3','T4'];
-    const yearColors = {
-      '2023': 'rgba(0,121,107,0.30)',
-      '2024': 'rgba(0,121,107,0.55)',
-      '2025': '#00796B'
-    };
-
-    const datasets = years.map(yr => ({
-      label: yr,
-      data: qtrs.map(q => byYearQ[yr]?.[q] ?? null),
-      backgroundColor: yearColors[yr] || 'rgba(0,121,107,0.4)',
-      borderRadius: 4,
-      borderSkipped: false
-    }));
-
-    registerChart('chartMovSerie', new Chart(canvas, {
-      type: 'bar',
-      data: { labels: qtrs, datasets },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: false, min: 30, max: 80,
-            grid: { color: 'rgba(0,0,0,0.05)' },
-            ticks: { font: { size: 10 } }
-          },
-          x: { grid: { display: false }, ticks: { font: { size: 11 } } }
-        },
-        plugins: {
-          legend: {
-            display: true, position: 'top',
-            labels: { font: { size: 11 }, boxWidth: 14, padding: 12 }
-          },
-          tooltip: {
-            callbacks: {
-              label: ctx => `${ctx.dataset.label}: ${ctx.raw?.toFixed(1)} pts`
-            }
-          }
-        }
-      }
-    }));
-
-    // Insight ejecutivo
-    const lastYr = years[years.length - 1];
-    const prevYr = years[years.length - 2];
-    const lastScores = qtrs.map(q => byYearQ[lastYr]?.[q]).filter(v => v != null);
-    const prevScores = qtrs.map(q => byYearQ[prevYr]?.[q]).filter(v => v != null);
-    const avgLast = lastScores.reduce((a,b) => a+b, 0) / lastScores.length;
-    const avgPrev = prevScores.reduce((a,b) => a+b, 0) / prevScores.length;
-    const diff    = (avgLast - avgPrev).toFixed(1);
-    const sign    = diff > 0 ? '+' : '';
-    const color   = diff >= 0 ? '#2E7D32' : '#C1272D';
-    const pico    = Math.max(...serie.map(s => s.movilidad));
-    const picoP   = serie.find(s => s.movilidad === pico)?.periodo;
-    const actual  = byYearQ[lastYr]?.['T4'] ?? lastScores[lastScores.length-1];
-    const qtrsConDatos = qtrs.filter(q => byYearQ[lastYr]?.[q] != null && byYearQ[prevYr]?.[q] != null);
-    const mejoraron  = qtrsConDatos.filter(q => byYearQ[lastYr][q] > byYearQ[prevYr][q]);
-    const minQ  = qtrsConDatos.reduce((a, b) => byYearQ[lastYr][a] < byYearQ[lastYr][b] ? a : b);
-    const minVal = byYearQ[lastYr][minQ]?.toFixed(1);
-    const tendencia = diff < 0 ? 'empeoró' : 'mejoró';
-    const absDiff = Math.abs(diff);
-    const mejoraronStr = mejoraron.length
-      ? `Solo <strong>${mejoraron.join(' y ')}</strong> mostró mejora respecto a ${prevYr}.`
-      : `Ningún trimestre mejoró respecto a ${prevYr}.`;
-    document.getElementById('insight-mov-serie').innerHTML =
-      `<span class="ci-label">Lectura ejecutiva:</span>
-       La movilidad <strong style="color:${color}">${tendencia} ${absDiff} puntos</strong> en ${lastYr} respecto a ${prevYr}.
-       El punto más crítico fue <strong style="color:#C1272D">${minQ} (${minVal} pts)</strong> — el más bajo del período.
-       ${mejoraronStr}
-       <strong>Acción prioritaria:</strong> reducir siniestralidad vial, especialmente en el último trimestre del año.`;
-  })();
 
   /* ── SEGURIDAD VS MOVILIDAD COMPARATIVO ─────────────────────────────── */
   (function renderSegMovComp() {

@@ -203,7 +203,7 @@
     <div class="module-kpi-grid" id="module-kpis"></div>
     <div class="module-summary" id="module-summary"></div>
 
-    <div class="chart-grid-main">
+    <div class="chart-grid-main" id="chart-grid-main">
       <div class="chart-card">
         <div class="chart-card-header"><div class="chart-card-title" id="chart-main-title"></div></div>
         <div class="chart-body">
@@ -218,7 +218,7 @@
       </div>
     </div>
 
-    <div class="chart-grid-secondary">
+    <div class="chart-grid-secondary" id="chart-grid-secondary">
       <div class="charts-grid wide">
         <div class="chart-card">
           <div class="chart-card-header"><div class="chart-card-title" id="chart-bottom-title"></div></div>
@@ -473,178 +473,6 @@ const MODULES = {
       { name: 'Charco Azul', value: 2 }
     ]
   },
-  vif: {
-    label: 'Violencia Intrafamiliar',
-    color: '#6A1B9A',
-    accent: '#C1272D',
-    highlightBg: 'linear-gradient(135deg, #C1272D 0%, #8B0000 100%)',
-    highlightTitle: 'Alerta en ascenso',
-    highlightText: 'La VIF subió de 457 casos en 2023 a 562 en 2025. Es el indicador de seguridad con peor tendencia reciente en el territorio.',
-    noteTitle: 'Lectura ejecutiva',
-    noteText: 'El domicilio es el principal escenario reportado y Alfonso Bonilla Aragón concentra el mayor volumen. La curva reciente es claramente ascendente.',
-    summary: 'La <strong>violencia intrafamiliar</strong> contradice la mejora observada en hurtos. Su crecimiento sostenido la convierte en uno de los principales focos de alerta social y de seguridad para el ITT.',
-    kpis: [
-      { value: '1.502', label: 'Total 2023-2025', sub: 'Acumulado del periodo', color: '#C1272D', badge: { text: '+23% vs 2023', type: 'badge-up' } },
-      { value: '562', label: 'Total 2025', sub: 'Máximo anual del periodo', color: '#E65100', badge: { text: 'Año crítico', type: 'badge-up' } },
-      { value: '35%', label: 'Domicilio', sub: '529 casos reportados', color: '#6A1B9A' },
-      { value: '307', label: 'Alfonso Bonilla Aragón', sub: 'Barrio más afectado', color: '#003087' }
-    ],
-    mainChart: {
-      title: 'Evolución trimestral VIF',
-      type: 'line',
-      data: {
-        labels: ['2023-T1','2023-T2','2023-T3','2023-T4','2024-T1','2024-T2','2024-T3','2024-T4','2025-T1','2025-T2','2025-T3','2025-T4'],
-        datasets: [{
-          label: 'VIF',
-          data: [106,138,125,88,98,123,136,126,126,142,189,105],
-          borderColor: '#6A1B9A',
-          backgroundColor: 'rgba(106,27,154,0.12)',
-          borderWidth: 2.5,
-          fill: true,
-          tension: 0.3,
-          pointRadius: 4
-        }]
-      },
-      options: {
-        scales: {
-          x: { grid: { display: false } },
-          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } }
-        },
-        plugins: { legend: { display: false } }
-      }
-    },
-    sideChart: {
-      title: 'Sitio del hecho',
-      type: 'doughnut',
-      data: {
-        labels: ['Sin información','Domicilio','Vía pública','Est. comercio','Otro','Edificio'],
-        datasets: [{
-          data: [897,529,55,5,4,3],
-          backgroundColor: ['#C1272D','#6A1B9A','#E65100','#1565C0','#90A4AE','#37474F'],
-          borderWidth: 2,
-          borderColor: '#fff'
-        }]
-      },
-      options: {
-        cutout: '60%',
-        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
-      }
-    },
-    bottomChart: {
-      title: 'Top 8 barrios por VIF',
-      type: 'bar',
-      data: {
-        labels: ['Alfonso Bonilla Aragón','J.M. Marroquín II','Los Lagos','J.M. Marroquín I','Los Comuneros II','Villa del Lago','El Poblado II','Ulpiano Lloreda'],
-        datasets: [{
-          label: 'Casos',
-          data: [307,163,129,105,88,64,63,59],
-          backgroundColor: ['#C1272D','#6A1B9A','#6A1B9A','#B39DDB','#B39DDB','#B39DDB','#B39DDB','#B39DDB'],
-          borderRadius: 5
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        scales: {
-          x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } },
-          y: { grid: { display: false }, ticks: { font: { size: 11 } } }
-        },
-        plugins: { legend: { display: false } }
-      }
-    },
-    rankingTitle: 'Barrios con mayor presión',
-    ranking: [
-      { name: 'Alfonso Bonilla Aragón', value: 307 },
-      { name: 'J.M. Marroquín II', value: 163 },
-      { name: 'Los Lagos', value: 129 },
-      { name: 'J.M. Marroquín I', value: 105 },
-      { name: 'Los Comuneros II', value: 88 },
-      { name: 'Villa del Lago', value: 64 }
-    ]
-  },
-  vbg: {
-    label: 'VBG',
-    color: '#C2185B',
-    accent: '#E91E63',
-    highlightBg: 'linear-gradient(135deg, #880E4F 0%, #C2185B 100%)',
-    highlightTitle: 'Concentración territorial marcada',
-    highlightText: 'En 2025 se registraron 98 casos de VBG. Comuna 13 concentra 58 y Comuna 14 otros 37, dejando una distribución fuertemente localizada.',
-    noteTitle: 'Lectura ejecutiva',
-    noteText: 'Solo hay datos 2025, por lo que esta vista sirve como línea base y no como tendencia histórica. El foco territorial es muy claro en pocos barrios.',
-    summary: 'La <strong>VBG</strong> aún no permite comparaciones temporales robustas, pero sí muestra una geografía muy concentrada que puede orientar prevención focalizada y lectura social del territorio.',
-    kpis: [
-      { value: '98', label: 'Casos 2025', sub: 'Dato disponible solo para 2025', color: '#C2185B', badge: { text: 'Sin serie histórica', type: 'badge-flat' } },
-      { value: '59%', label: 'Comuna 13', sub: '58 de 98 casos', color: '#E91E63' },
-      { value: '38%', label: 'Comuna 14', sub: '37 de 98 casos', color: '#AD1457' },
-      { value: '22', label: 'Alfonso Bonilla Aragón', sub: 'Barrio principal', color: '#003087' }
-    ],
-    mainChart: {
-      title: 'Distribución por comuna',
-      type: 'doughnut',
-      data: {
-        labels: ['Comuna 13','Comuna 14','Comuna 15','Comuna 7'],
-        datasets: [{
-          data: [58,37,2,1],
-          backgroundColor: ['#C2185B','#E91E63','#F8BBD0','#FCE4EC'],
-          borderWidth: 2,
-          borderColor: '#fff'
-        }]
-      },
-      options: {
-        cutout: '60%',
-        plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } } }
-      }
-    },
-    sideChart: {
-      title: 'Nota metodológica',
-      type: 'bar',
-      data: {
-        labels: ['2025'],
-        datasets: [{
-          label: 'Casos reportados',
-          data: [98],
-          backgroundColor: ['#C2185B'],
-          borderRadius: 8
-        }]
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { display: false } },
-          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } }
-        }
-      }
-    },
-    bottomChart: {
-      title: 'Top 8 barrios por VBG',
-      type: 'bar',
-      data: {
-        labels: ['Alfonso Bonilla Aragón','El Poblado II','Lleras Restrepo II','J.M. Marroquín II','Omar Torrijos','Los Comuneros II','Lleras Restrepo','Rodrigo Lara Bonilla'],
-        datasets: [{
-          label: 'Casos',
-          data: [22,8,7,7,6,6,5,5],
-          backgroundColor: ['#C2185B','#EC407A','#EC407A','#EC407A','#F06292','#F06292','#F8BBD0','#F8BBD0'],
-          borderRadius: 5
-        }]
-      },
-      options: {
-        indexAxis: 'y',
-        scales: {
-          x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' } },
-          y: { grid: { display: false }, ticks: { font: { size: 11 } } }
-        },
-        plugins: { legend: { display: false } }
-      }
-    },
-    rankingTitle: 'Barrios focalizados',
-    ranking: [
-      { name: 'Alfonso Bonilla Aragón', value: 22 },
-      { name: 'El Poblado II', value: 8 },
-      { name: 'Lleras Restrepo II', value: 7 },
-      { name: 'J.M. Marroquín II', value: 7 },
-      { name: 'Omar Torrijos', value: 6 },
-      { name: 'Los Comuneros II', value: 6 }
-    ]
-  }
 };
 
 const dimensionSwitcher = document.getElementById('dimension-switcher');
@@ -1398,7 +1226,11 @@ function renderDimension(dimId) {
   currentDimension = dimId;
   updateDimensionTabStyles(dimId);
   const isSecurity = dimId === 'seguridad';
+  const hideCharts = dimId === 'entorno_urbano';
   switcher.style.display = 'flex';
+
+  document.getElementById('chart-grid-main').style.display      = hideCharts ? 'none' : '';
+  document.getElementById('chart-grid-secondary').style.display = hideCharts ? 'none' : '';
 
   if (isSecurity) {
     buildSecuritySubTabs();

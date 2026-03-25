@@ -1,8 +1,8 @@
 # Sustento empírico para parámetros ref_min y ref_max
 ## Consolidado técnico de indicadores y evidencia de soporte para la calibración del ITT
 
-**Última actualización:** 2026-03-16
-**Versión ITT de referencia:** v7 · ITT 2025-T4 = 46.9
+**Última actualización:** 2026-03-17
+**Versión ITT de referencia:** v7 · ITT 2025-T4 = 47.1
 
 ---
 
@@ -38,11 +38,11 @@ Serie GeoJSON de 12 trimestres (2023-T1 a 2025-T4). En este grupo, los parámetr
 |---|---|---:|---:|---:|---|---|---|
 | Homicidios | Seguridad | 36 | 5 | 50 | 9 (2025-T3) | 38 (2023-T3) | Serie real 12 trim. Refs dan margen operacional sobre el rango observado. |
 | Hurtos | Seguridad | 260 | 200 | 450 | 259 (2023-T4) | 434 (2023-T1) | Serie real 12 trim. Refs prácticamente pegados al rango observado. |
-| Siniestralidad vial | Movilidad | 63 | 30 | 80 | 47 (2024-T2) | 68 (2023-T3) | Serie real 12 trim. ref_min=30 da margen aspiracional; ref_max=80 supera el histórico. |
+| Siniestralidad vial (sin fallecidos) | Movilidad | 57 | 28 | 75 | 44 (2024-T2) | 65 (2023-T3) | Serie real 12 trim. **Opción A v7**: excluye eventos Mortal para eliminar redundancia con "Muertes en vía". ref_min=28 aspiracional; ref_max=75 supera histórico. |
 | Accidentes c/lesionados | Movilidad | 53 | 20 | 65 | 42 (2024-T2) | 56 (2023-T3) | Serie real 12 trim. ref_max=65 supera el observado (56), da margen. |
 | Muertes en vía | Movilidad | 6 | 1 | 10 | 2 (2024-T1) | 6 (varios) | Serie real 12 trim. ref_max=10 supera histórico; ref_min=1 es aspiracional. |
-| VIF | Cohesión | 105 | 60 | 200 | 88 (2023-T4) | 189 (2025-T3) | Serie real 12 trim. Refs casi exactos al rango observado. |
-| Riñas | Cohesión | 127 | 20 | 160 | 38 (2023-T4) | 144 (2025-T3) | Serie real 12 trim. ref_min=20 aspiracional; ref_max=160 sobre el histórico. |
+| VIF | Cohesión | 105 (T4-2025) | 60 | 200 | 88 (2023-T4) | 189 (2025-T3) | Serie real anual que se calcula en 12 trim. Score y refs en escala trimestral. **Nota v8:** migrar a escala anual (valor=562, refs=[240,800]) para consistencia con el display — ver hoja de ruta. |
+| Riñas | Cohesión | 127 | 20 | 160 | 38 (2023-T4) | 144 (2025-T3) | Serie real 12 trim. ref_min=20 aspiracional; ref_max=160 supera el histórico (144). |
 
 ---
 
@@ -68,9 +68,9 @@ Este grupo concentra la evidencia más débil. Los valores de referencia depende
 | ~~Velocidad corredor~~ | ~~Movilidad~~ | ~~26.8 km/h~~ | ~~12~~ | ~~32~~ | **Retirada del modelo v7.** Dato único sin serie histórica generaba score 74/100 inflando Movilidad. Queda como dato de contexto. |
 | NDVI cobertura vegetal | Entorno | 0.20 | 0.15 | 0.65 | Un solo TIF (imagen 2025). ref_max=0.65 es muy aspiracional para zona urbana densa. En v8 se recalculará sobre sub-polígono ambiental. |
 | Área verde neta | Entorno | 1,699,769 m² | 500,000 | 3,000,000 | Un solo TIF. ref_max=3M equivale al ~25% del polígono — supuesto de diseño. Misma limitación v7 que NDVI. |
-| Déficit AHDI | Entorno | 46.4% pend. | 10 | 100 | Escala conceptual 0–100, no anclada a observación histórica del polígono. |
+| Déficit AHDI | Entorno | 46.4% | 10 | 100 | Escala conceptual 0–100, no anclada a observación histórica del polígono. Derivable por año desde GeoJSON (campo AÑO_INTERV) — pendiente priorización. |
 | Conc. vulnerabilidad | Cohesión | 54.1 p/1K | 30 | 160 | Un solo corte (2025). Refs son rangos sectoriales sin historia local. |
-| Cobertura deportiva activa | Educ. | 3,877 reg. | 1,000 | 7,000 | **Dato proxy.** 3,877 personas registradas activas en 25 escenarios deportivos de la Comuna 14 (formulario oficial Sec. Deportes, marzo 2024). No es conteo directo de asistencia — es lo que cada escenario reportó tener activo. Referencias visuales de contexto: polideportivo Villa San Marcos y cancha múltiple Los Lagos. Aforo directo Villa del Lago pendiente. |
+| Cobertura deportiva activa | Educ. | 3,877 reg. | 1,000 | 7,000 | **Dato proxy oficial.** 3,877 personas registradas activas en 25 escenarios deportivos de la Comuna 14 (formulario Sec. Deportes, marzo 2024). No es conteo directo de asistencia — es lo que cada escenario reportó tener activo. Proxy activo mientras llega aforo directo oficial. |
 
 ---
 
@@ -101,5 +101,6 @@ El ITT es un índice de seguimiento territorial operativo, no un modelo economé
 | NDVI / Área verde | Recalcular sobre sub-polígono ambiental (Charco Azul + El Pondaje) — v8 | Alta |
 | Cobertura deportiva activa | Obtener aforo directo Villa del Lago (Sec. Deportes) | Media |
 | Velocidad corredor | Acumular cortes trimestrales Waze for Cities · reintegrar al modelo cuando haya serie | Media |
+| VIF | Migrar de escala trimestral a anual: valor=total año, refs=[240,800] · consistencia con display actual | Media |
 | Conc. vulnerabilidad | Acumular cortes anuales de caracterización Sub PyE | Baja |
 | Matrícula / Deserción / Repitencia / Ratio docente | Continuar actualización anual — granularidad apropiada por diseño | Baja |
